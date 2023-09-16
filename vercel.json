@@ -13,7 +13,7 @@
         {
           "type": "header",
           "key": "User-Agent",
-          "value": "/Visual Studio Code \(.+?\)/"
+          "value": "/Visual Studio Code (.+?)/"
         }
       ]
     }
