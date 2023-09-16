@@ -3,12 +3,16 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/schema.json",
+      "destination": "/assets/schema.json"
+    },
+    {
       "source": "/schema",
-      "destination": "/schema.json"
+      "destination": "/assets/schema.json"
     },
     {
       "source": "/",
-      "destination": "/schema.json",
+      "destination": "/assets/schema.json",
       "has": [
         {
           "type": "header",
