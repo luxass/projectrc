@@ -9,17 +9,6 @@
     {
       "source": "/schema",
       "destination": "/assets/schema.json"
-    },
-    {
-      "source": "/",
-      "destination": "/assets/schema.json",
-      "has": [
-        {
-          "type": "header",
-          "key": "User-Agent",
-          "value": "Visual Studio Code (desktop)"
-        }
-      ]
     }
   ]
 }
