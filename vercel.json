@@ -1,0 +1,21 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/schema",
+      "destination": "/schema.json"
+    },
+    {
+      "source": "/",
+      "destination": "/schema.json",
+      "has": [
+        {
+          "type": "header",
+          "key": "User-Agent",
+          "value": "/Visual Studio Code \(.+?\)/"
+        }
+      ]
+    }
+  ]
+}
