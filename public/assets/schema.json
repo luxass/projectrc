@@ -16,5 +16,6 @@
       "description": "Should the repo be ignored?",
       "default": false
     }
-  }
+  },
+  "additionalProperties": false
 }
