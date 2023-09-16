@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "readme": {
+      "type": "boolean",
+      "description": "Should repository readme be visible on luxass.dev/projects/<project-name>?",
+      "default": false
+    },
+    "npm": {
+      "type": "boolean",
+      "description": "Does the repo have a npm package?",
+      "default": false
+    },
+    "ignore": {
+      "type": "boolean",
+      "description": "Should the repo be ignored?",
+      "default": false
+    }
+  }
+}
