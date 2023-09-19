@@ -5,8 +5,18 @@
   "type": "object",
   "properties": {
     "readme": {
-      "type": "boolean",
-      "description": "Should repository readme be visible on luxass.dev/projects/<project-name>?",
+      "oneOf": [
+        {
+          "type": "boolean",
+          "description": "Should repository readme be visible on luxass.dev/projects/<project-name>?",
+          "default": false
+        },
+        {
+          "type": "string",
+          "description": "Should repository readme be visible on luxass.dev/projects/<project-name>?",
+          "default": "README.md"
+        }
+      ],
       "default": false
     },
     "npm": {
