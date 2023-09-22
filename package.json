@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build && cp -r ./src/assets/ ./dist/assets/",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
