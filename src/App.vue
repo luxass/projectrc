@@ -36,7 +36,11 @@ html {
 }
 
 body {
-  @apply text-neutral-300 bg-neutral-900 py-8 min-h-screen max-w-2xl md: !mx-auto !mx-4 font-sans flex flex-col justify-between min-h-100dvh;
+  @apply text-neutral-300 bg-neutral-900 py-8 min-h-screen max-w-4xl md:!mx-auto !mx-4 font-sans flex flex-col justify-between min-h-100dvh;
+}
+
+.shiki {
+  @apply overflow-auto;
 }
 
 p {

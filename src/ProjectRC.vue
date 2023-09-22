@@ -22,5 +22,6 @@ const code = shiki.codeToHtml(JSON.stringify(projectrcSchema, null, 2), {
 </script>
 
 <template>
+  <h2>You can see the schema used here.</h2>
   <div v-html="code" />
 </template>
