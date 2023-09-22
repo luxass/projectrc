@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vue-tsc && vite build && cp -r ./src/assets/ ./dist/assets/",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@luxass/eslint-config": "^3.3.2",
     "@vitejs/plugin-vue": "^4.3.4",
     "eslint": "^8.49.0",
+    "shikiji": "^0.6.8",
     "typescript": "^5.2.2",
     "unocss": "^0.55.7",
     "vite": "^4.4.9",
