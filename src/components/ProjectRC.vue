@@ -4,7 +4,7 @@ import {
 } from "shikiji/core";
 import { getWasmInlined } from "shikiji/wasm";
 
-const { data: schema } = await useFetch("/api/schema");
+// const { data: schema } = await useFetch("/api/schema");
 
 const shiki = await getHighlighterCore({
   langs: [
@@ -16,7 +16,7 @@ const shiki = await getHighlighterCore({
   loadWasm: getWasmInlined,
 });
 
-const code = shiki.codeToHtml(JSON.stringify(schema.value, null, 2), {
+const code = shiki.codeToHtml(JSON.stringify({}, null, 2), {
   lang: "json",
   theme: "vitesse-dark",
 });
