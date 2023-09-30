@@ -27,4 +27,18 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     typedPages: true,
   },
+  nitro: {
+    routeRules: {
+      "/api/schema": {
+        cache: {
+          maxAge: 3600,
+        },
+      },
+      "/api/projectrc/**": {
+        cache: {
+          maxAge: 3600,
+        },
+      },
+    },
+  },
 });
