@@ -33,9 +33,6 @@ export default defineNuxtConfig({
     pageTransition: false,
     layoutTransition: false,
   },
-  nitro: {
-    preset: "vercel-edge",
-  },
   htmlValidator: {
     failOnError: true,
     options: {
