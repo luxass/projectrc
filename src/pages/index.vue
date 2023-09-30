@@ -21,6 +21,6 @@
   </p>
 
   <Suspense>
-    <NuxtIsland name="ProjectRC" />
+    <ProjectRC />
   </Suspense>
 </template>

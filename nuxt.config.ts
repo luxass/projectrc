@@ -1,6 +1,17 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@unocss/nuxt", "@nuxt/devtools", "@vueuse/nuxt", "nuxt-icon"],
+  $production: {
+    experimental: {
+      noVueServer: true,
+    },
+  },
+  modules: [
+    "@unocss/nuxt",
+    "@nuxt/devtools",
+    "@vueuse/nuxt",
+    "nuxt-icon",
+    "@nuxtjs/html-validator",
+  ],
   devtools: { enabled: true },
   plugins: [
     {
@@ -11,22 +22,37 @@ export default defineNuxtConfig({
   css: [
     "@unocss/reset/tailwind.css",
   ],
-  // routeRules: {
-  //   "/api/search": {
-  //     prerender: true,
-  //   },
-  // },
+  sourcemap: false,
   app: {
     head: {
       htmlAttrs: {
         lang: "en",
       },
+      title: "ProjectRC",
     },
+    pageTransition: false,
+    layoutTransition: false,
   },
   nitro: {
     preset: "vercel-edge",
   },
-  experimental: {
-    componentIslands: true,
+  htmlValidator: {
+    failOnError: true,
+    options: {
+      rules: {
+        "wcag/h37": "warn",
+        "element-permitted-content": "warn",
+        "element-required-attributes": "warn",
+        "attribute-empty-style": "off",
+      },
+    },
   },
+  experimental: {
+    typescriptBundlerResolution: true,
+    viewTransition: true,
+    componentIslands: true,
+    payloadExtraction: true,
+    typedPages: true,
+  },
+  srcDir: "src",
 });

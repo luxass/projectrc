@@ -13,7 +13,7 @@ body {
 }
 
 .shiki {
-  @apply overflow-auto;
+  @apply overflow-auto p-4 border border-neutral-700 rounded;
 }
 
 p {
