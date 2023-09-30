@@ -1,12 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    "@unocss/nuxt",
-    "@nuxt/devtools",
-    "@vueuse/nuxt",
-    "nuxt-icon",
-    "@nuxtjs/html-validator",
-  ],
+  modules: ["@unocss/nuxt", "@nuxt/devtools"],
   devtools: { enabled: true },
   plugins: [
     {
@@ -14,9 +8,7 @@ export default defineNuxtConfig({
       mode: "client",
     },
   ],
-  css: [
-    "@unocss/reset/tailwind.css",
-  ],
+  css: ["@unocss/reset/tailwind.css"],
   sourcemap: false,
   app: {
     head: {
@@ -27,17 +19,6 @@ export default defineNuxtConfig({
     },
     pageTransition: false,
     layoutTransition: false,
-  },
-  htmlValidator: {
-    failOnError: true,
-    options: {
-      rules: {
-        "wcag/h37": "warn",
-        "element-permitted-content": "warn",
-        "element-required-attributes": "warn",
-        "attribute-empty-style": "off",
-      },
-    },
   },
   experimental: {
     typescriptBundlerResolution: true,

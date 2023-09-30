@@ -21,12 +21,9 @@
   "devDependencies": {
     "@luxass/eslint-config": "^3.3.2",
     "@nuxt/devtools": "latest",
-    "@nuxtjs/html-validator": "^1.5.2",
     "@unocss/nuxt": "^0.56.4",
-    "@vueuse/nuxt": "^10.4.1",
     "eslint": "^8.50.0",
     "nuxt": "^3.7.4",
-    "nuxt-icon": "^0.5.0",
     "shikiji": "^0.6.8",
     "typescript": "^5.2.2",
     "vue": "^3.3.4",
