@@ -4,11 +4,11 @@
   "rewrites": [
     {
       "source": "/schema.json",
-      "destination": "/assets/schema.json"
+      "destination": "/api/schema"
     },
     {
       "source": "/schema",
-      "destination": "/assets/schema.json"
+      "destination": "/api/schema"
     }
   ]
 }

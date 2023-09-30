@@ -3,9 +3,8 @@ import {
   getHighlighterCore,
 } from "shikiji/core";
 import { getWasmInlined } from "shikiji/wasm";
-import projectrcSchemaUrl from "/assets/schema.json?url";
 
-const projectrcSchema = await fetch(projectrcSchemaUrl).then((res) => res.json());
+const { data: schema } = await useFetch("/api/schema");
 
 const shiki = await getHighlighterCore({
   langs: [
@@ -17,7 +16,7 @@ const shiki = await getHighlighterCore({
   loadWasm: getWasmInlined,
 });
 
-const code = shiki.codeToHtml(JSON.stringify(projectrcSchema, null, 2), {
+const code = shiki.codeToHtml(JSON.stringify(schema.value, null, 2), {
   lang: "json",
   theme: "vitesse-dark",
 });
