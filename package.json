@@ -2,6 +2,7 @@
   "name": "projectrc.luxass.dev",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@8.8.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
