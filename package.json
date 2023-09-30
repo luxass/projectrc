@@ -17,7 +17,7 @@
     "@nuxt/devtools": "latest",
     "@unocss/nuxt": "^0.56.4",
     "@vueuse/nuxt": "^10.4.1",
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "nuxt": "^3.7.4",
     "nuxt-icon": "^0.5.0",
     "shikiji": "^0.6.8",
