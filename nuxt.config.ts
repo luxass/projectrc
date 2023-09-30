@@ -51,5 +51,4 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     typedPages: true,
   },
-  srcDir: "src",
 });
