@@ -1,4 +1,4 @@
-import projectrcSchema from "../../assets/schema.json";
+import projectrcSchema from "../../public/assets/schema.json";
 
 export default defineEventHandler(async (event) => {
   return projectrcSchema;
