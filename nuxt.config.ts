@@ -1,10 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  $production: {
-    experimental: {
-      noVueServer: true,
-    },
-  },
   modules: [
     "@unocss/nuxt",
     "@nuxt/devtools",
