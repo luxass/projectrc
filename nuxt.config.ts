@@ -37,6 +37,7 @@ export default defineNuxtConfig({
       "/api/projectrc/**": {
         cache: {
           maxAge: 3600,
+          name: "projectrc",
         },
       },
     },

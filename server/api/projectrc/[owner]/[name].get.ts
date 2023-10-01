@@ -85,11 +85,15 @@ interface RepositoryNode {
 export default defineEventHandler(async (event) => {
   try {
     if (!event.context.params) {
-      return new Response("Not found", { status: 404 });
+      setResponseHeader(event, "Content-Type", "text/plain");
+      setResponseStatus(event, 404);
+      return "Not found";
     }
     const { owner, name } = event.context.params;
     if (!ALLOWED_OWNERS.includes(owner) || BLOCKED_REPOSITORIES.includes(name)) {
-      return new Response("Not found", { status: 404 });
+      setResponseHeader(event, "Content-Type", "text/plain");
+      setResponseStatus(event, 404);
+      return "Not found";
     }
 
     try {
@@ -98,10 +102,11 @@ export default defineEventHandler(async (event) => {
           "Authorization": `bearer ${process.env.GITHUB_TOKEN}`,
           "Content-Type": "application/json",
         },
-        ignoreResponseErrors: true,
       });
     } catch (err) {
-      return new Response("Not found", { status: 404 });
+      setResponseHeader(event, "Content-Type", "text/plain");
+      setResponseStatus(event, 404);
+      return "Not found";
     }
 
     const { repository } = await graphql<{
@@ -122,7 +127,9 @@ export default defineEventHandler(async (event) => {
     );
 
     if (!projectrcFile) {
-      return new Response("Not found", { status: 404 });
+      setResponseHeader(event, "Content-Type", "text/plain");
+      setResponseStatus(event, 404);
+      return "Not found";
     }
 
     const defaultBranch = repository.defaultBranchRef?.name || "main";
@@ -132,11 +139,15 @@ export default defineEventHandler(async (event) => {
     );
 
     if (!projectrcContent || typeof projectrcContent !== "string") {
-      return new Response("Not found", { status: 404 });
+      setResponseHeader(event, "Content-Type", "text/plain");
+      setResponseStatus(event, 404);
+      return "Not found";
     }
 
     if (!PROJECTRC_VALIDATE(JSON.parse(projectrcContent))) {
-      return new Response("Not found", { status: 404 });
+      setResponseHeader(event, "Content-Type", "text/plain");
+      setResponseStatus(event, 404);
+      return "Not found";
     }
 
     const projectRC = JSON.parse(projectrcContent) as Static<
@@ -202,6 +213,8 @@ export default defineEventHandler(async (event) => {
     return response;
   } catch (err) {
     console.error(err);
-    return new Response("Internal server error", { status: 500 });
+    setResponseHeader(event, "Content-Type", "text/plain");
+    setResponseStatus(event, 500);
+    return "Internal server error";
   }
 });
