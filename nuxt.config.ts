@@ -35,9 +35,12 @@ export default defineNuxtConfig({
         },
       },
       "/api/projectrc/**": {
+        swr: true,
         cache: {
           maxAge: 3600,
-          name: "projectrc",
+          varies: [
+            "Accept",
+          ],
         },
       },
     },

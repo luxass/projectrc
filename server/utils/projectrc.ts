@@ -1,100 +1,72 @@
-import { Kind, Type, TypeRegistry } from "@sinclair/typebox";
-import addFormats from "ajv-formats";
-import Ajv from "ajv";
-import type { SchemaOptions, Static, TSchema, TUnion } from "@sinclair/typebox";
-import { Value } from "@sinclair/typebox/value";
+import process from "node:process";
+import { graphql } from "@octokit/graphql";
+import type { RepositoryNode } from "~/types";
 
-const ajv = addFormats(new Ajv({}), [
-  "date-time",
-  "time",
-  "date",
-  "email",
-  "hostname",
-  "ipv4",
-  "ipv6",
-  "uri",
-  "uri-reference",
-  "uuid",
-  "uri-template",
-  "json-pointer",
-  "relative-json-pointer",
-  "regex",
-]);
+export const PROJECTRC_NAMES: string[] = [".projectrc", ".projectrc.json"];
+export const ALLOWED_OWNERS: string[] = ["luxass"];
+export const BLOCKED_REPOSITORIES: string[] = [];
 
-TypeRegistry.Set(
-  "ExtendedOneOf",
-  (schema: any, value) =>
-    schema.oneOf.reduce(
-      (acc: number, schema: any) => acc + (Value.Check(schema, value) ? 1 : 0),
-      0,
-    ) === 1,
-);
-
-function OneOf<T extends TSchema[]>(
-  oneOf: [...T],
-  options: SchemaOptions = {},
-) {
-  return Type.Unsafe<Static<TUnion<T>>>({
-    ...options,
-    [Kind]: "ExtendedOneOf",
-    oneOf,
-  });
+export function gql(raw: TemplateStringsArray, ...keys: string[]): string {
+  return keys.length === 0 ? raw[0]! : String.raw({ raw }, ...keys);
 }
 
-export const PROJECTRC_TYPEBOX_SCHEMA = Type.Object(
-  {
-    readme: Type.Optional(
-      OneOf(
-        [
-          Type.Boolean({
-            description: "Will use the root readme.md as the repository readme",
-            default: false,
-          }),
-          Type.String({
-            description: "Will use the given file as the repository readme",
-            default: "README.md",
-          }),
-        ],
-        {
-          default: false,
-          description:
-            "If defined will show the repository readme at luxass.dev/projects/repo-name",
-        },
-      ),
-    ),
-    npm: Type.Optional(
-      OneOf(
-        [
-          Type.Boolean({
-            description:
-              "Will find the first package.json in the repo and use the `name` as the npm package name",
-            default: false,
-          }),
-          Type.String({
-            description:
-              "Will use the given package.json to find the npm package name",
-            default: "package.json",
-          }),
-        ],
-        {
-          description:
-            "Does the repo have a npm package and should it be visible on luxass.dev?",
-          default: false,
-        },
-      ),
-    ),
-    ignore: Type.Optional(
-      Type.Boolean({
-        description: "Ignore this repository from being used",
-        default: false,
-      }),
-    ),
-  },
-  {
-    $schema: "http://json-schema.org/draft-07/schema",
-    description:
-      "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
-  },
-);
+export const REPOSITORY_QUERY = gql`
+  #graphql
+  query getRepository($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+      name
+      isFork
+      isPrivate
+      nameWithOwner
+      description
+      pushedAt
+      url
+      defaultBranchRef {
+        name
+      }
+      languages(first: 1, orderBy: { field: SIZE, direction: DESC }) {
+        nodes {
+          name
+          color
+        }
+      }
+      object(expression: "HEAD:.github") {
+        ... on Tree {
+          entries {
+            name
+            type
+            path
+          }
+        }
+      }
+    }
+  }
+`;
 
-export const PROJECTRC_VALIDATE = ajv.compile(PROJECTRC_TYPEBOX_SCHEMA);
+export async function isExistingRepository(owner: string, name: string): Promise<boolean> {
+  try {
+    await $fetch(`https://api.github.com/repos/${owner}/${name}`, {
+      headers: {
+        "Authorization": `bearer ${process.env.GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+export async function getRepository(owner: string, name: string): Promise<RepositoryNode> {
+  const { repository } = await graphql<{
+    repository: RepositoryNode
+  }>(REPOSITORY_QUERY, {
+    owner,
+    name,
+    headers: {
+      "Authorization": `bearer ${process.env.GITHUB_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+  });
+  return repository;
+}
