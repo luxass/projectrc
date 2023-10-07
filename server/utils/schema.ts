@@ -89,6 +89,12 @@ export const PROJECTRC_TYPEBOX_SCHEMA = Type.Object(
         default: false,
       }),
     ),
+    website: Type.Optional(
+      Type.String({
+        description: "The url to the website",
+        format: "uri",
+      }),
+    ),
   },
   {
     $schema: "http://json-schema.org/draft-07/schema",
