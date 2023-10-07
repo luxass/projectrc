@@ -22,6 +22,7 @@ export interface ObjectEntry {
 
 export interface RepositoryNode {
   name: string
+  homepageUrl: string
   nameWithOwner: string
   description: string
   pushedAt: string

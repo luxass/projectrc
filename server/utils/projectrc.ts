@@ -15,6 +15,7 @@ export const REPOSITORY_QUERY = gql`
   query getRepository($owner: String!, $name: String!) {
     repository(owner: $owner, name: $name) {
       name
+      homepageUrl
       isFork
       isPrivate
       nameWithOwner

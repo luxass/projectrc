@@ -90,16 +90,29 @@ export const PROJECTRC_TYPEBOX_SCHEMA = Type.Object(
       }),
     ),
     website: Type.Optional(
-      Type.String({
-        description: "The url to the website",
-        format: "uri",
-      }),
+      OneOf(
+        [
+          Type.Boolean({
+            description: "Will use homepageUrl from github as the website url",
+            default: false,
+          }),
+          Type.String({
+            description: "The url to the website",
+            format: "uri",
+          }),
+        ],
+        {
+          default: false,
+          description: "The url to the website",
+        },
+      ),
     ),
   },
   {
     $schema: "http://json-schema.org/draft-07/schema",
     description:
       "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
+    additionalProperties: false,
   },
 );
 
