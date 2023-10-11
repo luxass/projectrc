@@ -16,10 +16,8 @@
     </h1>
 
     <p>
-      Since you are here, you are probably wondering why and what this <span
-        bg="gray-700" p-0.5
-        rounded
-      >.projectrc</span> is.
+      Since you are here, you are probably wondering why and what this <span bg="gray-700" p-0.5 rounded>.projectrc</span>
+      is.
     </p>
 
     <p>
@@ -28,8 +26,8 @@
         target="_blank" rel="noopener noreferrer" bg="gray-700" p-0.5 rounded
       >my website</a> to
       generate a list of projects that are being showed <a
-        href="https://luxass.dev/projects" title="List of projects" target="_blank"
-        rel="noopener noreferrer" bg="gray-700" p-0.5 rounded
+        href="https://luxass.dev/projects" title="List of projects"
+        target="_blank" rel="noopener noreferrer" bg="gray-700" p-0.5 rounded
       >here</a>.
     </p>
 
