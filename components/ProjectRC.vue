@@ -12,23 +12,15 @@ const shiki = await getHighlighterCore({
   ],
   themes: [
     import("shikiji/themes/vitesse-dark.mjs"),
-    import("shikiji/themes/vitesse-light.mjs"),
   ],
   loadWasm: getWasmInlined,
 });
 
-const html = ref("");
-
-useDark({
-  onChanged(dark: boolean) {
-    console.log(dark, dark ? "vitesse-dark" : "vitesse-light");
-    
-    html.value = shiki.codeToHtml(JSON.stringify(schema.value, null, 2), {
-      lang: "json",
-      theme: dark ? "vitesse-dark" : "vitesse-light",
-    });
-  },
-});
+const html =
+  shiki.codeToHtml(JSON.stringify(schema.value || { message: "There was an error trying to fetch the schema" }, null, 2), {
+    lang: "json",
+    theme: "vitesse-dark",
+  });
 </script>
 
 <template>

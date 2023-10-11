@@ -4,7 +4,7 @@ html, body , #__nuxt {
   padding: 0;
 }
 
-html.dark {
+html {
   background: #111;
   color: white;
   color-scheme: dark;
@@ -15,7 +15,7 @@ html.dark {
 }
 
 .shiki {
-  @apply: overflow-auto p-4 border border-neutral-700 rounded;
+  @apply: overflow-auto p-4 border border-base rounded;
 }
 
 
