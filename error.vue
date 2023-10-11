@@ -7,7 +7,6 @@ useSeoMeta({
   description: "A site that describes what a .projectrc is.",
   ogTitle: "projectrc",
   ogDescription: "A site that describes what a .projectrc is.",
-
 });
 
 defineOgImage({
