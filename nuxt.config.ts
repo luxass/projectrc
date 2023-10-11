@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@unocss/nuxt", "@nuxt/devtools"],
+  modules: [
+    "@nuxt/devtools",
+    "@unocss/nuxt",
+    "@vueuse/nuxt",
+    "nuxt-icon",
+    "nuxt-og-image",
+  ],
   devtools: { enabled: true },
   plugins: [
     {
@@ -12,10 +18,13 @@ export default defineNuxtConfig({
   sourcemap: false,
   app: {
     head: {
+      viewport: "width=device-width,initial-scale=1",
+      link: [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      ],
       htmlAttrs: {
         lang: "en",
       },
-      title: "ProjectRC",
     },
     pageTransition: false,
     layoutTransition: false,

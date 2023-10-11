@@ -1,26 +1,50 @@
+<script setup lang="ts">
+const isDark = useDark();
+</script>
+
 <template>
-  <h1 class="underline underline-offset-5 underline-blue-600">
-    .projectrc
-  </h1>
+  <nav flex="~ wrap" items-center justify-between>
+    <div flex gap-2 items-center>
+      <Icon name="📋" size="32" />
+      <h1>projectrc.luxass.dev</h1>
+    </div>
 
-  <p>
-    Since you are here, you are probably wondering why and what this <span
-      class="underline underline-offset-5 underline-blue-700"
-    >.projectrc</span> is.
-  </p>
+    <div flex items-center justify-between gap-2>
+      <NuxtLink href="https://github.com/luxass/projectrc.luxass.dev">
+        <Icon name="octicon:mark-github" size="24" />
+      </NuxtLink>
 
-  <p>
-    Well, it's a file that are used by <a
-      href="https://github.com/luxass/luxass.dev/blob/main/scripts/update-site.ts"
-      target="_blank" rel="noopener noreferrer" class="underline underline-offset-5 underline-blue-600"
-    >my website</a> to
-    generate a list of projects that are being showed <a
-      href="https://luxass.dev/projects" target="_blank"
-      rel="noopener noreferrer" class="underline underline-offset-5 underline-blue-600"
-    >here</a>.
-  </p>
+      <button title="Toggle Dark Mode" ml1 text-lg op="50 hover:75" @click="isDark = !isDark">
+        <Icon :name="isDark ? 'carbon:sun' : 'carbon:moon'" size="24" />
+      </button>
+    </div>
+  </nav>
 
-  <Suspense>
-    <ProjectRC />
-  </Suspense>
+  <main mt-8 flex="~ col">
+    <h1 font-semibold my-4 text-2xl>
+      .projectrc
+    </h1>
+
+    <p>
+      Since you are here, you are probably wondering why and what this <span
+        bg="gray-200 dark:gray-800" p-0.5
+        rounded
+      >.projectrc</span> is.
+    </p>
+
+    <p>
+      Well, it's a file that are used by <a
+        href="https://github.com/luxass/luxass.dev/blob/main/scripts/update-site.ts"
+        target="_blank" rel="noopener noreferrer" bg="gray-200 dark:gray-800" p-0.5 rounded
+      >my website</a> to
+      generate a list of projects that are being showed <a
+        href="https://luxass.dev/projects" target="_blank"
+        rel="noopener noreferrer" bg="gray-200 dark:gray-800" p-0.5 rounded
+      >here</a>.
+    </p>
+
+    <Suspense>
+      <ProjectRC />
+    </Suspense>
+  </main>
 </template>
