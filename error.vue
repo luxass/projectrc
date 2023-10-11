@@ -23,8 +23,8 @@ defineOgImage({
     <p mb-8 text-2xl>
       Page not found
     </p>
-    <Link href="/">
+    <NuxtLink href="/">
       Go back
-    </Link>
+    </NuxtLink>
   </div>
 </template>

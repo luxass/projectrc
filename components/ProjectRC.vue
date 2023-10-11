@@ -16,8 +16,8 @@ const shiki = await getHighlighterCore({
   loadWasm: getWasmInlined,
 });
 
-const html =
-  shiki.codeToHtml(JSON.stringify(schema.value || { message: "There was an error trying to fetch the schema" }, null, 2), {
+const html
+  = shiki.codeToHtml(JSON.stringify(schema.value || { message: "There was an error trying to fetch the schema" }, null, 2), {
     lang: "json",
     theme: "vitesse-dark",
   });
