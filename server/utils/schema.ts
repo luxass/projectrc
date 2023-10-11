@@ -107,6 +107,10 @@ export const PROJECTRC_TYPEBOX_SCHEMA = Type.Object(
         },
       ),
     ),
+    $schema: Type.String({
+      description: "The schema version to use",
+      format: "uri",
+    }),
   },
   {
     $schema: "http://json-schema.org/draft-07/schema",
