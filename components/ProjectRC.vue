@@ -21,6 +21,8 @@ const html = ref("");
 
 useDark({
   onChanged(dark: boolean) {
+    console.log(dark, dark ? "vitesse-dark" : "vitesse-light");
+    
     html.value = shiki.codeToHtml(JSON.stringify(schema.value, null, 2), {
       lang: "json",
       theme: dark ? "vitesse-dark" : "vitesse-light",
