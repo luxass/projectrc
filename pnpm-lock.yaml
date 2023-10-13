@@ -12,8 +12,8 @@ dependencies:
     specifier: ^0.31.17
     version: 0.31.17
   '@vercel/analytics':
-    specifier: ^1.1.0
-    version: 1.1.0
+    specifier: ^1.1.1
+    version: 1.1.1
   ajv:
     specifier: ^8.12.0
     version: 8.12.0
@@ -47,8 +47,8 @@ devDependencies:
     specifier: ^0.5.0
     version: 0.5.0(vue@3.3.4)
   nuxt-og-image:
-    specifier: ^2.1.1
-    version: 2.1.1(vue@3.3.4)
+    specifier: ^2.1.2
+    version: 2.1.2(vue@3.3.4)
   shikiji:
     specifier: ^0.6.10
     version: 0.6.10
@@ -2498,8 +2498,8 @@ packages:
       - rollup
     dev: true
 
-  /@vercel/analytics@1.1.0:
-    resolution: {integrity: sha512-k5ePYZPxitxxD1eJenPUUuH3qK+EtaA9OVD3oO0BRbyT/LarmZF0qdkptRSidip1arQxsTEIWvHbTuj1oksl+Q==}
+  /@vercel/analytics@1.1.1:
+    resolution: {integrity: sha512-+NqgNmSabg3IFfxYhrWCfB/H+RCUOCR5ExRudNG2+pcRehq628DJB5e1u1xqwpLtn4pAYii4D98w7kofORAGQA==}
     dependencies:
       server-only: 0.0.1
     dev: false
@@ -6430,8 +6430,8 @@ packages:
       - vue
     dev: true
 
-  /nuxt-og-image@2.1.1(vue@3.3.4):
-    resolution: {integrity: sha512-PL1Nqz4iW/CxEdrw96TFB3GSzUhEdipXInHzZsd2yMV0pCpl9vUvaikGelt5IOa8q9//2iSaX635dY3P66wR0w==}
+  /nuxt-og-image@2.1.2(vue@3.3.4):
+    resolution: {integrity: sha512-O5/bYh50Mvbc5sjuHXqAw9p4CQCK/dYrAZnlTEdkY+hfL+8of285rptRUqbmR6AYr8eBWJ8N1yoMuTqvKjntDw==}
     dependencies:
       '@nuxt/kit': 3.7.4
       '@resvg/resvg-js': 2.4.1
@@ -6457,7 +6457,7 @@ packages:
       pathe: 1.1.1
       playwright-core: 1.38.1
       radix3: 1.1.0
-      satori: 0.10.8
+      satori: 0.10.9
       satori-html: 0.3.2
       sirv: 2.0.3
       std-env: 3.4.3
@@ -7578,8 +7578,8 @@ packages:
       ultrahtml: 1.5.2
     dev: true
 
-  /satori@0.10.8:
-    resolution: {integrity: sha512-WlPLxgpx5kIyMuOO6qi98DhZGIbRk5XJRqENkt6D6gyDBWGyo3M5kcSl0X/oSFHUH+n4unlzwMejoPM47s4zug==}
+  /satori@0.10.9:
+    resolution: {integrity: sha512-XU9EELUEZuioT4acLIpCXxHcFzrsC8muvg0MY28d+TlqwxbkTzBmWbw+3+hnCzXT7YZ0Qm8k3eXktDaEu+qmEw==}
     engines: {node: '>=16'}
     dependencies:
       '@shuding/opentype.js': 1.4.0-beta.0
