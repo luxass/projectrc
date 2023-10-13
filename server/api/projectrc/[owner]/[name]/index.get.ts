@@ -3,7 +3,7 @@ import { Buffer } from "node:buffer";
 import type { Static } from "@sinclair/typebox";
 import type { ProjectRCResponse } from "~/types";
 
-export default defineEventHandler(async (event) => {
+export default defineCachedEventHandler(async (event) => {
   try {
     if (!event.context.params) {
       return notFound(event);
@@ -132,4 +132,16 @@ export default defineEventHandler(async (event) => {
   } catch (err) {
     return serverError(event, err);
   }
+}, {
+  shouldBypassCache() {
+    if (process.env.NODE_ENV === "development") {
+      return true;
+    }
+    return false;
+  },
+  swr: true,
+  maxAge: 3600, // 1 hour
+  varies: [
+    "Accept",
+  ],
 });
