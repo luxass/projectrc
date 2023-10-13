@@ -109,7 +109,6 @@ export const PROJECTRC_TYPEBOX_SCHEMA = Type.Object(
     ),
     $schema: Type.String({
       description: "The schema uri to use, this is only here to make additionalProperties not warn.",
-      format: "uri",
     }),
   },
   {
