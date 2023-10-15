@@ -16,7 +16,6 @@ export default defineNuxtConfig({
   ],
   css: ["@unocss/reset/tailwind.css"],
   sourcemap: false,
-  ssr: false,
   app: {
     head: {
       viewport: "width=device-width,initial-scale=1",

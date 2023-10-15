@@ -1,6 +1,6 @@
 import process from "node:process";
 
-export default defineCachedEventHandler(() => {
+export default defineCachedEventHandler(async () => {
   return PROJECTRC_TYPEBOX_SCHEMA;
 }, {
   shouldBypassCache() {

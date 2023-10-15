@@ -16,18 +16,26 @@ const toggleDark = useToggle(isDark);
       </NuxtLink>
 
       <button title="Toggle Dark Mode" ml1 text-lg op="50 hover:75" @click="toggleDark()">
-        <Icon :name="isDark ? 'carbon:sun' : 'carbon:moon'" size="24" />
+        <ClientOnly>
+          <Icon :name="isDark ? 'carbon:sun' : 'carbon:moon'" size="24" />
+
+          <template #fallback>
+            <Icon name="mdi:loading" size="24" class="animate-spin" />
+          </template>
+        </ClientOnly>
       </button>
     </div>
   </nav>
-
   <main mt-8 flex="~ col">
     <h1 font-semibold my-4 text-2xl>
       .projectrc
     </h1>
 
     <p>
-      Since you are here, you are probably wondering why and what this <span bg="gray-200 dark:active" p-0.5 rounded>.projectrc</span>
+      Since you are here, you are probably wondering why and what this <span
+        bg="gray-200 dark:active" p-0.5
+        rounded
+      >.projectrc</span>
       is.
     </p>
 
@@ -43,7 +51,9 @@ const toggleDark = useToggle(isDark);
     </p>
 
     <Suspense>
-      <ProjectRC />
+      <ClientOnly>
+        <ProjectRC />
+      </ClientOnly>
     </Suspense>
   </main>
 </template>
