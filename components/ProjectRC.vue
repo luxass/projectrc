@@ -4,7 +4,12 @@ import {
 } from "shikiji/core";
 import { getWasmInlined } from "shikiji/wasm";
 
-const { data: schema } = await useFetch("/api/schema");
+const schema = await $fetch("/api/schema", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 const shiki = await getHighlighterCore({
   langs: [
@@ -12,15 +17,20 @@ const shiki = await getHighlighterCore({
   ],
   themes: [
     import("shikiji/themes/vitesse-dark.mjs"),
+    import("shikiji/themes/vitesse-light.mjs"),
   ],
   loadWasm: getWasmInlined,
 });
 
-const html
-  = shiki.codeToHtml(JSON.stringify(schema.value || { message: "There was an error trying to fetch the schema" }, null, 2), {
-    lang: "json",
-    theme: "vitesse-dark",
-  });
+const html = ref("");
+useDark({
+  onChanged(dark: boolean) {
+    html.value = shiki.codeToHtml(JSON.stringify(schema, null, 2), {
+      lang: "json",
+      theme: dark ? "vitesse-dark" : "vitesse-light",
+    });
+  },
+});
 </script>
 
 <template>
