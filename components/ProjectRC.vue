@@ -18,7 +18,6 @@ const shiki = await getHighlighterCore({
   themes: [
     import("shikiji/themes/vitesse-dark.mjs"),
     import("shikiji/themes/vitesse-light.mjs"),
-
   ],
   loadWasm: getWasmInlined,
 });

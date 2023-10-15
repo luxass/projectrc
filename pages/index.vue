@@ -20,7 +20,7 @@ const toggleDark = useToggle(isDark);
           <Icon :name="isDark ? 'carbon:sun' : 'carbon:moon'" size="24" />
 
           <template #fallback>
-            <Icon name="mdi:loading" size="24" class="animate-spin" />
+            <Icon name="iconoir:question-mark" size="24" />
           </template>
         </ClientOnly>
       </button>
