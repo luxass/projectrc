@@ -16,11 +16,11 @@ defineOgImage({
 </script>
 
 <template>
-  <div h-100dvh flex="~ col" gap-4 items-center justify-center>
-    <h1 text="8xl blue-500">
+  <div class="h-100dvh flex gap-4 flex-col items-center justify-center">
+    <h1 class="text-8xl text-blue-600">
       404
     </h1>
-    <p mb-8 text-2xl>
+    <p class="mb-8 text-2xl">
       Page not found
     </p>
     <NuxtLink href="/">

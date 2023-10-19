@@ -34,8 +34,8 @@ useDark({
 </script>
 
 <template>
-  <div my-4>
-    <h2 text-xl my-2 font-semibold>
+  <div class="my-4">
+    <h2 class="text-xl my-2 font-semibold">
       You can see the schema used here.
     </h2>
     <div v-html="html" />
