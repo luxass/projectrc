@@ -4,10 +4,7 @@ export default defineCachedEventHandler(async () => {
   return PROJECTRC_TYPEBOX_SCHEMA;
 }, {
   shouldBypassCache() {
-    if (process.env.NODE_ENV === "development") {
-      return true;
-    }
-    return false;
+    return process.env.NODE_ENV === "development";
   },
   maxAge: 3600, // 1 hour
 });

@@ -50,6 +50,11 @@ export default defineCachedEventHandler(async (event) => {
     const response: ProjectRCResponse = {
       raw: projectRC,
     };
+
+    if (projectRC.website) {
+      response.website = typeof projectRC.website === "string" ? projectRC.website : repository.homepageUrl || null;
+    }
+
     const acceptHeader = getRequestHeader(event, "accept");
 
     const isFullResponse = acceptHeader === "application/vnd.projectrc+full";
@@ -134,10 +139,7 @@ export default defineCachedEventHandler(async (event) => {
   }
 }, {
   shouldBypassCache() {
-    if (process.env.NODE_ENV === "development") {
-      return true;
-    }
-    return false;
+    return process.env.NODE_ENV === "development";
   },
   swr: true,
   maxAge: 3600, // 1 hour
