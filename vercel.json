@@ -9,6 +9,10 @@
     {
       "source": "/schema",
       "destination": "/api/schema"
+    },
+    {
+      "source": "/test",
+      "destination": "/api/schema"
     }
   ]
 }
