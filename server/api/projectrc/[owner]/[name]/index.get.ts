@@ -51,6 +51,10 @@ export default defineCachedEventHandler(async (event) => {
       raw: projectRC,
     };
 
+    if (projectRC.handles) {
+      response.handles = projectRC.handles;
+    }
+
     if (projectRC.website) {
       response.website = typeof projectRC.website === "string" ? projectRC.website : repository.homepageUrl || null;
     }

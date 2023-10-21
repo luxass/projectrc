@@ -107,6 +107,15 @@ export const PROJECTRC_TYPEBOX_SCHEMA = Type.Object(
         },
       ),
     ),
+    handles: Type.Optional(
+      Type.Array(
+        Type.String({
+          description:
+            "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
+          pattern: "^\/",
+        }),
+      ),
+    ),
     $schema: Type.String({
       description: "The schema uri to use, this is only here to make additionalProperties not warn.",
     }),
