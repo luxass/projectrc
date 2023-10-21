@@ -8,6 +8,7 @@ export interface ProjectRCResponse {
   // packageJSON is only returned if full response is requested based on the Accept header.
   packageJSON?: Record<string, unknown>
   website?: string | null
+  handles?: string[]
 }
 
 export interface LanguageNode {
