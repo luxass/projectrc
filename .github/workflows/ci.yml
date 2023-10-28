@@ -51,5 +51,5 @@ jobs:
       - name: 🛠 Build project
         run: pnpm build
 
-      - name: 🧪 Build project
+      - name: 🧪 Test project
         run: pnpm test
