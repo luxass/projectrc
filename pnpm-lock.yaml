@@ -34,6 +34,9 @@ importers:
 
   www:
     dependencies:
+      '@luxass/projectrc':
+        specifier: workspace:*
+        version: link:../packages/projectrc
       '@octokit/graphql':
         specifier: ^7.0.2
         version: 7.0.2
@@ -50,8 +53,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1(ajv@8.12.0)
       github-schema:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.1.0
+        version: 1.1.0
     devDependencies:
       '@nuxt/devtools':
         specifier: latest
@@ -4872,8 +4875,8 @@ packages:
       git-up: 7.0.0
     dev: true
 
-  /github-schema@1.0.0:
-    resolution: {integrity: sha512-UKwV4OicJxmlEBzztFQdJ3bxswN+JxV77dQsok5+N9IxEMLfiJrpuMWqVJZ8aLunBeGPx9HB9XiL++NITgNmUg==}
+  /github-schema@1.1.0:
+    resolution: {integrity: sha512-t98qVluK4KZVTt/9aMgKwREiMctFR4+EQE3mDHGvTELYld+23Y8lJoJtuZjQ+3PIPhvHHLDibKCmDo5m8n16sQ==}
     dependencies:
       graphql: 16.8.1
       graphql-tag: 2.12.6(graphql@16.8.1)

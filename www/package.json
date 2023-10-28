@@ -13,12 +13,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@luxass/projectrc": "workspace:*",
     "@octokit/graphql": "^7.0.2",
     "@sinclair/typebox": "^0.31.20",
     "@vercel/analytics": "^1.1.1",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
-    "github-schema": "^1.0.0"
+    "github-schema": "^1.1.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

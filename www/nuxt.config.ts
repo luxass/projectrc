@@ -33,4 +33,11 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     typedPages: true,
   },
+  vite: {
+    resolve: {
+      alias: {
+        "@luxass/projectrc": "../packages/projectrc/src/index.ts",
+      },
+    },
+  },
 });

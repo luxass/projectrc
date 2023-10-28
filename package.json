@@ -2,7 +2,7 @@
   "name": "@luxass/projectrc-monorepo",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@8.9.2",
+  "packageManager": "pnpm@8.10.0",
   "description": "Monorepo for @luxass/projectrc",
   "author": {
     "name": "Lucas Nørgård",
