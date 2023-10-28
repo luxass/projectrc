@@ -7,10 +7,10 @@
 ## 💻 Development
 
 - Clone this repository
-- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable` (use `npm i -g corepack` for Node.js < 18.10)
+- Install latest LTS version of [Node.js](https://nodejs.org/en/)
+- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
 - Install dependencies using `pnpm install`
-- Run tests using `pnpm dev`
-
+- Run development build using `pnpm dev`
 
 ## 📄 License
 

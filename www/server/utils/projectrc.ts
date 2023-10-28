@@ -1,14 +1,11 @@
 import process from "node:process";
 import { graphql } from "@octokit/graphql";
+import { gql } from "github-schema";
 import type { RepositoryNode } from "~/types";
 
 export const PROJECTRC_NAMES: string[] = [".projectrc", ".projectrc.json"];
 export const ALLOWED_OWNERS: string[] = ["luxass"];
 export const BLOCKED_REPOSITORIES: string[] = [];
-
-export function gql(raw: TemplateStringsArray, ...keys: string[]): string {
-  return keys.length === 0 ? raw[0]! : String.raw({ raw }, ...keys);
-}
 
 export const REPOSITORY_QUERY = gql`
   #graphql
