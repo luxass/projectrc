@@ -1,7 +1,7 @@
 import process from "node:process";
 import { Buffer } from "node:buffer";
 import type { Static } from "@sinclair/typebox";
-import type { ProjectRCResponse } from "~/types";
+import type { ProjectRCResponse } from "~/www/types";
 
 export default defineCachedEventHandler(async (event) => {
   try {
