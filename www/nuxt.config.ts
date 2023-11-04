@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "nuxt-icon",
     "nuxt-og-image",
+    "@nuxtjs/color-mode",
   ],
   devtools: { enabled: true },
   plugins: [
@@ -25,6 +26,11 @@ export default defineNuxtConfig({
     },
     pageTransition: false,
     layoutTransition: false,
+  },
+  colorMode: {
+    fallback: "dark",
+    preference: "dark",
+    classSuffix: "",
   },
   experimental: {
     typescriptBundlerResolution: true,

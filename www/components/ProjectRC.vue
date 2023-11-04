@@ -22,14 +22,26 @@ const shiki = await getHighlighterCore({
   loadWasm: getWasmInlined,
 });
 
-const html = ref("");
-useDark({
-  onChanged(dark: boolean) {
-    html.value = shiki.codeToHtml(JSON.stringify(schema, null, 2), {
-      lang: "json",
-      theme: dark ? "vitesse-dark" : "vitesse-light",
-    });
+const mode = useColorMode();
+const isDark = computed<boolean>({
+  get() {
+    return mode.value === "dark";
   },
+  set() {
+    mode.preference = isDark.value ? "light" : "dark";
+  },
+});
+
+const html = ref(shiki.codeToHtml(JSON.stringify(schema, null, 2), {
+  lang: "json",
+  theme: isDark.value ? "vitesse-dark" : "vitesse-light",
+}));
+
+watch(isDark, () => {
+  html.value = shiki.codeToHtml(JSON.stringify(schema, null, 2), {
+    lang: "json",
+    theme: isDark.value ? "vitesse-dark" : "vitesse-light",
+  });
 });
 </script>
 

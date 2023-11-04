@@ -1,6 +1,17 @@
 <script setup lang="ts">
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
+const mode = useColorMode();
+const isDark = computed<boolean>({
+  get() {
+    return mode.value === "dark";
+  },
+  set() {
+    mode.preference = isDark.value ? "light" : "dark";
+  },
+});
+
+function toggle() {
+  isDark.value = !isDark.value;
+}
 </script>
 
 <template>
@@ -15,15 +26,19 @@ const toggleDark = useToggle(isDark);
         <Icon name="octicon:mark-github" size="24" />
       </NuxtLink>
 
-      <button title="Toggle Dark Mode" class="ml1 text-lg op-50 hover:op-75" @click="toggleDark()">
-        <ClientOnly>
-          <Icon :name="isDark ? 'carbon:sun' : 'carbon:moon'" size="24" />
+      <ClientOnly>
+        <ColorScheme tag="span">
+          <button title="Toggle Dark Mode" class="ml1 text-lg op-50 hover:op-75" @click="toggle">
+            <Icon :name="isDark ? 'carbon:moon' : 'carbon:sun'" size="24" />
+          </button>
+        </ColorScheme>
 
-          <template #fallback>
-            <Icon name="iconoir:question-mark" size="24" />
-          </template>
-        </ClientOnly>
-      </button>
+        <template #fallback>
+          <button title="Toggle Dark Mode" class="ml1 text-lg op-50 hover:op-75">
+            <Icon name="carbon:moon" size="24" />
+          </button>
+        </template>
+      </ClientOnly>
     </div>
   </nav>
   <main class="mt-8 flex flex-col">
