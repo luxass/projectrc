@@ -31,10 +31,12 @@
     "dev": "turbo run dev --concurrency=40 --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "update:schema": "npx tsx ./scripts/update-schema.ts"
   },
   "devDependencies": {
     "@luxass/eslint-config": "^3.3.2",
+    "@sinclair/typebox": "^0.31.22",
     "@types/node": "^18.16.19",
     "eslint": "^8.53.0",
     "tsup": "^7.2.0",

@@ -11,6 +11,9 @@ importers:
       '@luxass/eslint-config':
         specifier: ^3.3.2
         version: 3.3.2(@typescript-eslint/parser@6.8.0)(eslint@8.53.0)(typescript@5.2.2)
+      '@sinclair/typebox':
+        specifier: ^0.31.22
+        version: 0.31.22
       '@types/node':
         specifier: ^18.16.19
         version: 18.18.7
@@ -2006,7 +2009,6 @@ packages:
 
   /@sinclair/typebox@0.31.22:
     resolution: {integrity: sha512-CKviMgpcXd8q8IsQQD8cCleswe4/EkQRcOqtVQcP1e+XUyszjJYjgL5Dtf3XunWZc2zEGmQPqJEsq08NiW9xfw==}
-    dev: false
 
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
