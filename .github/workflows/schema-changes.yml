@@ -12,13 +12,27 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+        with:
+          files_yaml: |
+            schema:
+              - 'packages/projectrc/schema.json'
+              - 'scripts/update-schema.ts'
+              - 'packages/projectrc/src/schema.ts'
+
       - uses: actions/github-script@v6
+        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         with:
           script: |
-            console.log(Object.keys(context))
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
+              body: 'Some schema files have changed.\n\nPlease make sure to update every schema file so they are matching.'
             })

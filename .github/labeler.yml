@@ -7,5 +7,6 @@
   - www/**
 
 🚨 schema:
+  - scripts/update-schema.ts
   - packages/projectrc/schema.json
   - packages/projectrc/src/schema.ts
