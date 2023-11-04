@@ -1,6 +1,6 @@
-import { array, boolean, object, optional, startsWith, string, union, url } from "valibot";
+import { array, boolean, merge, object, optional, startsWith, string, union, url } from "valibot";
 
-export const SCHEMA = object({
+const PROJECT_SCHEMA = object({
   readme: optional(union([
     boolean(),
     optional(string(), "README.md"),
@@ -22,6 +22,14 @@ export const SCHEMA = object({
       startsWith("/"),
     ]),
   ), []),
-
-  monorepo: optional(boolean(), false),
 });
+
+export const SCHEMA = merge([
+  PROJECT_SCHEMA,
+  object({
+    monorepo: optional(boolean(), false),
+    packages: optional(array(
+      PROJECT_SCHEMA,
+    ), []),
+  }),
+]);

@@ -1,5 +1,13 @@
-export const PROJECTRC_NAMES: string[] = [
-  ".projectrc", ".projectrc.json",
-];
-export const ALLOWED_OWNERS: string[] = ["luxass"];
-export const BLOCKED_REPOSITORIES: string[] = [];
+export {
+  CONFIG_FILE_NAMES, getProjectRCFile,
+} from "./config";
+export type { ProjectRCFile } from "./config";
+export {
+  SCHEMA,
+} from "./schema";
+
+export {
+  REPOSITORY_QUERY,
+  exists,
+  getRepository,
+} from "./utils";
