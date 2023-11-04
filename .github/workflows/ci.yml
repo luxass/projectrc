@@ -2,54 +2,44 @@ name: CI
 
 on:
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize]
   push:
     branches:
       - main
 
 env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
   FORCE_COLOR: true
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: pnpm
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: pnpm install
 
-      - name: 🔠 Lint project
-        run: pnpm lint
-
-      - name: ✅ TypeCheck project
-        run: pnpm typecheck
-
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18, 20]
-    steps:
-      - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm
-
-      - name: 📦 Install dependencies
-        run: pnpm install
-
-      - name: 🛠 Build project
+      - name: Build
         run: pnpm build
 
-      - name: 🧪 Test project
+      - name: Test
         run: pnpm test
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: TypeCheck
+        run: pnpm typecheck
+        

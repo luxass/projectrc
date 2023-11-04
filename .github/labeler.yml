@@ -1,0 +1,7 @@
+# See https://github.com/actions/labeler
+
+"pkg: projectrc":
+  - packages/projectrc/**
+
+"apps: www":
+  - www/**

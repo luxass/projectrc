@@ -29,6 +29,16 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./schema": {
+      "import": {
+        "types": "./dist/schema.d.ts",
+        "default": "./dist/schema.mjs"
+      },
+      "require": {
+        "types": "./dist/schema.d.cts",
+        "default": "./dist/schema.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "main": "dist/index.cjs",
@@ -42,7 +52,6 @@
     "dev": "tsup --watch",
     "test": "vitest --run",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"
   }
 }
