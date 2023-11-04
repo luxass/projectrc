@@ -32,9 +32,6 @@ export default defineNuxtConfig({
     preference: "dark",
     classSuffix: "",
   },
-  nitro: {
-    preset: "vercel",
-  },
   experimental: {
     typescriptBundlerResolution: true,
     viewTransition: true,
