@@ -39,6 +39,7 @@
     "@sinclair/typebox": "^0.31.22",
     "@types/node": "^18.16.19",
     "eslint": "^8.53.0",
+    "msw": "^2.0.3",
     "tsup": "^7.2.0",
     "turbo": "^1.10.16",
     "typescript": "^5.2.2",
