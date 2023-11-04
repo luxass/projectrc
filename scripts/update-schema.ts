@@ -1,5 +1,5 @@
 import { exit } from "node:process";
-import { dirname, join, resolve } from "node:path";
+import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeFile } from "node:fs/promises";
 import { Kind, Type, TypeRegistry } from "@sinclair/typebox";
@@ -96,27 +96,34 @@ const PROJECTRC_SCHEMA = Type.Object({
       Type.String({
         description:
           "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
-        pattern: "^\/",
+        pattern: "^/",
       }),
     ),
   ),
 });
 
-const PROJECTRC_SCHEMA_ROOT = Type.Composite([PROJECTRC_SCHEMA,
-  Type.Object({
-    monorepo: Type.Optional(
-      Type.Boolean({
-        description: "Is this a monorepo?",
-        default: false,
-      }),
-    ),
-    packages: Type.Array(PROJECTRC_SCHEMA),
-  },
-  {
-    $schema: "http://json-schema.org/draft-07/schema",
-    description:
+const PROJECTRC_SCHEMA_ROOT = Type.Composite([
+  PROJECTRC_SCHEMA,
+  Type.Object(
+    {
+      monorepo: Type.Optional(
+        Type.Boolean({
+          description: "Is this a monorepo?",
+          default: false,
+        }),
+      ),
+      packages: Type.Optional(
+        Type.Array(PROJECTRC_SCHEMA, {
+          default: [],
+        }),
+      ),
+    },
+    {
+      $schema: "http://json-schema.org/draft-07/schema",
+      description:
         "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
-  }),
+    },
+  ),
 ]);
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -127,7 +134,10 @@ async function run() {
   const projectrcDirectory = join(root, "packages/projectrc");
   const schemaFilePath = join(projectrcDirectory, "schema.json");
 
-  await writeFile(schemaFilePath, `${JSON.stringify(PROJECTRC_SCHEMA_ROOT, null, 2)}\n`);
+  await writeFile(
+    schemaFilePath,
+    `${JSON.stringify(PROJECTRC_SCHEMA_ROOT, null, 2)}\n`,
+  );
 
   console.log("Wrote file to", schemaFilePath);
 }
