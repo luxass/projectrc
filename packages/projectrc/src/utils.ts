@@ -75,7 +75,10 @@ export async function exists(owner: string, name: string): Promise<boolean> {
  * NOTE: This is not the full response from GitHub, as it only contains the fields we need.
  * To see what we request, you can see the `REPOSITORY_QUERY` export.
  */
-export async function getRepository<TReturn = RepositoryNode>(owner: string, name: string): Promise<TReturn> {
+export async function getRepository<TReturn = RepositoryNode>(
+  owner: string,
+  name: string,
+): Promise<TReturn> {
   const { repository } = await graphql<{
     repository: TReturn
   }>(REPOSITORY_QUERY, {

@@ -1,13 +1,5 @@
-export {
-  CONFIG_FILE_NAMES, getProjectRCFile,
-} from "./config";
+export { CONFIG_FILE_NAMES, getProjectRCFile } from "./config";
 export type { ProjectRCFile } from "./config";
-export {
-  SCHEMA,
-} from "./schema";
+export { SCHEMA } from "./schema";
 
-export {
-  REPOSITORY_QUERY,
-  exists,
-  getRepository,
-} from "./utils";
+export { REPOSITORY_QUERY, exists, getRepository } from "./utils";

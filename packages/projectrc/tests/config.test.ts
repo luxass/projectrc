@@ -28,14 +28,17 @@ export const handlers = [
     "https://api.github.com/repos/:owner/:name/contents/.github/:file",
     async ({ params }) => {
       if (!params.owner || !params.name || !params.file) {
-        return HttpResponse.json({
-          message: "Not Found",
-          documentation_url:
-            "https://docs.github.com/rest/repos/contents#get-repository-content",
-        }, {
-          // @ts-expect-error Something is broken with the types.
-          status: 404,
-        });
+        return HttpResponse.json(
+          {
+            message: "Not Found",
+            documentation_url:
+              "https://docs.github.com/rest/repos/contents#get-repository-content",
+          },
+          {
+            // @ts-expect-error Something is broken with the types.
+            status: 404,
+          },
+        );
       }
 
       await delay();
@@ -54,40 +57,49 @@ export const handlers = [
       const repo = GITHUB_MOCKED_FILES.get(`${owner}/${name}`);
 
       if (!repo) {
-        return HttpResponse.json({
-          message: "Not Found",
-          documentation_url:
-            "https://docs.github.com/rest/repos/contents#get-repository-content",
-        }, {
-          // @ts-expect-error Something is broken with the types.
-          status: 404,
-        }); ;
+        return HttpResponse.json(
+          {
+            message: "Not Found",
+            documentation_url:
+              "https://docs.github.com/rest/repos/contents#get-repository-content",
+          },
+          {
+            // @ts-expect-error Something is broken with the types.
+            status: 404,
+          },
+        );
       }
 
       const files = Object.keys(repo);
 
       if (!files.includes(file)) {
-        return HttpResponse.json({
-          message: "Not Found",
-          documentation_url:
-            "https://docs.github.com/rest/repos/contents#get-repository-content",
-        }, {
-          // @ts-expect-error Something is broken with the types.
-          status: 404,
-        });
+        return HttpResponse.json(
+          {
+            message: "Not Found",
+            documentation_url:
+              "https://docs.github.com/rest/repos/contents#get-repository-content",
+          },
+          {
+            // @ts-expect-error Something is broken with the types.
+            status: 404,
+          },
+        );
       }
 
       const project = repo[file];
 
       if (!project) {
-        return HttpResponse.json({
-          message: "Not Found",
-          documentation_url:
-            "https://docs.github.com/rest/repos/contents#get-repository-content",
-        }, {
-          // @ts-expect-error Something is broken with the types.
-          status: 404,
-        });
+        return HttpResponse.json(
+          {
+            message: "Not Found",
+            documentation_url:
+              "https://docs.github.com/rest/repos/contents#get-repository-content",
+          },
+          {
+            // @ts-expect-error Something is broken with the types.
+            status: 404,
+          },
+        );
       }
 
       const content
