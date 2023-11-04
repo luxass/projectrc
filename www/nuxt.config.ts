@@ -8,6 +8,9 @@ export default defineNuxtConfig({
     "nuxt-og-image",
     "@nuxtjs/color-mode",
   ],
+  site: {
+    url: "https://projectrc.luxass.dev",
+  },
   devtools: { enabled: true },
   plugins: [
     {
