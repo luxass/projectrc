@@ -9,27 +9,26 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@luxass/projectrc": "workspace:*",
     "@octokit/graphql": "^7.0.2",
-    "@sinclair/typebox": "^0.31.20",
+    "@sinclair/typebox": "^0.31.22",
     "@vercel/analytics": "^1.1.1",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
-    "github-schema": "^1.1.0"
+    "github-schema": "^1.1.1"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/color-mode": "^3.3.0",
-    "@unocss/nuxt": "^0.57.1",
+    "@unocss/nuxt": "^0.57.2",
     "@vueuse/nuxt": "^10.5.0",
     "nuxt": "^3.8.0",
     "nuxt-icon": "^0.6.1",
-    "nuxt-og-image": "^2.2.0",
-    "shikiji": "^0.6.10",
+    "nuxt-og-image": "^2.2.3",
+    "shikiji": "^0.6.12",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5"
   }

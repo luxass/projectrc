@@ -2,7 +2,7 @@
   "name": "@luxass/projectrc-monorepo",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@8.10.0",
+  "packageManager": "pnpm@8.10.2",
   "description": "Monorepo for @luxass/projectrc",
   "author": {
     "name": "Lucas Nørgård",
@@ -31,13 +31,12 @@
     "dev": "turbo run dev --concurrency=40 --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "lint:fix": "turbo run lint:fix",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
     "@luxass/eslint-config": "^3.3.2",
     "@types/node": "^18.16.19",
-    "eslint": "^8.52.0",
+    "eslint": "^8.53.0",
     "tsup": "^7.2.0",
     "turbo": "^1.10.16",
     "typescript": "^5.2.2",

@@ -5,19 +5,12 @@
       "outputs": [
         "dist/**",
         ".nuxt/dist/**",
-        ".output/**",
-        "!.next/cache/**",
-        ".vercel/**"
+        ".output/**"
       ],
       "dependsOn": ["^build"],
       "outputMode": "new-only"
     },
     "lint": {
-      "cache": false,
-      "outputs": [],
-      "outputMode": "new-only"
-    },
-    "lint:fix": {
       "cache": false,
       "outputs": [],
       "outputMode": "new-only"
