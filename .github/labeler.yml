@@ -5,3 +5,7 @@
 
 "apps: www":
   - www/**
+
+🚨 schema:
+  - packages/projectrc/schema.json
+  - packages/projectrc/src/schema.ts

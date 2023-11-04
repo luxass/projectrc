@@ -30,7 +30,17 @@ importers:
         specifier: ^0.34.6
         version: 0.34.6
 
-  packages/projectrc: {}
+  packages/projectrc:
+    dependencies:
+      '@octokit/graphql':
+        specifier: ^7.0.2
+        version: 7.0.2
+      github-schema:
+        specifier: ^1.1.1
+        version: 1.1.1
+      valibot:
+        specifier: ^0.20.1
+        version: 0.20.1
 
   www:
     dependencies:
@@ -8963,6 +8973,10 @@ packages:
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
+
+  /valibot@0.20.1:
+    resolution: {integrity: sha512-7lToTLG5wtK76u32gq8dUK0bAw7bknTGbeNSKRJunAC2soGVnNrKngg+38Jjt6FOwH+MshUONHoFz+LgmjeYKQ==}
+    dev: false
 
   /validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}

@@ -39,13 +39,15 @@
         "default": "./dist/schema.cjs"
       }
     },
+    "./json-schema": "./schema.json",
     "./package.json": "./package.json"
   },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "schema.json"
   ],
   "scripts": {
     "build": "tsup",
@@ -53,5 +55,10 @@
     "test": "vitest --run",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@octokit/graphql": "^7.0.2",
+    "github-schema": "^1.1.1",
+    "valibot": "^0.20.1"
   }
 }
