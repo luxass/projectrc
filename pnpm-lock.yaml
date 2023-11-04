@@ -39,8 +39,8 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
       github-schema:
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^1.1.2
+        version: 1.1.2
       valibot:
         specifier: ^0.20.1
         version: 0.20.1
@@ -66,8 +66,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1(ajv@8.12.0)
       github-schema:
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^1.1.2
+        version: 1.1.2
     devDependencies:
       '@nuxt/devtools':
         specifier: latest
@@ -4910,8 +4910,8 @@ packages:
       git-up: 7.0.0
     dev: true
 
-  /github-schema@1.1.1:
-    resolution: {integrity: sha512-qqQpvafKL/HsmfNnosc7jHbdrp9NOAGK8A/QuAw5zTmVsXoZ/mR1C1biPkgWaJUGE1FxOgBWDcD5b+F9utVCwA==}
+  /github-schema@1.1.2:
+    resolution: {integrity: sha512-jCHFzaK3H8Rrx2EnqnaMjfzGzSWKnzvLqdl3s/pwucBJnSUY36UV7pHIXdzXm1ZcOPjLNMv48VpYLdsG5rU3vg==}
     dependencies:
       graphql: 16.8.1
       graphql-tag: 2.12.6(graphql@16.8.1)
