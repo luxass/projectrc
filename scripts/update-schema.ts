@@ -102,29 +102,53 @@ const PROJECTRC_SCHEMA = Type.Object({
   ),
 });
 
+const MONOREPO_SCHEMA = Type.Object({
+  enabled: Type.Optional(
+    Type.Boolean({
+      description: "Is this a monorepo?",
+      default: false,
+    }),
+  ),
+  ignore: Type.Optional(
+    Type.Array(
+      Type.String({
+        description: "Ignore these packages from being used",
+      }),
+    ),
+  ),
+  packages: Type.Optional(
+    Type.Array(
+      Type.Composite([
+        PROJECTRC_SCHEMA,
+        Type.Object(
+          {
+            name: Type.String({
+              description: "The name of the package",
+            }),
+            path: Type.Optional(
+              Type.String({
+                description: "The path to the package",
+                default: ".",
+              }),
+            ),
+          },
+          {
+            description: "The package",
+          },
+        ),
+      ]),
+    ),
+  ),
+});
+
 const PROJECTRC_SCHEMA_ROOT = Type.Composite([
   PROJECTRC_SCHEMA,
-  Type.Object(
-    {
-      monorepo: Type.Optional(
-        Type.Boolean({
-          description: "Is this a monorepo?",
-          default: false,
-        }),
-      ),
-      packages: Type.Optional(
-        Type.Array(PROJECTRC_SCHEMA, {
-          default: [],
-        }),
-      ),
-    },
-    {
-      $schema: "http://json-schema.org/draft-07/schema",
-      description:
-        "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
-    },
-  ),
-]);
+  MONOREPO_SCHEMA,
+], {
+  $schema: "http://json-schema.org/draft-07/schema",
+  description:
+    "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
+});
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 

@@ -13,18 +13,26 @@ import {
 const PROJECT_SCHEMA = object({
   readme: optional(union([boolean(), optional(string(), "README.md")]), false),
   npm: optional(union([boolean(), optional(string(), "package.json")]), false),
-
   ignore: optional(boolean(), false),
-
   website: optional(union([boolean(), string([url()])]), false),
-
   handles: optional(array(string([startsWith("/")])), []),
+});
+
+const MONOREPO_SCHEMA = object({
+  enabled: optional(boolean(), false),
+  ignore: optional(array(string()), []),
+  packages: optional(array(merge([
+    object({
+      name: string(),
+      path: optional(string(), "."),
+    }),
+    PROJECT_SCHEMA,
+  ])), []),
 });
 
 export const SCHEMA = merge([
   PROJECT_SCHEMA,
   object({
-    monorepo: optional(boolean(), false),
-    packages: optional(array(PROJECT_SCHEMA), []),
+    monorepo: optional(MONOREPO_SCHEMA),
   }),
 ]);

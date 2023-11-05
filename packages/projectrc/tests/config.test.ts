@@ -3,10 +3,12 @@ import { afterAll, afterEach, beforeAll, expect, test } from "vitest";
 import { HttpResponse, delay, http } from "msw";
 import { setupServer } from "msw/node";
 import { beforeEach } from "node:test";
+import type { Input } from "valibot";
 import { getProjectRCFile } from "../src/config";
+import type { SCHEMA } from "../src/schema";
 
 interface ProjectRCFile {
-  content: Record<string, unknown> | string
+  content: Input<typeof SCHEMA> | string
 }
 
 const GITHUB_MOCKED_FILES: Map<string, Record<string, ProjectRCFile>> = new Map(
@@ -43,18 +45,7 @@ export const handlers = [
 
       await delay();
 
-      // ONLY HERE TO KIND OF SATISFY TYPESCRIPT
-      const owner = Array.isArray(params.owner)
-        ? (params.owner[0] as string)
-        : (params.owner as string);
-      const name = Array.isArray(params.name)
-        ? (params.name[0] as string)
-        : (params.name as string);
-      const file = Array.isArray(params.file)
-        ? (params.file[0] as string)
-        : (params.file as string);
-
-      const repo = GITHUB_MOCKED_FILES.get(`${owner}/${name}`);
+      const repo = GITHUB_MOCKED_FILES.get(`${params.owner}/${params.name}`);
 
       if (!repo) {
         return HttpResponse.json(
@@ -72,7 +63,7 @@ export const handlers = [
 
       const files = Object.keys(repo);
 
-      if (!files.includes(file)) {
+      if (!files.includes(params.file)) {
         return HttpResponse.json(
           {
             message: "Not Found",
@@ -86,7 +77,7 @@ export const handlers = [
         );
       }
 
-      const project = repo[file];
+      const project = repo[params.file];
 
       if (!project) {
         return HttpResponse.json(
@@ -106,6 +97,7 @@ export const handlers = [
         = typeof project.content === "object"
           ? JSON.stringify(project.content)
           : project.content;
+
       return HttpResponse.json({
         content: Buffer.from(content).toString("base64"),
       });
@@ -139,7 +131,13 @@ test("expect `luxass/lesetid` to have a `.projectrc`", async () => {
     "https://api.github.com/repos/luxass/lesetid/contents/.github/.projectrc",
   );
   expect(result?.content).toBeDefined();
-  expect(result?.content).toStrictEqual({});
+  expect(result?.content).toStrictEqual({
+    handles: [],
+    ignore: false,
+    npm: false,
+    readme: false,
+    website: false,
+  });
 });
 
 test("should return next in list", async () => {
@@ -150,12 +148,15 @@ test("should return next in list", async () => {
         {
           ".projectrc.json": {
             content: {
-              file: "json",
+              handles: [
+                "/lesetid",
+              ],
             },
           },
           ".projectrc.json5": {
             content: {
-              file: "json5",
+              npm: true,
+              readme: true,
             },
           },
         },
@@ -168,7 +169,7 @@ test("should return next in list", async () => {
     "https://api.github.com/repos/luxass/lesetid/contents/.github/.projectrc.json",
   );
   expect(result?.content).toBeDefined();
-  expect(result?.content).toHaveProperty("file", "json");
+  expect(result?.content).toHaveProperty("handles", ["/lesetid"]);
 });
 
 test("should return contents of `.projectrc.json5` when first two isn't there", async () => {
@@ -179,7 +180,8 @@ test("should return contents of `.projectrc.json5` when first two isn't there", 
         {
           ".projectrc.json5": {
             content: {
-              file: "json5",
+              npm: true,
+              readme: true,
             },
           },
         },
@@ -192,7 +194,8 @@ test("should return contents of `.projectrc.json5` when first two isn't there", 
     "https://api.github.com/repos/luxass/lesetid/contents/.github/.projectrc.json5",
   );
   expect(result?.content).toBeDefined();
-  expect(result?.content).toHaveProperty("file", "json5");
+  expect(result?.content).toHaveProperty("npm", true);
+  expect(result?.content).toHaveProperty("readme", true);
 });
 
 test("should return `undefined` when no `.projectrc` exist", async () => {

@@ -1,4 +1,6 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "description": "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
   "type": "object",
   "properties": {
     "readme": {
@@ -34,9 +36,20 @@
       ]
     },
     "ignore": {
-      "description": "Ignore this repository from being used",
-      "default": false,
-      "type": "boolean"
+      "allOf": [
+        {
+          "description": "Ignore this repository from being used",
+          "default": false,
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "description": "Ignore these packages from being used",
+            "type": "string"
+          }
+        }
+      ]
     },
     "website": {
       "default": false,
@@ -62,13 +75,12 @@
         "type": "string"
       }
     },
-    "monorepo": {
+    "enabled": {
       "description": "Is this a monorepo?",
       "default": false,
       "type": "boolean"
     },
     "packages": {
-      "default": [],
       "type": "array",
       "items": {
         "type": "object",
@@ -133,8 +145,20 @@
               "pattern": "^/",
               "type": "string"
             }
+          },
+          "name": {
+            "description": "The name of the package",
+            "type": "string"
+          },
+          "path": {
+            "description": "The path to the package",
+            "default": ".",
+            "type": "string"
           }
-        }
+        },
+        "required": [
+          "name"
+        ]
       }
     }
   }

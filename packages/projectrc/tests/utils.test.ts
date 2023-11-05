@@ -16,8 +16,6 @@ const GITHUB_MOCKED_REPOS: Map<string, Record<string, unknown>> = new Map([
   ],
 ]);
 
-type InferMapValue<T> = T extends Map<unknown, infer U> ? U : never;
-
 export const handlers = [
   http.get<{
     owner: string
@@ -129,7 +127,7 @@ test("expect `true` when repo exists", async () => {
 });
 
 test("returns the correct repository when it exists", async () => {
-  const result = await getRepository<InferMapValue<typeof GITHUB_MOCKED_REPOS>>(
+  const result = await getRepository(
     "luxass",
     "lesetid",
   );
@@ -143,7 +141,7 @@ test("returns the correct repository when it exists", async () => {
 
 test("throws an error when the repository does not exist", async () => {
   await expect(
-    getRepository<InferMapValue<typeof GITHUB_MOCKED_REPOS>>(
+    getRepository(
       "nonexistent",
       "repo",
     ),

@@ -1,17 +1,18 @@
 import process from "node:process";
 import { Buffer } from "node:buffer";
+import { type Input, parseAsync } from "valibot";
 import { XGitHubApiVersionHeaderValue } from "./constants";
+import { SCHEMA } from "./schema";
 
 export const CONFIG_FILE_NAMES: string[] = [
-  ".projectrc",
   ".projectrc.json",
+  ".projectrc",
   ".projectrc.json5",
 ];
 
 export interface ProjectRCFile {
   path: string
-  // TODO: Change this type.
-  content: Record<string, unknown>
+  content: Input<typeof SCHEMA>
 }
 
 /**
@@ -47,11 +48,16 @@ export async function getProjectRCFile(
       ) {
         continue;
       }
+
+      const content = JSON.parse(
+        Buffer.from(result.content, "base64").toString("utf-8"),
+      );
+
+      const parsed = await parseAsync(SCHEMA, content);
+
       return {
         path: url.toString(),
-        content: JSON.parse(
-          Buffer.from(result.content, "base64").toString("utf-8"),
-        ),
+        content: parsed,
       };
     } catch (err) {
       continue;

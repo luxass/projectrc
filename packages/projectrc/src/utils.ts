@@ -25,15 +25,6 @@ export const REPOSITORY_QUERY = gql`
           color
         }
       }
-      object(expression: "HEAD:.github") {
-        ... on Tree {
-          entries {
-            name
-            type
-            path
-          }
-        }
-      }
     }
   }
 `;
@@ -70,18 +61,18 @@ export async function exists(owner: string, name: string): Promise<boolean> {
  * Get a repository from GitHub
  * @param {string} owner - The owner of the repository
  * @param {string} name - The name of the repository
- * @returns {Promise<RepositoryNode>} The `RepositoryNode` of the repository
+ * @returns {Promise<RepositoryNode["repository"]>} The `RepositoryNode` of the repository
  *
  * NOTE: This is not the full response from GitHub, as it only contains the fields we need.
  * To see what we request, you can see the `REPOSITORY_QUERY` export.
  */
-export async function getRepository<TReturn = RepositoryNode>(
+export async function getRepository(
   owner: string,
   name: string,
-): Promise<TReturn> {
-  const { repository } = await graphql<{
-    repository: TReturn
-  }>(REPOSITORY_QUERY, {
+): Promise<RepositoryNode["repository"]> {
+  const {
+    repository,
+  } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
     owner,
     name,
     headers: {
@@ -90,5 +81,6 @@ export async function getRepository<TReturn = RepositoryNode>(
       "X-GitHub-Api-Version": XGitHubApiVersionHeaderValue,
     },
   });
+
   return repository;
 }
