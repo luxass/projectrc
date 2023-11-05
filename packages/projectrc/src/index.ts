@@ -31,6 +31,21 @@ export const REPOSITORY_QUERY = gql`
   }
 `;
 
+export interface ReadmeResult {
+  path: string
+  content: string
+}
+
+export type ProjectRCResponse = {
+  $projectrc: Input<typeof SCHEMA> & {
+    $path: string
+  }
+} & {
+  projects: Omit<Input<typeof SCHEMA>, "readme" | "monorepo"> & {
+    readme?: ReadmeResult
+  }[]
+};
+
 export const CONFIG_FILE_NAMES: string[] = [
   ".projectrc.json",
   ".projectrc",
@@ -271,76 +286,66 @@ export function createProjectRCResolver(githubToken: string) {
         return undefined;
       }
     },
+    /**
+     * Resolves a projectrc configuration for the given owner and name.
+     * @param {string} owner - The owner of the repository.
+     * @param {string} name - The name of the repository.
+     * @returns {Promise<ProjectRCResponse | undefined>} A Promise that resolves to a ProjectRCResponse object if the configuration exists, otherwise undefined.
+     */
+    async resolve(owner?: string, name?: string): Promise<ProjectRCResponse | undefined> {
+      if (!owner || !name) return undefined;
+      if (!(await this.exists(owner, name))) return undefined;
+
+      const projectRCFile = await this.config(owner, name);
+      if (!projectRCFile) return undefined;
+
+      const repository = await this.repository(owner, name);
+      if (!repository) return undefined;
+
+      const { content: $raw } = projectRCFile;
+
+      if ($raw.ignore) {
+        return undefined;
+      }
+
+      const result: ProjectRCResponse = {
+        $projectrc: {
+          ...$raw,
+          $path: projectRCFile.path,
+        },
+        projects: [],
+      };
+
+      if ($raw.monorepo && $raw.monorepo.enabled) {
+        throw new Error("projectrc: support `monorepo` is not implemented yet.");
+      }
+
+      // if ($raw.handles) {
+      //   result.handles = $raw.handles;
+      // }
+
+      // if ($raw.website) {
+      //   result.website
+      //     = typeof $raw.website === "string"
+      //       ? $raw.website
+      //       : repository.homepageUrl || null;
+      // }
+
+      // if ($raw.readme) {
+      //   const readme = await this.readme(owner, name, $raw.readme);
+      //   if (readme) {
+      //     result.readme = readme;
+      //   }
+      // }
+
+      // if ($raw.npm) {
+      //   result.npm
+      //     = typeof $raw.npm === "string"
+      //       ? $raw.npm
+      //       : `https://www.npmjs.com/package/${name}`;
+      // }
+
+      return result;
+    },
   };
 }
-
-export interface ReadmeResult {
-  path: string
-  content: string
-}
-
-export type ProjectRCResponse = {
-  $projectrc: Input<typeof SCHEMA> & {
-    $path: string
-  }
-} & Omit<Input<typeof SCHEMA>, "readme"> & {
-  readme?: ReadmeResult
-};
-
-// export async function getProjectRC(
-//   owner: string,
-//   name: string,
-// ): Promise<ProjectRCResponse | undefined> {
-//   if (!owner || !name) return undefined;
-//   if (!(await exists(owner, name))) return undefined;
-
-//   const projectRCFile = await getProjectRCFile(owner, name);
-//   if (!projectRCFile) return undefined;
-
-//   const repository = await getRepository(owner, name);
-//   if (!repository) return undefined;
-
-//   const { content: $raw } = projectRCFile;
-
-//   if ($raw.ignore) {
-//     return undefined;
-//   }
-
-//   const result: ProjectRCResponse = {
-//     $projectrc: {
-//       ...$raw,
-//       $path: projectRCFile.path,
-//     },
-//   };
-
-//   if ($raw.monorepo && $raw.monorepo.enabled) {
-//     throw new Error("projectrc: support `monorepo` is not implemented yet.");
-//   }
-
-//   if ($raw.handles) {
-//     result.handles = $raw.handles;
-//   }
-
-//   if ($raw.website) {
-//     result.website
-//       = typeof $raw.website === "string"
-//         ? $raw.website
-//         : repository.homepageUrl || null;
-//   }
-
-//   if ($raw.readme) {
-//     const readme = await getReadme(owner, name, $raw.readme);
-//     if (readme) {
-//       result.readme = readme;
-//     }
-//   }
-
-//   if ($raw.npm) {
-//     result.npm
-//       = typeof $raw.npm === "string"
-//         ? $raw.npm
-//         : `https://www.npmjs.com/package/${name}`;
-//   }
-
-//   return result;
-// }
