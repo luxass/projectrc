@@ -29,5 +29,8 @@
     "typecheck": {
       "outputMode": "new-only"
     }
-  }
+  },
+  "globalPassThroughEnv": [
+    "CI"
+  ]
 }

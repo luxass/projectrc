@@ -139,6 +139,13 @@ export default defineCachedEventHandler(async (event) => {
     // return response;
     return projectRC;
   } catch (err) {
+    if (err instanceof Error) {
+      if (err.message.startsWith("projectrc: ")) {
+        return {
+          error: err.message.replace("projectrc: ", ""),
+        };
+      }
+    }
     return serverError(event, err);
   }
 }, {

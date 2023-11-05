@@ -103,12 +103,10 @@ const PROJECTRC_SCHEMA = Type.Object({
 });
 
 const MONOREPO_SCHEMA = Type.Object({
-  enabled: Type.Optional(
-    Type.Boolean({
-      description: "Is this a monorepo?",
-      default: false,
-    }),
-  ),
+  enabled: Type.Boolean({
+    description: "Is this a monorepo?",
+    default: false,
+  }),
   ignore: Type.Optional(
     Type.Array(
       Type.String({
@@ -141,14 +139,19 @@ const MONOREPO_SCHEMA = Type.Object({
   ),
 });
 
-const PROJECTRC_SCHEMA_ROOT = Type.Composite([
-  PROJECTRC_SCHEMA,
-  MONOREPO_SCHEMA,
-], {
-  $schema: "http://json-schema.org/draft-07/schema",
-  description:
-    "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
-});
+const PROJECTRC_SCHEMA_ROOT = Type.Composite(
+  [
+    PROJECTRC_SCHEMA,
+    Type.Object({
+      monorepo: Type.Optional(MONOREPO_SCHEMA),
+    }),
+  ],
+  {
+    $schema: "http://json-schema.org/draft-07/schema",
+    description:
+      "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
+  },
+);
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
