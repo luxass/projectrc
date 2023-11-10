@@ -31,6 +31,7 @@
     }
   },
   "globalPassThroughEnv": [
-    "CI"
+    "CI",
+    "NITRO_PRESET"
   ]
 }
