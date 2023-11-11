@@ -72,7 +72,7 @@
           "default": false,
           "type": "boolean"
         },
-        "ignore": {
+        "ignores": {
           "type": "array",
           "items": {
             "description": "Ignore these packages from being used",

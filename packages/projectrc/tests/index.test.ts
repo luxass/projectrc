@@ -68,7 +68,7 @@ describe("readme", () => {
   });
 
   test("should return different readme based on readmePath", async () => {
-    const result = await resolver.readme("luxass", "lesetid", "examples/nuxt-example/README.md");
+    const result = await resolver.readme("luxass", "lesetid", "examples/nuxt/README.md");
 
     expect(result).toBeDefined();
     expect(result?.path).toContain("luxass/lesetid");
@@ -82,7 +82,7 @@ describe("readme", () => {
   });
 
   test("should add README.md to end of url, if missing", async () => {
-    const result = await resolver.readme("luxass", "lesetid", "examples/nuxt-example");
+    const result = await resolver.readme("luxass", "lesetid", "examples/nuxt");
 
     expect(result).toBeDefined();
     expect(result?.path).toContain("luxass/lesetid");
@@ -91,10 +91,10 @@ describe("readme", () => {
   });
 
   test("should fix path if `readmePath` starts with `/`", async () => {
-    const result = await resolver.readme("luxass", "lesetid", "/examples/nuxt-example");
+    const result = await resolver.readme("luxass", "lesetid", "/examples/nuxt");
 
     expect(result).toBeDefined();
-    expect(result?.path).toBe("https://api.github.com/repos/luxass/lesetid/contents/examples/nuxt-example/README.md");
+    expect(result?.path).toBe("https://api.github.com/repos/luxass/lesetid/contents/examples/nuxt/README.md");
     expect(result?.content).toBeTypeOf("string");
   });
 });

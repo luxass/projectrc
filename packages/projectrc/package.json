@@ -59,6 +59,9 @@
   "dependencies": {
     "@octokit/graphql": "^7.0.2",
     "github-schema": "^1.1.2",
-    "valibot": "^0.20.1"
+    "ignore": "^5.2.4",
+    "minimatch": "^9.0.3",
+    "valibot": "^0.20.1",
+    "yaml": "^2.3.4"
   }
 }

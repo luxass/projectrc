@@ -1,7 +1,9 @@
 import { Buffer } from "node:buffer";
-import { type Input, parseAsync } from "valibot";
+import { type Input, array, literal, number, object, optional, parseAsync, string, union } from "valibot";
 import { type RepositoryNode, gql } from "github-schema";
 import { graphql } from "@octokit/graphql";
+import ignore from "ignore";
+import { minimatch } from "minimatch";
 import { SCHEMA } from "./schema";
 
 export type ProjectRC = Input<typeof SCHEMA>;
@@ -41,7 +43,8 @@ export type ProjectRCResponse = {
     $path: string
   }
 } & {
-  projects: Omit<Input<typeof SCHEMA>, "readme" | "monorepo"> & {
+  projects: Omit<Input<typeof SCHEMA>, "readme" | "monorepo"> &
+  {
     readme?: ReadmeResult
   }[]
 };
@@ -51,6 +54,15 @@ export const CONFIG_FILE_NAMES: string[] = [
   ".projectrc",
   ".projectrc.json5",
 ];
+
+const FileTreeSchema = array(object({
+  path: string(),
+  mode: string(),
+  type: union([literal("tree"), literal("blob")]),
+  sha: string(),
+  size: optional(number()),
+  url: string(),
+}));
 
 export interface ProjectRCFile {
   path: string
@@ -105,7 +117,10 @@ export function createProjectRCResolver(githubToken: string) {
      * // }
      * ```
      */
-    async config(owner?: string, name?: string): Promise<ProjectRCFile | undefined> {
+    async config(
+      owner?: string,
+      name?: string,
+    ): Promise<ProjectRCFile | undefined> {
       if (!owner || !name) return undefined;
 
       for (const configFileName of CONFIG_FILE_NAMES) {
@@ -165,13 +180,16 @@ export function createProjectRCResolver(githubToken: string) {
      */
     async exists(owner?: string, name?: string): Promise<boolean> {
       try {
-        const res = await fetch(`https://api.github.com/repos/${owner}/${name}`, {
-          headers: {
-            "Authorization": `bearer ${githubToken}`,
-            "Content-Type": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
+        const res = await fetch(
+          `https://api.github.com/repos/${owner}/${name}`,
+          {
+            headers: {
+              "Authorization": `bearer ${githubToken}`,
+              "Content-Type": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
           },
-        });
+        );
 
         if (!res.ok) {
           return false;
@@ -205,7 +223,10 @@ export function createProjectRCResolver(githubToken: string) {
      * // }
      * ```
      */
-    async repository(owner?: string, name?: string): Promise<RepositoryNode["repository"] | undefined> {
+    async repository(
+      owner?: string,
+      name?: string,
+    ): Promise<RepositoryNode["repository"] | undefined> {
       try {
         const { repository } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
           owner,
@@ -243,8 +264,14 @@ export function createProjectRCResolver(githubToken: string) {
      * // }
      * ```
      */
-    async readme(owner?: string, name?: string, readmePath?: string | boolean): Promise<ReadmeResult | undefined> {
-      const readmeUrl = new URL(`https://api.github.com/repos/${owner}/${name}`);
+    async readme(
+      owner?: string,
+      name?: string,
+      readmePath?: string | boolean,
+    ): Promise<ReadmeResult | undefined> {
+      const readmeUrl = new URL(
+        `https://api.github.com/repos/${owner}/${name}`,
+      );
 
       if (typeof readmePath === "string") {
         if (readmePath.startsWith("/")) {
@@ -292,7 +319,10 @@ export function createProjectRCResolver(githubToken: string) {
      * @param {string} name - The name of the repository.
      * @returns {Promise<ProjectRCResponse | undefined>} A Promise that resolves to a ProjectRCResponse object if the configuration exists, otherwise undefined.
      */
-    async resolve(owner?: string, name?: string): Promise<ProjectRCResponse | undefined> {
+    async resolve(
+      owner?: string,
+      name?: string,
+    ): Promise<ProjectRCResponse | undefined> {
       if (!owner || !name) return undefined;
       if (!(await this.exists(owner, name))) return undefined;
 
@@ -317,7 +347,94 @@ export function createProjectRCResolver(githubToken: string) {
       };
 
       if ($raw.monorepo && $raw.monorepo.enabled) {
-        throw new Error("projectrc: support `monorepo` is not implemented yet.");
+        const pkgResult = await fetch(
+          `https://api.github.com/repos/${owner}/${name}/contents/package.json`,
+          {
+            headers: {
+              "Authorization": `bearer ${githubToken}`,
+              "Content-Type": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+          },
+        ).then((res) => res.json());
+
+        if (
+          !pkgResult
+          || typeof pkgResult !== "object"
+          || !("content" in pkgResult)
+          || typeof pkgResult.content !== "string"
+        ) {
+          throw new Error(
+            "projectrc: monorepo is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
+          );
+        }
+
+        const pkg: unknown = JSON.parse(
+          Buffer.from(pkgResult.content, "base64").toString("utf-8"),
+        );
+
+        if (
+          !pkg
+          || typeof pkg !== "object"
+          || !("workspaces" in pkg)
+          || !Array.isArray(pkg.workspaces)
+        ) {
+          throw new Error(
+            "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
+          );
+        }
+
+        // infer pkg.workspaces as a string array with if checks
+        const workspaces = pkg.workspaces as string[];
+
+        if (!workspaces.length) {
+          throw new Error(
+            "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
+          );
+        }
+
+        const filesResult = await fetch(
+          `https://api.github.com/repos/${owner}/${name}/git/trees/main?recursive=1`,
+          {
+            headers: {
+              "Authorization": `bearer ${githubToken}`,
+              "Content-Type": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+          },
+        ).then((res) => res.json());
+
+        if (
+          !filesResult
+          || typeof filesResult !== "object"
+        ) {
+          throw new Error(
+            "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
+          );
+        }
+
+        if (!("truncated" in filesResult) || filesResult.truncated) {
+          throw new Error(
+            "projectrc: monorepo is enabled, but the file tree is too large.\nWe are not currently supporting this.",
+          );
+        }
+
+        if (!("tree" in filesResult)
+          || !Array.isArray(filesResult.tree)
+          || !filesResult.tree.length) {
+          throw new Error(
+            "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
+          );
+        }
+
+        const files = await parseAsync(FileTreeSchema, filesResult.tree);
+
+        const filePaths = files.map((file) => file.path);
+        const _ignore = ignore().add($raw.monorepo.ignores || []);
+
+        const matchedFilePaths = filePaths.filter(filePath => workspaces.some(pattern => minimatch(filePath, pattern)) && !_ignore.ignores(filePath));
+
+        throw new Error("projectrc: monorepo is not yet implemented.");
       }
 
       // if ($raw.handles) {

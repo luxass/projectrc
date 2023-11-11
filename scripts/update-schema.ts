@@ -107,7 +107,7 @@ const MONOREPO_SCHEMA = Type.Object({
     description: "Is this a monorepo?",
     default: false,
   }),
-  ignore: Type.Optional(
+  ignores: Type.Optional(
     Type.Array(
       Type.String({
         description: "Ignore these packages from being used",

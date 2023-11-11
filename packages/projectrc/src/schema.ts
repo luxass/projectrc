@@ -20,7 +20,7 @@ const PROJECT_SCHEMA = object({
 
 const MONOREPO_SCHEMA = object({
   enabled: optional(boolean()),
-  ignore: optional(array(string())),
+  ignores: optional(array(string())),
   packages: optional(
     array(
       merge([
