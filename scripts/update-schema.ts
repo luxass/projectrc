@@ -100,6 +100,23 @@ const PROJECTRC_SCHEMA = Type.Object({
       }),
     ),
   ),
+  categories: Type.Optional(
+    Type.Array(
+      OneOf([
+        Type.String({
+          description: "The key of the category",
+        }),
+        Type.Object({
+          key: Type.String({
+            description: "The key of the category",
+          }),
+          name: Type.String({
+            description: "The name of the category",
+          }),
+        }),
+      ]),
+    ),
+  ),
 });
 
 const MONOREPO_SCHEMA = Type.Object({

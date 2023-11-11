@@ -64,6 +64,34 @@
         "type": "string"
       }
     },
+    "categories": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "description": "The key of the category",
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "The key of the category",
+                "type": "string"
+              },
+              "name": {
+                "description": "The name of the category",
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "name"
+            ]
+          }
+        ]
+      }
+    },
     "monorepo": {
       "type": "object",
       "properties": {
@@ -143,6 +171,34 @@
                   "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
                   "pattern": "^/",
                   "type": "string"
+                }
+              },
+              "categories": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "description": "The key of the category",
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "description": "The key of the category",
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "The name of the category",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "name"
+                      ]
+                    }
+                  ]
                 }
               },
               "name": {
