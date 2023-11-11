@@ -29,5 +29,10 @@
     "typecheck": {
       "outputMode": "new-only"
     }
-  }
+  },
+  "globalPassThroughEnv": [
+    "CI",
+    "NITRO_PRESET",
+    "GITHUB_TOKEN"
+  ]
 }

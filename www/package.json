@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --dotenv ../.env",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -14,22 +14,22 @@
   "dependencies": {
     "@luxass/projectrc": "workspace:*",
     "@octokit/graphql": "^7.0.2",
-    "@sinclair/typebox": "^0.31.22",
+    "@sinclair/typebox": "^0.31.23",
     "@vercel/analytics": "^1.1.1",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
-    "github-schema": "^1.1.1"
+    "github-schema": "^1.1.2"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/color-mode": "^3.3.0",
-    "@unocss/nuxt": "^0.57.2",
-    "@vueuse/nuxt": "^10.5.0",
-    "nuxt": "^3.8.0",
-    "nuxt-icon": "^0.6.1",
+    "@unocss/nuxt": "^0.57.3",
+    "@vueuse/nuxt": "^10.6.0",
+    "nuxt": "^3.8.1",
+    "nuxt-icon": "^0.6.5",
     "nuxt-og-image": "^2.2.3",
     "shikiji": "^0.6.12",
-    "vue": "^3.3.7",
+    "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   }
 }

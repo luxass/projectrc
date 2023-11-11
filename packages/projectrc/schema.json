@@ -1,7 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "description": "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
-  "additionalProperties": false,
   "type": "object",
   "properties": {
     "readme": {
@@ -65,12 +64,106 @@
         "type": "string"
       }
     },
-    "$schema": {
-      "description": "The schema uri to use, this is only here to make additionalProperties not warn.",
-      "type": "string"
+    "monorepo": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Is this a monorepo?",
+          "default": false,
+          "type": "boolean"
+        },
+        "ignores": {
+          "type": "array",
+          "items": {
+            "description": "Ignore these packages from being used",
+            "type": "string"
+          }
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "readme": {
+                "default": false,
+                "description": "If defined will show the repository readme at luxass.dev/projects/repo-name",
+                "oneOf": [
+                  {
+                    "description": "Will use the root readme.md as the repository readme",
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  {
+                    "description": "Will use the given file as the repository readme",
+                    "default": "README.md",
+                    "type": "string"
+                  }
+                ]
+              },
+              "npm": {
+                "description": "Does the repo have a npm package and should it be visible on luxass.dev?",
+                "default": false,
+                "oneOf": [
+                  {
+                    "description": "Will find the first package.json in the repo and use the `name` as the npm package name",
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  {
+                    "description": "Will use the given package.json to find the npm package name",
+                    "default": "package.json",
+                    "type": "string"
+                  }
+                ]
+              },
+              "ignore": {
+                "description": "Ignore this repository from being used",
+                "default": false,
+                "type": "boolean"
+              },
+              "website": {
+                "default": false,
+                "description": "The url to the website",
+                "oneOf": [
+                  {
+                    "description": "Will use homepageUrl from github as the website url",
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  {
+                    "description": "The url to the website",
+                    "format": "uri",
+                    "type": "string"
+                  }
+                ]
+              },
+              "handles": {
+                "type": "array",
+                "items": {
+                  "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
+                  "pattern": "^/",
+                  "type": "string"
+                }
+              },
+              "name": {
+                "description": "The name of the package",
+                "type": "string"
+              },
+              "path": {
+                "description": "The path to the package",
+                "default": ".",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        }
+      },
+      "required": [
+        "enabled"
+      ]
     }
-  },
-  "required": [
-    "$schema"
-  ]
+  }
 }

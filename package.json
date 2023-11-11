@@ -31,15 +31,19 @@
     "dev": "turbo run dev --concurrency=40 --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "update:schema": "npx tsx ./scripts/update-schema.ts"
   },
   "devDependencies": {
     "@luxass/eslint-config": "^3.3.2",
-    "@types/node": "^18.16.19",
+    "@sinclair/typebox": "^0.31.23",
+    "@types/node": "^18.18.8",
+    "dotenv": "^16.3.1",
     "eslint": "^8.53.0",
     "tsup": "^7.2.0",
     "turbo": "^1.10.16",
     "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
+    "vitest": "^0.34.6",
+    "vitest-fetch-mock": "^0.2.2"
   }
 }

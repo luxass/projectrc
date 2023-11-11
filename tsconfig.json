@@ -1,5 +1,18 @@
-// Yes this file is intentionally empty!
-// ---
-// Having a blank `tsconfig.json` file prevents TypeScript from crawling up your directory tree
-// and possibly picking up a parent `tsconfig.json` (which, unsurprisingly, is very hard to debug)
-{}
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "verbatimModuleSyntax": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "noEmit": true,
+    "lib": ["es2022"],
+    "forceConsistentCasingInFileNames": true
+  }
+}
