@@ -474,8 +474,18 @@ export function createProjectRCResolver(githubToken: string) {
             );
           }
 
+          let _private = false;
+
+          if (
+            ("private" in pkg)
+            && typeof pkg.private === "boolean"
+          ) {
+            _private = pkg.private;
+          }
+
           return {
             name: pkg.name,
+            private: _private,
             path: filePath,
           };
         })));
@@ -524,8 +534,8 @@ export function createProjectRCResolver(githubToken: string) {
 
           const npmSrc = override?.npm || $raw.npm;
 
-          if (npmSrc) {
-            project.npm = typeof npmSrc === "string" ? npmSrc : `https://www.npmjs.com/package/${name}`;
+          if (npmSrc && !pkg.private) {
+            project.npm = typeof npmSrc === "string" ? npmSrc : `https://www.npmjs.com/package/${pkg.name}`;
           }
 
           result.projects.push(project);
