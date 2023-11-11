@@ -435,7 +435,92 @@ export function createProjectRCResolver(githubToken: string) {
 
         const matchedFilePaths = filePaths.filter(filePath => workspaces.some(pattern => minimatch(filePath, pattern)) && !_ignore.ignores(filePath));
 
-        throw new Error("projectrc: monorepo is not yet implemented.");
+        const results = await Promise.all((matchedFilePaths.map(async (filePath) => {
+          const url = `https://api.github.com/repos/${owner}/${name}/contents/${filePath}/package.json`;
+          const file = await fetch(url,
+            {
+              headers: {
+                "Authorization": `bearer ${githubToken}`,
+                "Content-Type": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+              },
+            },
+          ).then((res) => res.json());
+
+          if (
+            !file
+            || typeof file !== "object"
+            || !("content" in file)
+            || typeof file.content !== "string"
+          ) {
+            throw new Error(
+              `projectrc: could not find a \`content\` field in \`${url}\`.`,
+            );
+          }
+
+          const pkg: unknown = JSON.parse(
+            Buffer.from(file.content, "base64").toString("utf-8"),
+          );
+
+          if (
+            !pkg
+            || typeof pkg !== "object"
+            || !("name" in pkg)
+            || typeof pkg.name !== "string"
+          ) {
+            throw new Error(
+              `projectrc: could not find a \`name\` field in \`${url}\`.`,
+            );
+          }
+
+          return pkg.name;
+        })));
+
+        const overrides = $raw.monorepo.overrides || [];
+        for (const pkg of results) {
+          const override = overrides.find((override) => override.name === pkg);
+
+          // if package is inside a folder that you want to include everytime (like `packages/*`),
+          // but still want to ignore a specific package.
+          if ((override && override.ignore)) {
+            continue;
+          }
+
+          const project: ProjectRCResponse["projects"][0] = {
+            name: pkg,
+          };
+
+          project.handles = (override?.handles) || $raw.handles;
+
+          let website;
+
+          if (override?.website && typeof override.website === "string") {
+            website = override.website;
+          } else if ($raw.website && typeof $raw.website === "string") {
+            website = $raw.website;
+          } else {
+            website = repository.homepageUrl || null;
+          }
+
+          project.website = website;
+
+          const readmeSrc = override?.readme || $raw.readme;
+
+          if (readmeSrc) {
+            const readme = await this.readme(owner, name, readmeSrc);
+            if (readme) {
+              project.readme = readme;
+            }
+          }
+
+          const npmSrc = override?.npm || $raw.npm;
+
+          if (npmSrc) {
+            project.npm = typeof npmSrc === "string" ? npmSrc : `https://www.npmjs.com/package/${name}`;
+          }
+
+          result.projects.push(project);
+        }
       } else {
         const project: ProjectRCResponse["projects"][0] = {
           name: repository.name,

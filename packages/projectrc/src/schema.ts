@@ -21,12 +21,11 @@ const PROJECT_SCHEMA = object({
 const MONOREPO_SCHEMA = object({
   enabled: optional(boolean()),
   ignores: optional(array(string())),
-  packages: optional(
+  overrides: optional(
     array(
       merge([
         object({
           name: string(),
-          path: optional(string()),
         }),
         PROJECT_SCHEMA,
       ]),

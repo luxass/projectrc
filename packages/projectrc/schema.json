@@ -79,7 +79,7 @@
             "type": "string"
           }
         },
-        "packages": {
+        "overrides": {
           "type": "array",
           "items": {
             "type": "object",
@@ -147,11 +147,6 @@
               },
               "name": {
                 "description": "The name of the package",
-                "type": "string"
-              },
-              "path": {
-                "description": "The path to the package",
-                "default": ".",
                 "type": "string"
               }
             },

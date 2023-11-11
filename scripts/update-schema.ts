@@ -114,7 +114,7 @@ const MONOREPO_SCHEMA = Type.Object({
       }),
     ),
   ),
-  packages: Type.Optional(
+  overrides: Type.Optional(
     Type.Array(
       Type.Composite([
         PROJECTRC_SCHEMA,
@@ -123,12 +123,6 @@ const MONOREPO_SCHEMA = Type.Object({
             name: Type.String({
               description: "The name of the package",
             }),
-            path: Type.Optional(
-              Type.String({
-                description: "The path to the package",
-                default: ".",
-              }),
-            ),
           },
           {
             description: "The package",
