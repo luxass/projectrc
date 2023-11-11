@@ -246,9 +246,9 @@ export function createProjectRCResolver(githubToken: string) {
     },
     /**
      * Fetches the readme content of a GitHub repository.
-     * @param owner - The owner of the repository.
-     * @param name - The name of the repository.
-     * @param readmePath - The path to the readme file. If not provided, the default readme file will be fetched.
+     * @param {string?} owner - The owner of the repository.
+     * @param {string?} name - The name of the repository.
+     * @param {string | boolean?} readmePath - The path to the readme file. If not provided, the default readme file will be fetched.
      * @returns A Promise that resolves to a ReadmeResult object containing the path and content of the readme file, or undefined if the readme could not be fetched.
      *
      * @example
@@ -270,6 +270,7 @@ export function createProjectRCResolver(githubToken: string) {
       name?: string,
       readmePath?: string | boolean,
     ): Promise<ReadmeResult | undefined> {
+      if (!owner || !name) return undefined;
       const readmeUrl = new URL(
         `https://api.github.com/repos/${owner}/${name}`,
       );
@@ -473,12 +474,15 @@ export function createProjectRCResolver(githubToken: string) {
             );
           }
 
-          return pkg.name;
+          return {
+            name: pkg.name,
+            path: filePath,
+          };
         })));
 
         const overrides = $raw.monorepo.overrides || [];
         for (const pkg of results) {
-          const override = overrides.find((override) => override.name === pkg);
+          const override = overrides.find((override) => override.name === pkg.name);
 
           // if package is inside a folder that you want to include everytime (like `packages/*`),
           // but still want to ignore a specific package.
@@ -487,7 +491,7 @@ export function createProjectRCResolver(githubToken: string) {
           }
 
           const project: ProjectRCResponse["projects"][0] = {
-            name: pkg,
+            name: pkg.name,
           };
 
           project.handles = (override?.handles) || $raw.handles;
@@ -504,7 +508,12 @@ export function createProjectRCResolver(githubToken: string) {
 
           project.website = website;
 
-          const readmeSrc = override?.readme || $raw.readme;
+          let readmeSrc = override?.readme || $raw.readme;
+
+          if (typeof readmeSrc === "boolean") {
+            // use package readmes if true
+            readmeSrc = `/${pkg.path}/README.md`;
+          }
 
           if (readmeSrc) {
             const readme = await this.readme(owner, name, readmeSrc);
