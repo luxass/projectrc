@@ -43,10 +43,11 @@ export type ProjectRCResponse = {
     $path: string
   }
 } & {
-  projects: Omit<Input<typeof SCHEMA>, "readme" | "monorepo"> &
+  projects: (Omit<Input<typeof SCHEMA>, "readme" | "monorepo"> &
   {
     readme?: ReadmeResult
-  }[]
+    name: string
+  })[]
 };
 
 export const CONFIG_FILE_NAMES: string[] = [
@@ -435,32 +436,42 @@ export function createProjectRCResolver(githubToken: string) {
         const matchedFilePaths = filePaths.filter(filePath => workspaces.some(pattern => minimatch(filePath, pattern)) && !_ignore.ignores(filePath));
 
         throw new Error("projectrc: monorepo is not yet implemented.");
+      } else {
+        const project: ProjectRCResponse["projects"][0] = {
+          name: repository.name,
+        };
+
+        if ($raw.handles) {
+          project.handles = $raw.handles;
+        }
+
+        if ($raw.website) {
+          project.website
+            = typeof $raw.website === "string"
+              ? $raw.website
+              : repository.homepageUrl || null;
+        }
+
+        if ($raw.readme) {
+          const readme = await this.readme(owner, name, $raw.readme);
+          if (readme) {
+            project.readme = readme;
+          }
+        }
+
+        if ($raw.npm) {
+          project.npm
+            = typeof $raw.npm === "string"
+              ? $raw.npm
+              : `https://www.npmjs.com/package/${name}`;
+        }
+
+        if ($raw.ignore) {
+          throw new Error("projectrc: how did you get here?");
+        }
+
+        result.projects.push(project);
       }
-
-      // if ($raw.handles) {
-      //   result.handles = $raw.handles;
-      // }
-
-      // if ($raw.website) {
-      //   result.website
-      //     = typeof $raw.website === "string"
-      //       ? $raw.website
-      //       : repository.homepageUrl || null;
-      // }
-
-      // if ($raw.readme) {
-      //   const readme = await this.readme(owner, name, $raw.readme);
-      //   if (readme) {
-      //     result.readme = readme;
-      //   }
-      // }
-
-      // if ($raw.npm) {
-      //   result.npm
-      //     = typeof $raw.npm === "string"
-      //       ? $raw.npm
-      //       : `https://www.npmjs.com/package/${name}`;
-      // }
 
       return result;
     },
