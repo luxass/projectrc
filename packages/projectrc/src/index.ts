@@ -320,6 +320,34 @@ export function createProjectRCResolver(githubToken: string) {
      * @param {string} owner - The owner of the repository.
      * @param {string} name - The name of the repository.
      * @returns {Promise<ProjectRCResponse | undefined>} A Promise that resolves to a ProjectRCResponse object if the configuration exists, otherwise undefined.
+     *
+     * @example
+     * ```ts
+     * import { createProjectRCResolver } from "@luxass/projectrc";
+     *
+     * const projectRCResolver = createProjectRCResolver(process.env.GITHUB_TOKEN);
+     *
+     * const projectRC = await projectRCResolver.resolve("luxass", "projectrc");
+     * // results in:
+     * // {
+     * //   $projectrc: {
+     * //     website: true,
+     * //     handles: [
+     * //       "/projectrc"
+     * //     ],
+     * //     $path: "https://api.github.com/repos/luxass/projectrc/contents/.github/.projectrc.json",
+     * //   },
+     * //   projects: [
+     * //     {
+     * //       name: "projectrc",
+     * //       handles: [
+     * //         "/projectrc"
+     * //       ],
+     * //       website: "https://luxass.dev/projectrc",
+     * //     }
+     * //   ]
+     * // }
+     * ```
      */
     async resolve(
       owner?: string,

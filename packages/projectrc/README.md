@@ -1,6 +1,6 @@
 # projectrc
 
-> You should not use this package, it is probably only useful for me.
+You should not use this package, it is probably only useful for me.
 
 ## 📦 Installation
 
@@ -11,7 +11,24 @@ npm install @luxass/projectrc
 ## 📚 Usage
 
 ```ts
-import { } from "@luxass/projectrc";
+import { createProjectRCResolver } from "@luxass/projectrc";
+
+const projectRCResolver = createProjectRCResolver(process.env.GITHUB_TOKEN);
+
+// check if a repository exists
+const exists = await projectRCResolver.exists("luxass", "projectrc");
+
+// get the repository's ProjectRC file
+const projectRCFile = await projectRCResolver.config("luxass", "projectrc");
+
+// get the repository
+const repository = await projectRCResolver.repository("luxass", "projectrc");
+
+// get the repository's readme
+const readme = await projectRCResolver.readme("luxass", "projectrc");
+
+// resolve the projectrc file
+const projectRC = await projectRCResolver.resolve("luxass", "projectrc");
 ```
 
 ## 📄 License
