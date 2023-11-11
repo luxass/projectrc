@@ -49,10 +49,12 @@ export default defineNuxtConfig({
           {
             src: "^/schema$",
             dest: "/api/schema",
+            continue: false,
           },
           {
             src: "^/schema.json$",
             dest: "/api/schema",
+            continue: false,
           },
         ],
       },
