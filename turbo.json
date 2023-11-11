@@ -32,6 +32,7 @@
   },
   "globalPassThroughEnv": [
     "CI",
-    "NITRO_PRESET"
+    "NITRO_PRESET",
+    "GITHUB_TOKEN"
   ]
 }
