@@ -42,24 +42,6 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     typedPages: true,
   },
-  nitro: {
-    vercel: {
-      config: {
-        routes: [
-          {
-            src: "^/schema$",
-            dest: "/api/schema",
-            continue: false,
-          },
-          {
-            src: "^/schema.json$",
-            dest: "/api/schema",
-            continue: false,
-          },
-        ],
-      },
-    },
-  },
   vite: {
     resolve: {
       alias: {
