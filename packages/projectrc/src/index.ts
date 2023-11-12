@@ -530,7 +530,7 @@ export function createProjectRCResolver(githubToken: string) {
 
           const project: ProjectRCResponse["projects"][0] = {
             name: pkg.name,
-            description: override?.description || $raw.description || repository.description || undefined
+            description: override?.description || $raw.description || repository.description || undefined,
           };
 
           project.handles = (override?.handles) || $raw.handles;
@@ -574,7 +574,7 @@ export function createProjectRCResolver(githubToken: string) {
       } else {
         const project: ProjectRCResponse["projects"][0] = {
           name: repository.name,
-          description: $raw.description || repository.description || undefined
+          description: $raw.description || repository.description || undefined,
         };
 
         if ($raw.handles) {
@@ -604,7 +604,7 @@ export function createProjectRCResolver(githubToken: string) {
             = typeof $raw.npm === "string"
               ? $raw.npm
               : `https://www.npmjs.com/package/${name}`;
-        }        
+        }
 
         if ($raw.ignore) {
           throw new Error("projectrc: how did you get here?");
