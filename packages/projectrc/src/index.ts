@@ -600,10 +600,46 @@ export function createProjectRCResolver(githubToken: string) {
         }
 
         if ($raw.npm) {
+          const url = `https://api.github.com/repos/${owner}/${name}/contents/package.json`;
+          const file = await fetch(url,
+            {
+              headers: {
+                "Authorization": `bearer ${githubToken}`,
+                "Content-Type": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+              },
+            },
+          ).then((res) => res.json());
+
+          if (
+            !file
+            || typeof file !== "object"
+            || !("content" in file)
+            || typeof file.content !== "string"
+          ) {
+            throw new Error(
+              `projectrc: could not find a \`content\` field in \`${url}\`.`,
+            );
+          }
+
+          const pkg: unknown = JSON.parse(
+            Buffer.from(file.content, "base64").toString("utf-8"),
+          );
+
+          if (
+            !pkg
+            || typeof pkg !== "object"
+            || !("name" in pkg)
+            || typeof pkg.name !== "string"
+          ) {
+            throw new Error(
+              `projectrc: could not find a \`name\` field in \`${url}\`.`,
+            );
+          }
           project.npm
             = typeof $raw.npm === "string"
               ? $raw.npm
-              : `https://www.npmjs.com/package/${name}`;
+              : `https://www.npmjs.com/package/${pkg.name}`;
         }
 
         if ($raw.ignore) {
