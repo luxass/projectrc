@@ -117,6 +117,11 @@ const PROJECTRC_SCHEMA = Type.Object({
       ]),
     ),
   ),
+  description: Type.Optional(
+    Type.String({
+      description: "The description of the project",
+    }),
+  ),
 });
 
 const MONOREPO_SCHEMA = Type.Object({

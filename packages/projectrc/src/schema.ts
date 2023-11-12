@@ -16,6 +16,7 @@ const PROJECT_SCHEMA = object({
   ignore: optional(boolean()),
   website: optional(union([boolean(), string([url()])])),
   handles: optional(array(string([startsWith("/")]))),
+  description: optional(string()),
   categories: optional(array(union([string(), object({
     key: string(),
     name: string(),

@@ -92,6 +92,10 @@
         ]
       }
     },
+    "description": {
+      "description": "The description of the project",
+      "type": "string"
+    },
     "monorepo": {
       "type": "object",
       "properties": {
@@ -200,6 +204,10 @@
                     }
                   ]
                 }
+              },
+              "description": {
+                "description": "The description of the project",
+                "type": "string"
               },
               "name": {
                 "description": "The name of the package",
