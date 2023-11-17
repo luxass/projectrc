@@ -6,24 +6,24 @@ useHead({
 });
 
 defineOgImage({
-  title: ".projectrc",
-  description: "A site that describes what a .projectrc is.",
   component: "Base",
+  description: "A site that describes what a .projectrc is.",
+  title: ".projectrc",
 });
 
 useSeoMeta({
   description: "A site that describes what a .projectrc is.",
-  ogTitle: "projectrc",
   ogDescription: "A site that describes what a .projectrc is.",
-  twitterTitle: "projectrc",
-  twitterDescription: "A site that describes what a .projectrc is.",
+  ogTitle: "projectrc",
   ogUrl: "https://projectrc.luxass.dev",
+  twitterDescription: "A site that describes what a .projectrc is.",
   twitterImage: "https://projectrc.luxass.dev/__og_image__/og.png",
+  twitterTitle: "projectrc",
 });
 </script>
 
 <template>
-  <div class="md:px14 py3 md:py10">
+  <div class="py3 md:px14 md:py10">
     <NuxtPage />
   </div>
 </template>

@@ -1,9 +1,10 @@
 import { Buffer } from "node:buffer";
-import { type Input, array, literal, number, object, optional, parseAsync, string, union } from "valibot";
-import { type RepositoryNode, gql } from "github-schema";
 import { graphql } from "@octokit/graphql";
+import { type RepositoryNode, gql } from "github-schema";
 import ignore from "ignore";
 import { minimatch } from "minimatch";
+import { type Input, array, literal, number, object, optional, parseAsync, string, union } from "valibot";
+
 import { SCHEMA } from "./schema";
 
 export type ProjectRC = Input<typeof SCHEMA>;
@@ -34,8 +35,8 @@ export const REPOSITORY_QUERY = gql`
 `;
 
 export interface ReadmeResult {
-  path: string
   content: string
+  path: string
 }
 
 export type ProjectRCResponse = {
@@ -43,10 +44,10 @@ export type ProjectRCResponse = {
     $path: string
   }
 } & {
-  projects: (Omit<Input<typeof SCHEMA>, "readme" | "monorepo"> &
+  projects: (Omit<Input<typeof SCHEMA>, "monorepo" | "readme"> &
   {
-    readme?: ReadmeResult
     name: string
+    readme?: ReadmeResult
   })[]
 };
 
@@ -57,17 +58,17 @@ export const CONFIG_FILE_NAMES: string[] = [
 ];
 
 const FileTreeSchema = array(object({
-  path: string(),
   mode: string(),
-  type: union([literal("tree"), literal("blob")]),
+  path: string(),
   sha: string(),
   size: optional(number()),
+  type: union([literal("tree"), literal("blob")]),
   url: string(),
 }));
 
 export interface ProjectRCFile {
-  path: string
   content: Input<typeof SCHEMA>
+  path: string
 }
 
 /**
@@ -122,7 +123,9 @@ export function createProjectRCResolver(githubToken: string) {
       owner?: string,
       name?: string,
     ): Promise<ProjectRCFile | undefined> {
-      if (!owner || !name) return undefined;
+      if (!owner || !name) {
+        return undefined;
+      }
 
       for (const configFileName of CONFIG_FILE_NAMES) {
         try {
@@ -153,8 +156,8 @@ export function createProjectRCResolver(githubToken: string) {
           const parsed = await parseAsync(SCHEMA, content);
 
           return {
-            path: url.toString(),
             content: parsed,
+            path: url.toString(),
           };
         } catch (err) {
           continue;
@@ -202,49 +205,6 @@ export function createProjectRCResolver(githubToken: string) {
       }
     },
     /**
-     * Get a repository from GitHub
-     * @param {string} owner - The owner of the repository
-     * @param {string} name - The name of the repository
-     * @returns {Promise<RepositoryNode["repository"]>} The `RepositoryNode` of the repository
-     *
-     * NOTE: This is not the full response from GitHub, as it only contains the fields we need.
-     * To see what we request, you can see the `REPOSITORY_QUERY` export.
-     *
-     * @example
-     * ```ts
-     * import { createProjectRCResolver } from "@luxass/projectrc";
-     *
-     * const projectRCResolver = createProjectRCResolver(process.env.GITHUB_TOKEN);
-     *
-     * const repository = await projectRCResolver.repository("luxass", "projectrc");
-     * // results in:
-     * // {
-     * //   name: "projectrc",
-     * //   GITHUB RESPONSE...
-     * // }
-     * ```
-     */
-    async repository(
-      owner?: string,
-      name?: string,
-    ): Promise<RepositoryNode["repository"] | undefined> {
-      try {
-        const { repository } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
-          owner,
-          name,
-          headers: {
-            "Authorization": `bearer ${githubToken}`,
-            "Content-Type": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        });
-
-        return repository;
-      } catch (err) {
-        return undefined;
-      }
-    },
-    /**
      * Fetches the readme content of a GitHub repository.
      * @param {string?} owner - The owner of the repository.
      * @param {string?} name - The name of the repository.
@@ -268,9 +228,11 @@ export function createProjectRCResolver(githubToken: string) {
     async readme(
       owner?: string,
       name?: string,
-      readmePath?: string | boolean,
+      readmePath?: boolean | string,
     ): Promise<ReadmeResult | undefined> {
-      if (!owner || !name) return undefined;
+      if (!owner || !name) {
+        return undefined;
+      }
       const readmeUrl = new URL(
         `https://api.github.com/repos/${owner}/${name}`,
       );
@@ -308,9 +270,52 @@ export function createProjectRCResolver(githubToken: string) {
         }
 
         return {
-          path: readmeUrl.toString(),
           content: Buffer.from(result.content, "base64").toString("utf-8"),
+          path: readmeUrl.toString(),
         };
+      } catch (err) {
+        return undefined;
+      }
+    },
+    /**
+     * Get a repository from GitHub
+     * @param {string} owner - The owner of the repository
+     * @param {string} name - The name of the repository
+     * @returns {Promise<RepositoryNode["repository"]>} The `RepositoryNode` of the repository
+     *
+     * NOTE: This is not the full response from GitHub, as it only contains the fields we need.
+     * To see what we request, you can see the `REPOSITORY_QUERY` export.
+     *
+     * @example
+     * ```ts
+     * import { createProjectRCResolver } from "@luxass/projectrc";
+     *
+     * const projectRCResolver = createProjectRCResolver(process.env.GITHUB_TOKEN);
+     *
+     * const repository = await projectRCResolver.repository("luxass", "projectrc");
+     * // results in:
+     * // {
+     * //   name: "projectrc",
+     * //   GITHUB RESPONSE...
+     * // }
+     * ```
+     */
+    async repository(
+      owner?: string,
+      name?: string,
+    ): Promise<RepositoryNode["repository"] | undefined> {
+      try {
+        const { repository } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
+          headers: {
+            "Authorization": `bearer ${githubToken}`,
+            "Content-Type": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+          name,
+          owner,
+        });
+
+        return repository;
       } catch (err) {
         return undefined;
       }
@@ -353,14 +358,23 @@ export function createProjectRCResolver(githubToken: string) {
       owner?: string,
       name?: string,
     ): Promise<ProjectRCResponse | undefined> {
-      if (!owner || !name) return undefined;
-      if (!(await this.exists(owner, name))) return undefined;
+      if (!owner || !name) {
+        return undefined;
+      }
+
+      if (!(await this.exists(owner, name))) {
+        return undefined;
+      }
 
       const projectRCFile = await this.config(owner, name);
-      if (!projectRCFile) return undefined;
+      if (!projectRCFile) {
+        return undefined;
+      }
 
       const repository = await this.repository(owner, name);
-      if (!repository) return undefined;
+      if (!repository) {
+        return undefined;
+      }
 
       const { content: $raw } = projectRCFile;
 
@@ -462,19 +476,17 @@ export function createProjectRCResolver(githubToken: string) {
         const filePaths = files.map((file) => file.path);
         const _ignore = ignore().add($raw.monorepo.ignores || []);
 
-        const matchedFilePaths = filePaths.filter(filePath => workspaces.some(pattern => minimatch(filePath, pattern)) && !_ignore.ignores(filePath));
+        const matchedFilePaths = filePaths.filter((filePath) => workspaces.some((pattern) => minimatch(filePath, pattern)) && !_ignore.ignores(filePath));
 
         const results = await Promise.all((matchedFilePaths.map(async (filePath) => {
           const url = `https://api.github.com/repos/${owner}/${name}/contents/${filePath}/package.json`;
-          const file = await fetch(url,
-            {
-              headers: {
-                "Authorization": `bearer ${githubToken}`,
-                "Content-Type": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-              },
+          const file = await fetch(url, {
+            headers: {
+              "Authorization": `bearer ${githubToken}`,
+              "Content-Type": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
             },
-          ).then((res) => res.json());
+          }).then((res) => res.json());
 
           if (
             !file
@@ -513,8 +525,8 @@ export function createProjectRCResolver(githubToken: string) {
 
           return {
             name: pkg.name,
-            private: _private,
             path: filePath,
+            private: _private,
           };
         })));
 
@@ -529,8 +541,8 @@ export function createProjectRCResolver(githubToken: string) {
           }
 
           const project: ProjectRCResponse["projects"][0] = {
-            name: pkg.name,
             description: override?.description || $raw.description || repository.description || undefined,
+            name: pkg.name,
           };
 
           project.handles = (override?.handles) || $raw.handles;
@@ -569,12 +581,14 @@ export function createProjectRCResolver(githubToken: string) {
 
           project.categories = override?.categories || $raw.categories;
 
+          project.deprecated = override?.deprecated || $raw.deprecated;
+
           result.projects.push(project);
         }
       } else {
         const project: ProjectRCResponse["projects"][0] = {
-          name: repository.name,
           description: $raw.description || repository.description || undefined,
+          name: repository.name,
         };
 
         if ($raw.handles) {
@@ -601,15 +615,13 @@ export function createProjectRCResolver(githubToken: string) {
 
         if ($raw.npm) {
           const url = `https://api.github.com/repos/${owner}/${name}/contents/package.json`;
-          const file = await fetch(url,
-            {
-              headers: {
-                "Authorization": `bearer ${githubToken}`,
-                "Content-Type": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-              },
+          const file = await fetch(url, {
+            headers: {
+              "Authorization": `bearer ${githubToken}`,
+              "Content-Type": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
             },
-          ).then((res) => res.json());
+          }).then((res) => res.json());
 
           if (
             !file
@@ -644,6 +656,10 @@ export function createProjectRCResolver(githubToken: string) {
 
         if ($raw.ignore) {
           throw new Error("projectrc: how did you get here?");
+        }
+
+        if ($raw.deprecated) {
+          project.deprecated = $raw.deprecated;
         }
 
         result.projects.push(project);

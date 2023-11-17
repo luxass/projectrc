@@ -5,10 +5,10 @@ export default defineConfig({
     entries: [],
   },
   test: {
-    testTimeout: 30_000,
     setupFiles: [
       "./tests/setup.ts",
     ],
+    testTimeout: 30_000,
     watch: false,
   },
 });

@@ -3,67 +3,6 @@
   "description": "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
   "type": "object",
   "properties": {
-    "readme": {
-      "default": false,
-      "description": "If defined will show the repository readme at luxass.dev/projects/repo-name",
-      "oneOf": [
-        {
-          "description": "Will use the root readme.md as the repository readme",
-          "default": false,
-          "type": "boolean"
-        },
-        {
-          "description": "Will use the given file as the repository readme",
-          "default": "README.md",
-          "type": "string"
-        }
-      ]
-    },
-    "npm": {
-      "description": "Does the repo have a npm package and should it be visible on luxass.dev?",
-      "default": false,
-      "oneOf": [
-        {
-          "description": "Will find the first package.json in the repo and use the `name` as the npm package name",
-          "default": false,
-          "type": "boolean"
-        },
-        {
-          "description": "Will use the given package.json to find the npm package name",
-          "default": "package.json",
-          "type": "string"
-        }
-      ]
-    },
-    "ignore": {
-      "description": "Ignore this repository from being used",
-      "default": false,
-      "type": "boolean"
-    },
-    "website": {
-      "default": false,
-      "description": "The url to the website",
-      "oneOf": [
-        {
-          "description": "Will use homepageUrl from github as the website url",
-          "default": false,
-          "type": "boolean"
-        },
-        {
-          "description": "The url to the website",
-          "format": "uri",
-          "type": "string"
-        }
-      ]
-    },
-    "handles": {
-      "type": "array",
-      "items": {
-        "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
-        "pattern": "^/",
-        "type": "string"
-      }
-    },
     "categories": {
       "type": "array",
       "items": {
@@ -96,12 +35,98 @@
       "description": "The description of the project",
       "type": "string"
     },
+    "deprecated": {
+      "oneOf": [
+        {
+          "default": false,
+          "description": "Is this project deprecated?",
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "message": {
+              "description": "The message to show when the project is deprecated",
+              "type": "string"
+            },
+            "replacement": {
+              "description": "The replacement for the project",
+              "type": "string"
+            }
+          },
+          "required": [
+            "message"
+          ]
+        }
+      ]
+    },
+    "handles": {
+      "type": "array",
+      "items": {
+        "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
+        "pattern": "^/",
+        "type": "string"
+      }
+    },
+    "ignore": {
+      "default": false,
+      "description": "Ignore this repository from being used",
+      "type": "boolean"
+    },
+    "npm": {
+      "default": false,
+      "description": "Does the repo have a npm package and should it be visible on luxass.dev?",
+      "oneOf": [
+        {
+          "default": false,
+          "description": "Will find the first package.json in the repo and use the `name` as the npm package name",
+          "type": "boolean"
+        },
+        {
+          "default": "package.json",
+          "description": "Will use the given package.json to find the npm package name",
+          "type": "string"
+        }
+      ]
+    },
+    "readme": {
+      "default": false,
+      "description": "If defined will show the repository readme at luxass.dev/projects/repo-name",
+      "oneOf": [
+        {
+          "default": false,
+          "description": "Will use the root readme.md as the repository readme",
+          "type": "boolean"
+        },
+        {
+          "default": "README.md",
+          "description": "Will use the given file as the repository readme",
+          "type": "string"
+        }
+      ]
+    },
+    "website": {
+      "default": false,
+      "description": "The url to the website",
+      "oneOf": [
+        {
+          "default": false,
+          "description": "Will use homepageUrl from github as the website url",
+          "type": "boolean"
+        },
+        {
+          "description": "The url to the website",
+          "format": "uri",
+          "type": "string"
+        }
+      ]
+    },
     "monorepo": {
       "type": "object",
       "properties": {
         "enabled": {
-          "description": "Is this a monorepo?",
           "default": false,
+          "description": "Is this a monorepo?",
           "type": "boolean"
         },
         "ignores": {
@@ -116,67 +141,6 @@
           "items": {
             "type": "object",
             "properties": {
-              "readme": {
-                "default": false,
-                "description": "If defined will show the repository readme at luxass.dev/projects/repo-name",
-                "oneOf": [
-                  {
-                    "description": "Will use the root readme.md as the repository readme",
-                    "default": false,
-                    "type": "boolean"
-                  },
-                  {
-                    "description": "Will use the given file as the repository readme",
-                    "default": "README.md",
-                    "type": "string"
-                  }
-                ]
-              },
-              "npm": {
-                "description": "Does the repo have a npm package and should it be visible on luxass.dev?",
-                "default": false,
-                "oneOf": [
-                  {
-                    "description": "Will find the first package.json in the repo and use the `name` as the npm package name",
-                    "default": false,
-                    "type": "boolean"
-                  },
-                  {
-                    "description": "Will use the given package.json to find the npm package name",
-                    "default": "package.json",
-                    "type": "string"
-                  }
-                ]
-              },
-              "ignore": {
-                "description": "Ignore this repository from being used",
-                "default": false,
-                "type": "boolean"
-              },
-              "website": {
-                "default": false,
-                "description": "The url to the website",
-                "oneOf": [
-                  {
-                    "description": "Will use homepageUrl from github as the website url",
-                    "default": false,
-                    "type": "boolean"
-                  },
-                  {
-                    "description": "The url to the website",
-                    "format": "uri",
-                    "type": "string"
-                  }
-                ]
-              },
-              "handles": {
-                "type": "array",
-                "items": {
-                  "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
-                  "pattern": "^/",
-                  "type": "string"
-                }
-              },
               "categories": {
                 "type": "array",
                 "items": {
@@ -208,6 +172,92 @@
               "description": {
                 "description": "The description of the project",
                 "type": "string"
+              },
+              "deprecated": {
+                "oneOf": [
+                  {
+                    "default": false,
+                    "description": "Is this project deprecated?",
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "description": "The message to show when the project is deprecated",
+                        "type": "string"
+                      },
+                      "replacement": {
+                        "description": "The replacement for the project",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "message"
+                    ]
+                  }
+                ]
+              },
+              "handles": {
+                "type": "array",
+                "items": {
+                  "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
+                  "pattern": "^/",
+                  "type": "string"
+                }
+              },
+              "ignore": {
+                "default": false,
+                "description": "Ignore this repository from being used",
+                "type": "boolean"
+              },
+              "npm": {
+                "default": false,
+                "description": "Does the repo have a npm package and should it be visible on luxass.dev?",
+                "oneOf": [
+                  {
+                    "default": false,
+                    "description": "Will find the first package.json in the repo and use the `name` as the npm package name",
+                    "type": "boolean"
+                  },
+                  {
+                    "default": "package.json",
+                    "description": "Will use the given package.json to find the npm package name",
+                    "type": "string"
+                  }
+                ]
+              },
+              "readme": {
+                "default": false,
+                "description": "If defined will show the repository readme at luxass.dev/projects/repo-name",
+                "oneOf": [
+                  {
+                    "default": false,
+                    "description": "Will use the root readme.md as the repository readme",
+                    "type": "boolean"
+                  },
+                  {
+                    "default": "README.md",
+                    "description": "Will use the given file as the repository readme",
+                    "type": "string"
+                  }
+                ]
+              },
+              "website": {
+                "default": false,
+                "description": "The url to the website",
+                "oneOf": [
+                  {
+                    "default": false,
+                    "description": "Will use homepageUrl from github as the website url",
+                    "type": "boolean"
+                  },
+                  {
+                    "description": "The url to the website",
+                    "format": "uri",
+                    "type": "string"
+                  }
+                ]
               },
               "name": {
                 "description": "The name of the package",

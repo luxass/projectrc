@@ -11,16 +11,23 @@ import {
 } from "valibot";
 
 const PROJECT_SCHEMA = object({
-  readme: optional(union([boolean(), optional(string())])),
-  npm: optional(union([boolean(), optional(string())])),
-  ignore: optional(boolean()),
-  website: optional(union([boolean(), string([url()])])),
-  handles: optional(array(string([startsWith("/")]))),
-  description: optional(string()),
   categories: optional(array(union([string(), object({
     key: string(),
     name: string(),
   })]))),
+  description: optional(string()),
+  handles: optional(array(string([startsWith("/")]))),
+  ignore: optional(boolean()),
+  npm: optional(union([boolean(), optional(string())])),
+  readme: optional(union([boolean(), optional(string())])),
+  website: optional(union([boolean(), string([url()])])),
+  deprecated: optional(union([
+    boolean(),
+    optional(object({
+      message: string(),
+      replacement: optional(string()),
+    })),
+  ])),
 });
 
 const MONOREPO_SCHEMA = object({

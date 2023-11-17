@@ -4,23 +4,23 @@ useHead({
 });
 
 defineOgImage({
-  title: "404",
   description: "Page not found",
+  title: "404",
 });
 
 useSeoMeta({
   description: "A site that describes what a .projectrc is.",
-  ogTitle: "projectrc",
   ogDescription: "A site that describes what a .projectrc is.",
-  twitterTitle: "projectrc",
-  twitterDescription: "A site that describes what a .projectrc is.",
+  ogTitle: "projectrc",
   ogUrl: "https://projectrc.luxass.dev",
+  twitterDescription: "A site that describes what a .projectrc is.",
   twitterImage: "https://projectrc.luxass.dev/__og_image__/og.png",
+  twitterTitle: "projectrc",
 });
 </script>
 
 <template>
-  <div class="h-100dvh flex gap-4 flex-col items-center justify-center">
+  <div class="h-100dvh flex flex-col items-center justify-center gap-4">
     <h1 class="text-8xl text-blue-600">
       404
     </h1>

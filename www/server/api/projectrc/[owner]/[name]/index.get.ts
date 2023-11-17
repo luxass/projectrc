@@ -6,7 +6,7 @@ export default defineCachedEventHandler(async (event) => {
     if (!event.context.params) {
       return notFound(event);
     }
-    const { owner, name } = event.context.params;
+    const { name, owner } = event.context.params;
     if (!ALLOWED_OWNERS.includes(owner) || BLOCKED_REPOSITORIES.includes(name)) {
       return notFound(event);
     }
@@ -31,6 +31,6 @@ export default defineCachedEventHandler(async (event) => {
     return serverError(event, err);
   }
 }, {
-  shouldBypassCache: () => process.env.NODE_ENV === "development",
   maxAge: 3600, // 1 hour
+  shouldBypassCache: () => process.env.NODE_ENV === "development",
 });

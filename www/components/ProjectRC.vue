@@ -5,21 +5,21 @@ import {
 import { getWasmInlined } from "shikiji/wasm";
 
 const schema = await $fetch("/api/schema", {
-  method: "GET",
   headers: {
     "Content-Type": "application/json",
   },
+  method: "GET",
 });
 
 const shiki = await getHighlighterCore({
   langs: [
     import("shikiji/langs/json.mjs"),
   ],
+  loadWasm: getWasmInlined,
   themes: [
     import("shikiji/themes/vitesse-dark.mjs"),
     import("shikiji/themes/vitesse-light.mjs"),
   ],
-  loadWasm: getWasmInlined,
 });
 
 const mode = useColorMode();
@@ -47,7 +47,7 @@ watch(isDark, () => {
 
 <template>
   <div class="my-4">
-    <h2 class="text-xl my-2 font-semibold">
+    <h2 class="my-2 text-xl font-semibold">
       You can see the schema used here.
     </h2>
     <div v-html="html" />
