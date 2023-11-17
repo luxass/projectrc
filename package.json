@@ -35,7 +35,7 @@
     "update:schema": "npx tsx ./scripts/update-schema.ts"
   },
   "devDependencies": {
-    "@luxass/eslint-config": "^3.3.2",
+    "@luxass/eslint-config": "^4.0.0-beta.0",
     "@sinclair/typebox": "^0.31.23",
     "@types/node": "^18.18.8",
     "dotenv": "^16.3.1",
