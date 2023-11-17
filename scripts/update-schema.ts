@@ -1,18 +1,18 @@
-import { exit } from "node:process";
-import { join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { writeFile } from "node:fs/promises";
-import { Kind, Type, TypeRegistry } from "@sinclair/typebox";
+import { join, resolve } from "node:path";
+import { exit } from "node:process";
+import { fileURLToPath } from "node:url";
 import type { SchemaOptions, Static, TSchema, TUnion } from "@sinclair/typebox";
+
+import { Kind, Type, TypeRegistry } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
 TypeRegistry.Set(
   "ExtendedOneOf",
-  (schema: any, value) =>
-    schema.oneOf.reduce(
-      (acc: number, schema: any) => acc + (Value.Check(schema, value) ? 1 : 0),
-      0,
-    ) === 1,
+  (schema: any, value) => schema.oneOf.reduce(
+    (acc: number, schema: any) => acc + (Value.Check(schema, value) ? 1 : 0),
+    0,
+  ) === 1,
 );
 
 function OneOf<T extends TSchema[]>(
@@ -27,79 +27,6 @@ function OneOf<T extends TSchema[]>(
 }
 
 const PROJECTRC_SCHEMA = Type.Object({
-  readme: Type.Optional(
-    OneOf(
-      [
-        Type.Boolean({
-          description: "Will use the root readme.md as the repository readme",
-          default: false,
-        }),
-        Type.String({
-          description: "Will use the given file as the repository readme",
-          default: "README.md",
-        }),
-      ],
-      {
-        default: false,
-        description:
-          "If defined will show the repository readme at luxass.dev/projects/repo-name",
-      },
-    ),
-  ),
-  npm: Type.Optional(
-    OneOf(
-      [
-        Type.Boolean({
-          description:
-            "Will find the first package.json in the repo and use the `name` as the npm package name",
-          default: false,
-        }),
-        Type.String({
-          description:
-            "Will use the given package.json to find the npm package name",
-          default: "package.json",
-        }),
-      ],
-      {
-        description:
-          "Does the repo have a npm package and should it be visible on luxass.dev?",
-        default: false,
-      },
-    ),
-  ),
-  ignore: Type.Optional(
-    Type.Boolean({
-      description: "Ignore this repository from being used",
-      default: false,
-    }),
-  ),
-  website: Type.Optional(
-    OneOf(
-      [
-        Type.Boolean({
-          description: "Will use homepageUrl from github as the website url",
-          default: false,
-        }),
-        Type.String({
-          description: "The url to the website",
-          format: "uri",
-        }),
-      ],
-      {
-        default: false,
-        description: "The url to the website",
-      },
-    ),
-  ),
-  handles: Type.Optional(
-    Type.Array(
-      Type.String({
-        description:
-          "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
-        pattern: "^/",
-      }),
-    ),
-  ),
   categories: Type.Optional(
     Type.Array(
       OneOf([
@@ -122,12 +49,100 @@ const PROJECTRC_SCHEMA = Type.Object({
       description: "The description of the project",
     }),
   ),
+  deprecated: Type.Optional(
+    OneOf([Type.Boolean({
+      default: false,
+      description: "Is this project deprecated?",
+    }), Type.Object({
+      message: Type.String({
+        description: "The message to show when the project is deprecated",
+      }),
+      replacement: Type.Optional(
+        Type.String({
+          description: "The replacement for the project",
+        }),
+      ),
+    })]),
+  ),
+  handles: Type.Optional(
+    Type.Array(
+      Type.String({
+        description:
+          "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
+        pattern: "^/",
+      }),
+    ),
+  ),
+  ignore: Type.Optional(
+    Type.Boolean({
+      default: false,
+      description: "Ignore this repository from being used",
+    }),
+  ),
+  npm: Type.Optional(
+    OneOf(
+      [
+        Type.Boolean({
+          default: false,
+          description:
+            "Will find the first package.json in the repo and use the `name` as the npm package name",
+        }),
+        Type.String({
+          default: "package.json",
+          description:
+            "Will use the given package.json to find the npm package name",
+        }),
+      ],
+      {
+        default: false,
+        description:
+          "Does the repo have a npm package and should it be visible on luxass.dev?",
+      },
+    ),
+  ),
+  readme: Type.Optional(
+    OneOf(
+      [
+        Type.Boolean({
+          default: false,
+          description: "Will use the root readme.md as the repository readme",
+        }),
+        Type.String({
+          default: "README.md",
+          description: "Will use the given file as the repository readme",
+        }),
+      ],
+      {
+        default: false,
+        description:
+          "If defined will show the repository readme at luxass.dev/projects/repo-name",
+      },
+    ),
+  ),
+  website: Type.Optional(
+    OneOf(
+      [
+        Type.Boolean({
+          default: false,
+          description: "Will use homepageUrl from github as the website url",
+        }),
+        Type.String({
+          description: "The url to the website",
+          format: "uri",
+        }),
+      ],
+      {
+        default: false,
+        description: "The url to the website",
+      },
+    ),
+  ),
 });
 
 const MONOREPO_SCHEMA = Type.Object({
   enabled: Type.Boolean({
-    description: "Is this a monorepo?",
     default: false,
+    description: "Is this a monorepo?",
   }),
   ignores: Type.Optional(
     Type.Array(

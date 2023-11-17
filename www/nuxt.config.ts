@@ -1,5 +1,29 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: "en",
+      },
+      viewport: "width=device-width,initial-scale=1",
+    },
+    layoutTransition: false,
+    pageTransition: false,
+  },
+  colorMode: {
+    classSuffix: "",
+    fallback: "dark",
+    preference: "dark",
+  },
+  css: ["@unocss/reset/tailwind.css"],
+  devtools: { enabled: true },
+  experimental: {
+    componentIslands: true,
+    payloadExtraction: true,
+    typedPages: true,
+    typescriptBundlerResolution: true,
+    viewTransition: true,
+  },
   modules: [
     "@nuxt/devtools",
     "@unocss/nuxt",
@@ -8,40 +32,16 @@ export default defineNuxtConfig({
     "nuxt-og-image",
     "@nuxtjs/color-mode",
   ],
+  plugins: [
+    {
+      mode: "client",
+      src: "~/plugins/vercel-analytics.ts",
+    },
+  ],
   site: {
     url: "https://projectrc.luxass.dev",
   },
-  devtools: { enabled: true },
-  plugins: [
-    {
-      src: "~/plugins/vercel-analytics.ts",
-      mode: "client",
-    },
-  ],
-  css: ["@unocss/reset/tailwind.css"],
   sourcemap: false,
-  app: {
-    head: {
-      viewport: "width=device-width,initial-scale=1",
-      htmlAttrs: {
-        lang: "en",
-      },
-    },
-    pageTransition: false,
-    layoutTransition: false,
-  },
-  colorMode: {
-    fallback: "dark",
-    preference: "dark",
-    classSuffix: "",
-  },
-  experimental: {
-    typescriptBundlerResolution: true,
-    viewTransition: true,
-    componentIslands: true,
-    payloadExtraction: true,
-    typedPages: true,
-  },
   vite: {
     resolve: {
       alias: {

@@ -10,12 +10,6 @@ import {
 } from "unocss";
 
 export default defineConfig({
-  shortcuts: {
-    "bg-base": "bg-white dark:bg-[#151515]",
-    "bg-secondary": "bg-gray:5",
-    "bg-active": "bg-gray:10",
-    "border-base": "border-gray/20",
-  },
   presets: [
     presetUno(),
     presetAttributify(),
@@ -29,6 +23,12 @@ export default defineConfig({
       },
     }),
   ],
+  shortcuts: {
+    "bg-active": "bg-gray:10",
+    "bg-base": "bg-white dark:bg-[#151515]",
+    "bg-secondary": "bg-gray:5",
+    "border-base": "border-gray/20",
+  },
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),
