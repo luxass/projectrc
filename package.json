@@ -2,7 +2,7 @@
   "name": "@luxass/projectrc-monorepo",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@8.10.2",
+  "packageManager": "pnpm@8.10.5",
   "description": "Monorepo for @luxass/projectrc",
   "author": {
     "name": "Lucas Nørgård",
@@ -35,12 +35,12 @@
     "update:schema": "npx tsx ./scripts/update-schema.ts"
   },
   "devDependencies": {
-    "@luxass/eslint-config": "^4.0.0-beta.0",
-    "@sinclair/typebox": "^0.31.23",
+    "@luxass/eslint-config": "^4.0.0-beta.4",
+    "@sinclair/typebox": "^0.31.26",
     "@types/node": "^18.18.8",
     "dotenv": "^16.3.1",
-    "eslint": "^8.53.0",
-    "tsup": "^7.2.0",
+    "eslint": "^8.54.0",
+    "tsup": "^7.3.0",
     "turbo": "^1.10.16",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6",
