@@ -1,5 +1,4 @@
+// @ts-check
 import { luxass } from "@luxass/eslint-config";
 
-export default luxass({
-  unocss: true,
-});
+export default await luxass();

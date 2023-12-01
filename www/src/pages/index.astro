@@ -1,0 +1,49 @@
+---
+// import { getCollection } from "astro:content";
+import PageLayout from "../layouts/PageLayout.astro";
+
+// import Link from "../components/Link.astro";
+// import GitHubIcon from "~icons/carbon/LogoGithub";
+// import LinkedInIcon from "~icons/carbon/LogoLinkedin";
+
+export const prerender = true;
+---
+
+<PageLayout title="home" description="With a background as a fullstack developer. Lucas Nørgård builds both modern and scalable applications">
+  <div class="min-h-250px">
+    <h1>
+      Hey I&apos;m luxass <span class="inline-block animate-duration-2s animate-count-3 animate-wiggle">👋</span>
+    </h1>
+    <p>
+      I&apos;m a self-taught developer based in Aarhus, Denmark. <br />
+       In my spare time, I enjoy learning new technologies and working on side projects.
+      <br />
+      <br />
+       occasionally I also write some articles on my <a href="/posts">blog.</a>
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  @keyframes wiggle {
+    0% {
+      transform: rotate(2deg);
+    }
+
+    40% {
+      transform: rotate(8deg);
+    }
+
+    60% {
+      transform: rotate(1deg);
+    }
+
+    80% {
+      transform: rotate(6deg);
+    }
+
+    100% {
+      transform: rotate(3deg);
+    }
+  }
+</style>
