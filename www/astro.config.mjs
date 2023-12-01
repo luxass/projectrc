@@ -9,13 +9,6 @@ export default defineConfig({
   integrations: [UnoCSS({
     injectReset: true,
   })],
-  vite: {
-    resolve: {
-      alias: {
-        "@luxass/projectrc": "../packages/projectrc/src/index.ts",
-      },
-    },
-  },
   compressHTML: false,
   markdown: {
     shikiConfig: {
