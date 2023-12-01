@@ -4,7 +4,7 @@ export default defineConfig({
   bundle: true,
   clean: true,
   dts: true,
-  entry: ["./src/index.ts", "./src/schema.ts"],
+  entry: ["./src/index.ts", "./src/schema.ts", "./src/utils.ts"],
   format: ["cjs", "esm"],
   outExtension(ctx) {
     return {
