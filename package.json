@@ -21,7 +21,6 @@
   },
   "workspaces": [
     "www",
-    "www2",
     "packages/*"
   ],
   "engines": {

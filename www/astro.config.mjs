@@ -18,7 +18,12 @@ export default defineConfig({
   },
   compressHTML: false,
   markdown: {
-    
+    shikiConfig: {
+      experimentalThemes: {
+        light: "vitesse-light",
+        dark: "vitesse-dark",
+      },
+    },
   },
   output: "server",
   adapter: vercel(),
