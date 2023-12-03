@@ -1,5 +1,5 @@
-import { withJSONSchemaFeatures } from "@gcornut/valibot-json-schema";
 import {
+  type BaseSchema,
   array,
   boolean,
   merge,
@@ -9,6 +9,26 @@ import {
   string,
   union,
 } from "valibot";
+
+import type { JSONSchema7 } from "json-schema";
+
+const JSON_SCHEMA_FEATURES_KEY = "__json_schema_features";
+
+export type JSONSchemaFeatures = Partial<JSONSchema7>;
+
+export interface WithJSONSchemaFeatures {
+  [JSON_SCHEMA_FEATURES_KEY]: JSONSchemaFeatures
+}
+
+/**
+ * Function to add JSON schema features to a valibot schema.
+ * @param {S} schema - The base schema.
+ * @param {JSONSchemaFeatures} features - The JSON schema features to add.
+ * @returns {S & WithJSONSchemaFeatures} The base schema with added JSON schema features.
+ */
+export function withJSONSchemaFeatures<S extends BaseSchema>(schema: S, features: JSONSchemaFeatures): S & WithJSONSchemaFeatures {
+  return Object.assign(schema, { [JSON_SCHEMA_FEATURES_KEY]: features });
+}
 
 export const DEPRECATION_SCHEMA = withJSONSchemaFeatures(optional(object({
   message: withJSONSchemaFeatures(string(), {
