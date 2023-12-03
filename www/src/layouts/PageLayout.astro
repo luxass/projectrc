@@ -1,6 +1,5 @@
 ---
-// import Footer from "../components/Footer.astro";
-// import Header from "../components/Header.astro";
+import Header from "../components/Header.astro";
 
 export interface Props {
   title: string
@@ -58,78 +57,50 @@ const {
     <!-- links -->
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <link
-      rel="preload"
-      href="/fonts/lexend.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
-    />
+    <link rel="preload" href="/fonts/lexend.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   </head>
   <body class="font-sans">
-    <!-- <Header transition:animate="none" /> -->
-    <main class="prose flex-1 p-4" class:list={clazz} transition:animate="slide">
+    <Header />
+    <main class="prose mt-8 flex flex-col" class:list={clazz}>
       <slot />
     </main>
-    <!-- <Footer /> -->
     <style is:global>
       html {
-        @apply antialiased touch-manipulation scroll-smooth text-base;
+        @apply: antialiased touch-manipulation scroll-smooth text-base;
         text-rendering: optimizeLegibility;
       }
 
-      body {
-        @apply text-neutral-800 bg-neutral-100 dark:(text-neutral-300 bg-neutral-900) py-8 min-h-screen max-w-2xl md:!mx-auto !mx-4 font-sans flex flex-col justify-between min-h-100dvh;
+      html.dark {
+        background: #111;
+        color: white;
+        color-scheme: dark;
       }
 
-      .prose {
-        @apply [&>:not(:last-child)]:mb-6;
+      body {
+        @apply: max-w-4xl lg:!mx-auto !mx-4 py3 md:px14 md:py10;
+      }
 
-        & p {
-          @apply line-height-relaxed;
-        }
-
-        & h1,
-        & h2,
-        & h3,
-        & h4,
-        & h5,
-        & h6 {
-          @apply text-neutral-800 dark:text-neutral-100 font-semibold my-8;
-        }
-
-        & h1 {
-          @apply text-2xl;
-        }
-
-        & h2 {
-          @apply text-xl;
-        }
-
-        & h3 {
-          @apply text-lg;
-        }
-
-        & h4 {
-          @apply text-base;
-        }
-
-        & h5 {
-          @apply text-sm;
-        }
-
-        & h6 {
-          @apply text-xs;
-        }
-
-        & strong {
-          @apply font-medium text-neutral-800 dark:text-neutral-100;
-        }
-
-        & img {
-          @apply mx-auto rounded my-6;
-        }
+      html.dark .astro-code,
+      html.dark .astro-code span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg) !important;
+        /* Optional, if you also want font styles */
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
       }
     </style>
   </body>
 </html>
+
+<script is:inline>
+  function run() {
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("theme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light")) {
+      document.documentElement.classList.toggle("dark", true);
+    }
+  }
+
+  run();
+</script>

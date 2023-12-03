@@ -52,7 +52,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "vitest",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
@@ -64,5 +65,8 @@
     "minimatch": "^9.0.3",
     "valibot": "^0.21.0",
     "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@types/json-schema": "^7.0.15"
   }
 }

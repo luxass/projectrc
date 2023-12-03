@@ -579,8 +579,6 @@ export function createProjectRCResolver(githubToken: string) {
             project.npm = typeof npmSrc === "string" ? npmSrc : `https://www.npmjs.com/package/${pkg.name}`;
           }
 
-          project.categories = override?.categories || $raw.categories;
-
           project.deprecated = override?.deprecated || $raw.deprecated;
 
           result.projects.push(project);
@@ -600,10 +598,6 @@ export function createProjectRCResolver(githubToken: string) {
             = typeof $raw.website === "string"
               ? $raw.website
               : repository.homepageUrl || null;
-        }
-
-        if ($raw.categories) {
-          project.categories = $raw.categories;
         }
 
         if ($raw.readme) {

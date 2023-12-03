@@ -1,278 +1,172 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "description": "Project configuration file for luxass.dev. See more here https://projectrc.luxass.dev",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "categories": {
-      "type": "array",
-      "items": {
-        "oneOf": [
-          {
-            "description": "The key of the category",
-            "type": "string"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "key": {
-                "description": "The key of the category",
-                "type": "string"
-              },
-              "name": {
-                "description": "The name of the category",
-                "type": "string"
-              }
-            },
-            "required": [
-              "key",
-              "name"
-            ]
-          }
-        ]
-      }
-    },
     "description": {
-      "description": "The description of the project",
-      "type": "string"
-    },
-    "deprecated": {
-      "oneOf": [
-        {
-          "default": false,
-          "description": "Is this project deprecated?",
-          "type": "boolean"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "message": {
-              "description": "The message to show when the project is deprecated",
-              "type": "string"
-            },
-            "replacement": {
-              "description": "The replacement for the project",
-              "type": "string"
-            }
-          },
-          "required": [
-            "message"
-          ]
-        }
-      ]
+      "type": "string",
+      "description": "The description of the project."
     },
     "handles": {
       "type": "array",
       "items": {
-        "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
-        "pattern": "^/",
-        "type": "string"
-      }
+        "type": "string",
+        "pattern": "^"
+      },
+      "description": "The handles of the project. Will be able to be used in luxass.dev/<PROJECT_HANDLE>"
     },
     "ignore": {
-      "default": false,
-      "description": "Ignore this repository from being used",
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Ignore this project."
     },
     "npm": {
-      "default": false,
-      "description": "Does the repo have a npm package and should it be visible on luxass.dev?",
-      "oneOf": [
+      "anyOf": [
         {
-          "default": false,
-          "description": "Will find the first package.json in the repo and use the `name` as the npm package name",
           "type": "boolean"
         },
         {
-          "default": "package.json",
-          "description": "Will use the given package.json to find the npm package name",
           "type": "string"
         }
-      ]
+      ],
+      "description": "The npm package name of the project."
     },
     "readme": {
-      "default": false,
-      "description": "If defined will show the repository readme at luxass.dev/projects/repo-name",
-      "oneOf": [
+      "anyOf": [
         {
-          "default": false,
-          "description": "Will use the root readme.md as the repository readme",
           "type": "boolean"
         },
         {
-          "default": "README.md",
-          "description": "Will use the given file as the repository readme",
           "type": "string"
         }
-      ]
+      ],
+      "description": "The path to the readme file."
     },
     "website": {
-      "default": false,
-      "description": "The url to the website",
-      "oneOf": [
+      "anyOf": [
         {
-          "default": false,
-          "description": "Will use homepageUrl from github as the website url",
           "type": "boolean"
         },
         {
-          "description": "The url to the website",
-          "format": "uri",
-          "type": "string"
+          "type": "string",
+          "format": "uri"
         }
-      ]
+      ],
+      "description": "The website of the project. If set to `true`, the website is based on repository URL."
+    },
+    "deprecated": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "The deprecation message."
+        },
+        "replacement": {
+          "type": "string",
+          "description": "The replacement package. If not set, the package is considered deprecated without a replacement."
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "description": "Deprecation information."
     },
     "monorepo": {
       "type": "object",
       "properties": {
         "enabled": {
-          "default": false,
-          "description": "Is this a monorepo?",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Enable monorepo mode."
         },
         "ignores": {
           "type": "array",
           "items": {
-            "description": "Ignore these packages from being used",
             "type": "string"
-          }
+          },
+          "description": "Ignore these projects."
         },
         "overrides": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "categories": {
-                "type": "array",
-                "items": {
-                  "oneOf": [
-                    {
-                      "description": "The key of the category",
-                      "type": "string"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "key": {
-                          "description": "The key of the category",
-                          "type": "string"
-                        },
-                        "name": {
-                          "description": "The name of the category",
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "key",
-                        "name"
-                      ]
-                    }
-                  ]
-                }
-              },
-              "description": {
-                "description": "The description of the project",
+              "name": {
                 "type": "string"
               },
-              "deprecated": {
-                "oneOf": [
-                  {
-                    "default": false,
-                    "description": "Is this project deprecated?",
-                    "type": "boolean"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "description": "The message to show when the project is deprecated",
-                        "type": "string"
-                      },
-                      "replacement": {
-                        "description": "The replacement for the project",
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "message"
-                    ]
-                  }
-                ]
+              "description": {
+                "type": "string",
+                "description": "The description of the project."
               },
               "handles": {
                 "type": "array",
                 "items": {
-                  "description": "The paths to use for this project, if not defined will use the default `/projects/repo-name`",
-                  "pattern": "^/",
-                  "type": "string"
-                }
+                  "type": "string",
+                  "pattern": "^"
+                },
+                "description": "The handles of the project. Will be able to be used in luxass.dev/<PROJECT_HANDLE>"
               },
               "ignore": {
-                "default": false,
-                "description": "Ignore this repository from being used",
-                "type": "boolean"
+                "type": "boolean",
+                "description": "Ignore this project."
               },
               "npm": {
-                "default": false,
-                "description": "Does the repo have a npm package and should it be visible on luxass.dev?",
-                "oneOf": [
+                "anyOf": [
                   {
-                    "default": false,
-                    "description": "Will find the first package.json in the repo and use the `name` as the npm package name",
                     "type": "boolean"
                   },
                   {
-                    "default": "package.json",
-                    "description": "Will use the given package.json to find the npm package name",
                     "type": "string"
                   }
-                ]
+                ],
+                "description": "The npm package name of the project."
               },
               "readme": {
-                "default": false,
-                "description": "If defined will show the repository readme at luxass.dev/projects/repo-name",
-                "oneOf": [
+                "anyOf": [
                   {
-                    "default": false,
-                    "description": "Will use the root readme.md as the repository readme",
                     "type": "boolean"
                   },
                   {
-                    "default": "README.md",
-                    "description": "Will use the given file as the repository readme",
                     "type": "string"
                   }
-                ]
+                ],
+                "description": "The path to the readme file."
               },
               "website": {
-                "default": false,
-                "description": "The url to the website",
-                "oneOf": [
+                "anyOf": [
                   {
-                    "default": false,
-                    "description": "Will use homepageUrl from github as the website url",
                     "type": "boolean"
                   },
                   {
-                    "description": "The url to the website",
-                    "format": "uri",
-                    "type": "string"
+                    "type": "string",
+                    "format": "uri"
                   }
-                ]
+                ],
+                "description": "The website of the project. If set to `true`, the website is based on repository URL."
               },
-              "name": {
-                "description": "The name of the package",
-                "type": "string"
+              "deprecated": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "The deprecation message."
+                  },
+                  "replacement": {
+                    "type": "string",
+                    "description": "The replacement package. If not set, the package is considered deprecated without a replacement."
+                  }
+                },
+                "required": [
+                  "message"
+                ],
+                "description": "Deprecation information."
               }
             },
             "required": [
               "name"
             ]
-          }
+          },
+          "description": "Override project configuration."
         }
       },
-      "required": [
-        "enabled"
-      ]
+      "description": "Monorepo configuration"
     }
   }
 }
