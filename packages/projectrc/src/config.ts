@@ -1,8 +1,13 @@
-import { Buffer } from "node:buffer";
 import { parseAsync } from "valibot";
-import { CONFIG_FILE_NAMES } from "./constants";
 import type { ProjectRCFile } from "./types";
 import { SCHEMA } from "./schema";
+
+export const CONFIG_FILE_NAMES: string[] = [
+  "projectrc.json",
+  ".projectrc.json",
+  "projectrc.json5",
+  ".projectrc.json5",
+];
 
 export interface ResolveConfigOptions {
   owner: string
@@ -17,14 +22,15 @@ export interface ResolveConfigOptions {
  *
  * @example
  * ```ts
- * import { createProjectRCResolver } from "@luxass/projectrc";
+ * import { resolveConfig } from "@luxass/projectrc";
  *
- * const projectRCResolver = createProjectRCResolver(process.env.GITHUB_TOKEN);
- *
- * const projectRCFile = await projectRCResolver.config("luxass", "projectrc");
+ * const projectRCFile = await resolveConfig({
+ *  owner: "luxass",
+ *  repository: "projectrc",
+ * });
  * // results in:
  * // {
- * //   path: "https://api.github.com/repos/luxass/projectrc/contents/.github/projectrc.json",
+ * //   path: "https://api.github.com/repos/luxass/projectrc/contents/.github/.projectrc.json",
  * //   content: {
  * //     website: true,
  * //     handles: [
@@ -48,7 +54,7 @@ export async function resolveConfig(options: ResolveConfigOptions): Promise<Proj
       );
       const result = await fetch(url.toString(), {
         headers: {
-          "Authorization": `Bearer ${githubToken}`,
+          ...(githubToken && { Authorization: `bearer ${githubToken}` }),
           "Content-Type": "application/vnd.github+json",
           "X-GitHub-Api-Version": "2022-11-28",
         },
@@ -63,8 +69,10 @@ export async function resolveConfig(options: ResolveConfigOptions): Promise<Proj
         continue;
       }
 
+      const byteArray = new Uint8Array(atob(result.content).split("").map((char) => char.charCodeAt(0)));
+
       const content = JSON.parse(
-        Buffer.from(result.content, "base64").toString("utf-8"),
+        new TextDecoder().decode(byteArray),
       );
 
       const parsed = await parseAsync(SCHEMA, content);
