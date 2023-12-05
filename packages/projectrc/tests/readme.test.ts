@@ -25,11 +25,13 @@ export const handlers = [
   http.get<{
     owner: string
     name: string
-    file: string
+    "0": string
   }>(
-    "https://api.github.com/repos/:owner/:name/contents/:file",
+    "https://api.github.com/repos/:owner/:name/contents/*",
     async ({ params }) => {
-      if (!params.owner || !params.name || !params.file) {
+      const files = params["0"];
+
+      if (!params.owner || !params.name || !files) {
         return HttpResponse.json(
           {
             message: "Not Found",
@@ -59,9 +61,9 @@ export const handlers = [
         );
       }
 
-      const files = Object.keys(repo);
+      const repoFiles = Object.keys(repo);
 
-      if (!files.includes(params.file)) {
+      if (!repoFiles.includes(files)) {
         return HttpResponse.json(
           {
             message: "Not Found",
@@ -74,7 +76,7 @@ export const handlers = [
         );
       }
 
-      const project = repo[params.file];
+      const project = repo[files];
 
       if (!project) {
         return HttpResponse.json(
@@ -184,7 +186,7 @@ afterAll(() => server.close());
 beforeEach(() => GITHUB_MOCKED_FILES.clear());
 afterEach(() => server.resetHandlers());
 
-it.only("expect `luxass/lesetid` to have a `.projectrc.json`", async () => {
+it("expect to find repository README when `readme: true`", async () => {
   register(
     new Map([
       [
@@ -192,9 +194,6 @@ it.only("expect `luxass/lesetid` to have a `.projectrc.json`", async () => {
         {
           ".projectrc.json": {
             content: {
-              handles: [
-                "/lesetid",
-              ],
               readme: true,
             },
           },
@@ -226,4 +225,44 @@ it.only("expect `luxass/lesetid` to have a `.projectrc.json`", async () => {
   + "built with **[astro](https://astro.build)** 🩵\n"
   + "\n"
   + "<samp>licensed under <a href=\"./LICENSE\">MIT</a></samp>\n");
+});
+
+it("expect to find specific repository README when readme is a string", async () => {
+  register(
+    new Map([
+      [
+        "luxass/projectrc",
+        {
+          ".projectrc.json": {
+            content: {
+              readme: "/packages/projectrc",
+            },
+          },
+          "README.md": {
+            content: "# Root README\n\n> This is located in the `root`",
+          },
+          "packages/README.md": {
+            content: "# Packages\n\n> This is located in `packages`",
+          },
+          "packages/projectrc/README.md": {
+            content: "# ProjectRC\n\n> This is located in `packages/projectrc`",
+          },
+        },
+      ],
+    ]),
+  );
+
+  const result = await getREADME({
+    owner: "luxass",
+    repository: "projectrc",
+    readmePath: "packages/projectrc",
+  });
+
+  expect(result).toBeDefined();
+  expect(result?.path).toBe(
+    "https://api.github.com/repos/luxass/projectrc/contents/packages/projectrc/README.md",
+  );
+  expect(result?.content).toBeDefined();
+  expect(result?.content).toBeTypeOf("string");
+  expect(result?.content).toBe("# ProjectRC\n\n> This is located in `packages/projectrc`");
 });
