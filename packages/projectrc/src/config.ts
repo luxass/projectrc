@@ -40,7 +40,9 @@ export interface ResolveConfigOptions {
  * // }
  * ```
  */
-export async function resolveConfig(options: ResolveConfigOptions): Promise<ProjectRCFile | undefined> {
+export async function resolveConfig(
+  options: ResolveConfigOptions,
+): Promise<ProjectRCFile | undefined> {
   if (!options.owner || !options.repository) {
     return undefined;
   }
@@ -69,11 +71,13 @@ export async function resolveConfig(options: ResolveConfigOptions): Promise<Proj
         continue;
       }
 
-      const byteArray = new Uint8Array(atob(result.content).split("").map((char) => char.charCodeAt(0)));
-
-      const content = JSON.parse(
-        new TextDecoder().decode(byteArray),
+      const byteArray = new Uint8Array(
+        atob(result.content)
+          .split("")
+          .map((char) => char.charCodeAt(0)),
       );
+
+      const content = JSON.parse(new TextDecoder().decode(byteArray));
 
       const parsed = await parseAsync(SCHEMA, content);
 

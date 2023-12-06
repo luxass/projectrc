@@ -39,11 +39,7 @@ export async function getREADME(
     return undefined;
   }
 
-  const {
-    owner,
-    repository,
-    githubToken,
-  } = options;
+  const { owner, repository, githubToken } = options;
 
   let { readmePath } = options;
 
@@ -83,7 +79,11 @@ export async function getREADME(
       return undefined;
     }
 
-    const byteArray = new Uint8Array(atob(result.content).split("").map((char) => char.charCodeAt(0)));
+    const byteArray = new Uint8Array(
+      atob(result.content)
+        .split("")
+        .map((char) => char.charCodeAt(0)),
+    );
     return {
       content: GLOBAL_TEXT_DECODER.decode(byteArray),
       path: readmeUrl.toString(),

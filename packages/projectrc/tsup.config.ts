@@ -1,8 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import { defineConfig } from "tsup";
-import {
-  toJSONSchema,
-} from "@gcornut/valibot-json-schema";
+import { toJSONSchema } from "@gcornut/valibot-json-schema";
 
 export default defineConfig({
   entry: [
@@ -26,6 +24,9 @@ export default defineConfig({
     const jsonSchema = toJSONSchema({
       schema,
     });
-    await writeFile("./schema.json", `${JSON.stringify(jsonSchema, null, 2)}\n`);
+    await writeFile(
+      "./schema.json",
+      `${JSON.stringify(jsonSchema, null, 2)}\n`,
+    );
   },
 });

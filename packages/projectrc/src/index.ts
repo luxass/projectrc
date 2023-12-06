@@ -3,7 +3,17 @@ import { graphql } from "@octokit/graphql";
 import { type RepositoryNode, gql } from "github-schema";
 import ignore from "ignore";
 import { minimatch } from "minimatch";
-import { type Input, array, literal, number, object, optional, parseAsync, string, union } from "valibot";
+import {
+  type Input,
+  array,
+  literal,
+  number,
+  object,
+  optional,
+  parseAsync,
+  string,
+  union,
+} from "valibot";
 
 import { SCHEMA } from "./schema";
 
@@ -44,8 +54,7 @@ export type ProjectRCResponse = {
     $path: string
   }
 } & {
-  projects: (Omit<Input<typeof SCHEMA>, "monorepo" | "readme"> &
-  {
+  projects: (Omit<Input<typeof SCHEMA>, "monorepo" | "readme"> & {
     name: string
     readme?: ReadmeResult
   })[]
@@ -57,14 +66,16 @@ export const CONFIG_FILE_NAMES: string[] = [
   ".projectrc.json5",
 ];
 
-const FileTreeSchema = array(object({
-  mode: string(),
-  path: string(),
-  sha: string(),
-  size: optional(number()),
-  type: union([literal("tree"), literal("blob")]),
-  url: string(),
-}));
+const FileTreeSchema = array(
+  object({
+    mode: string(),
+    path: string(),
+    sha: string(),
+    size: optional(number()),
+    type: union([literal("tree"), literal("blob")]),
+    url: string(),
+  }),
+);
 
 export interface ProjectRCFile {
   content: Input<typeof SCHEMA>
@@ -448,10 +459,7 @@ export function createProjectRCResolver(githubToken: string) {
           },
         ).then((res) => res.json());
 
-        if (
-          !filesResult
-          || typeof filesResult !== "object"
-        ) {
+        if (!filesResult || typeof filesResult !== "object") {
           throw new Error(
             "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
           );
@@ -463,9 +471,11 @@ export function createProjectRCResolver(githubToken: string) {
           );
         }
 
-        if (!("tree" in filesResult)
+        if (
+          !("tree" in filesResult)
           || !Array.isArray(filesResult.tree)
-          || !filesResult.tree.length) {
+          || !filesResult.tree.length
+        ) {
           throw new Error(
             "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
           );
@@ -476,76 +486,85 @@ export function createProjectRCResolver(githubToken: string) {
         const filePaths = files.map((file) => file.path);
         const _ignore = ignore().add($raw.monorepo.ignores || []);
 
-        const matchedFilePaths = filePaths.filter((filePath) => workspaces.some((pattern) => minimatch(filePath, pattern)) && !_ignore.ignores(filePath));
+        const matchedFilePaths = filePaths.filter(
+          (filePath) =>
+            workspaces.some((pattern) => minimatch(filePath, pattern))
+            && !_ignore.ignores(filePath),
+        );
 
-        const results = await Promise.all((matchedFilePaths.map(async (filePath) => {
-          const url = `https://api.github.com/repos/${owner}/${name}/contents/${filePath}/package.json`;
-          const file = await fetch(url, {
-            headers: {
-              "Authorization": `bearer ${githubToken}`,
-              "Content-Type": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
-            },
-          }).then((res) => res.json());
+        const results = await Promise.all(
+          matchedFilePaths.map(async (filePath) => {
+            const url = `https://api.github.com/repos/${owner}/${name}/contents/${filePath}/package.json`;
+            const file = await fetch(url, {
+              headers: {
+                "Authorization": `bearer ${githubToken}`,
+                "Content-Type": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+              },
+            }).then((res) => res.json());
 
-          if (
-            !file
-            || typeof file !== "object"
-            || !("content" in file)
-            || typeof file.content !== "string"
-          ) {
-            throw new Error(
-              `projectrc: could not find a \`content\` field in \`${url}\`.`,
+            if (
+              !file
+              || typeof file !== "object"
+              || !("content" in file)
+              || typeof file.content !== "string"
+            ) {
+              throw new Error(
+                `projectrc: could not find a \`content\` field in \`${url}\`.`,
+              );
+            }
+
+            const pkg: unknown = JSON.parse(
+              Buffer.from(file.content, "base64").toString("utf-8"),
             );
-          }
 
-          const pkg: unknown = JSON.parse(
-            Buffer.from(file.content, "base64").toString("utf-8"),
-          );
+            if (
+              !pkg
+              || typeof pkg !== "object"
+              || !("name" in pkg)
+              || typeof pkg.name !== "string"
+            ) {
+              throw new Error(
+                `projectrc: could not find a \`name\` field in \`${url}\`.`,
+              );
+            }
 
-          if (
-            !pkg
-            || typeof pkg !== "object"
-            || !("name" in pkg)
-            || typeof pkg.name !== "string"
-          ) {
-            throw new Error(
-              `projectrc: could not find a \`name\` field in \`${url}\`.`,
-            );
-          }
+            let _private = false;
 
-          let _private = false;
+            if ("private" in pkg && typeof pkg.private === "boolean") {
+              _private = pkg.private;
+            }
 
-          if (
-            ("private" in pkg)
-            && typeof pkg.private === "boolean"
-          ) {
-            _private = pkg.private;
-          }
-
-          return {
-            name: pkg.name,
-            path: filePath,
-            private: _private,
-          };
-        })));
+            return {
+              name: pkg.name,
+              path: filePath,
+              private: _private,
+            };
+          }),
+        );
 
         const overrides = $raw.monorepo.overrides || [];
         for (const pkg of results) {
-          const override = overrides.find((override) => override.name === pkg.name);
+          const override = overrides.find(
+            (override) => override.name === pkg.name,
+          );
 
           // if package is inside a folder that you want to include everytime (like `packages/*`),
           // but still want to ignore a specific package.
-          if ((override && override.ignore)) {
+          if (override && override.ignore) {
             continue;
           }
 
           const project: ProjectRCResponse["projects"][0] = {
-            description: override?.description || $raw.description || repository.description || undefined,
+            description:
+              override?.description
+              || $raw.description
+              || repository.description
+              || undefined,
             name: pkg.name,
           };
 
-          project.handles = (override?.handles) || $raw.handles;
+          project.handles = override?.handles || $raw.handles;
 
           let website;
 
@@ -576,7 +595,10 @@ export function createProjectRCResolver(githubToken: string) {
           const npmSrc = override?.npm || $raw.npm;
 
           if (npmSrc && !pkg.private) {
-            project.npm = typeof npmSrc === "string" ? npmSrc : `https://www.npmjs.com/package/${pkg.name}`;
+            project.npm
+              = typeof npmSrc === "string"
+                ? npmSrc
+                : `https://www.npmjs.com/package/${pkg.name}`;
           }
 
           project.deprecated = override?.deprecated || $raw.deprecated;
