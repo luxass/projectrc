@@ -2,14 +2,14 @@
 
 "pkg: projectrc":
   - changed-files:
-      - packages/projectrc/**
+      - any-glob-to-any-file: packages/projectrc/**
 
 "apps: www":
   - changed-files:
-      - www/**
+      - any-glob-to-any-file: www/**
 
 🚨 schema:
   - changed-files:
-      - scripts/update-schema.ts
-      - packages/projectrc/schema.json
-      - packages/projectrc/src/schema.ts
+      - any-glob-to-any-file: scripts/update-schema.ts
+      - any-glob-to-any-file: packages/projectrc/schema.json
+      - any-glob-to-any-file: packages/projectrc/src/schema.ts
