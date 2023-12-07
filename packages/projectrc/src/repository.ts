@@ -17,16 +17,16 @@ export interface ExistsOptions {
  *
  * @example
  * ```ts
- * import { exists } from "@luxass/projectrc";
+ * import { repositoryExists } from "@luxass/projectrc";
  *
- * await exists({
+ * await repositoryExists({
  *  owner: "luxass",
  *  repository: "projectrc",
  * });
  * // true or false based on whether the repository exists
  * ```
  */
-export async function exists(options: ExistsOptions): Promise<boolean> {
+export async function repositoryExists(options: ExistsOptions): Promise<boolean> {
   if (!options.owner || !options.repository) {
     return false;
   }
@@ -72,7 +72,7 @@ export interface RepositoryOptions {
   githubToken: string
 }
 
-export const REPOSITORY_QUERY = gql`
+const REPOSITORY_QUERY = gql`
   #graphql
   query getRepository($owner: String!, $name: String!) {
     repository(owner: $owner, name: $name) {
@@ -109,9 +109,9 @@ export const REPOSITORY_QUERY = gql`
  *
  * @example
  * ```ts
- * import { repository } from "@luxass/projectrc";
+ * import { getRepository } from "@luxass/projectrc";
  *
- * const repository = await repository({
+ * const repository = await getRepository({
  *   owner: "luxass",
  *   repository: "projectrc",
  *   githubToken: process.env.GITHUB_TOKEN,
@@ -123,7 +123,7 @@ export const REPOSITORY_QUERY = gql`
  * // }
  * ```
  */
-export async function repository(
+export async function getRepository(
   options: RepositoryOptions,
 ): Promise<RepositoryNode["repository"] | undefined> {
   if (!options.owner || !options.repository) {
@@ -150,5 +150,6 @@ export async function repository(
   if (!repository) {
     return undefined;
   }
+
   return repository;
 }

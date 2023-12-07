@@ -1,4 +1,4 @@
-export interface GetREADMEOptions {
+export interface READMEOptions {
   owner: string
   repository: string
   readmePath?: boolean | string
@@ -10,10 +10,9 @@ export interface READMEResult {
   path: string
 }
 
-const GLOBAL_TEXT_DECODER = new TextDecoder();
 /**
  * Fetches the readme content of a GitHub repository.
- * @param {GetREADMEOptions} options - The options to use.
+ * @param {READMEOptions} options - The options to use.
  * @returns {Promise<READMEResult | undefined>} A Promise that resolves to a ReadmeResult object containing the path and content of the readme file, or undefined if the readme could not be fetched.
  *
  * @example
@@ -33,7 +32,7 @@ const GLOBAL_TEXT_DECODER = new TextDecoder();
  * ```
  */
 export async function getREADME(
-  options: GetREADMEOptions,
+  options: READMEOptions,
 ): Promise<READMEResult | undefined> {
   if (!options.owner || !options.repository) {
     return undefined;
@@ -85,7 +84,7 @@ export async function getREADME(
         .map((char) => char.charCodeAt(0)),
     );
     return {
-      content: GLOBAL_TEXT_DECODER.decode(byteArray),
+      content: new TextDecoder().decode(byteArray),
       path: readmeUrl.toString(),
     };
   } catch (err) {

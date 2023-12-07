@@ -9,6 +9,7 @@ export default defineConfig({
     "./src/config.ts",
     "./src/readme.ts",
     "./src/repository.ts",
+    "./src/resolve.ts",
   ],
   bundle: true,
   clean: true,
