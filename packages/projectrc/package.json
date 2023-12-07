@@ -29,6 +29,36 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./readme": {
+      "import": {
+        "types": "./dist/readme.d.ts",
+        "default": "./dist/readme.mjs"
+      },
+      "require": {
+        "types": "./dist/readme.d.cts",
+        "default": "./dist/readme.cjs"
+      }
+    },
+    "./config": {
+      "import": {
+        "types": "./dist/config.d.ts",
+        "default": "./dist/config.mjs"
+      },
+      "require": {
+        "types": "./dist/config.d.cts",
+        "default": "./dist/config.cjs"
+      }
+    },
+    "./repository": {
+      "import": {
+        "types": "./dist/repository.d.ts",
+        "default": "./dist/repository.mjs"
+      },
+      "require": {
+        "types": "./dist/repository.d.cts",
+        "default": "./dist/repository.cjs"
+      }
+    },
     "./schema": {
       "import": {
         "types": "./dist/schema.d.ts",
