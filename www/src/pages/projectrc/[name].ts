@@ -2,7 +2,6 @@ import type { APIRoute } from "astro";
 import { resolve } from "@luxass/projectrc";
 
 export const GET: APIRoute = async ({ params }) => {
-  console.log(params);
   const name = params.name;
   if (!name) {
     return new Response("Not Found", { status: 404 });
