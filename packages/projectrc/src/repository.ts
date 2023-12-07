@@ -1,4 +1,4 @@
-import { graphql } from "@octokit/graphql";
+import { graphql, withCustomRequest } from "@octokit/graphql";
 import { gql } from "github-schema";
 import type { RepositoryNode } from "github-schema/github-schema";
 
@@ -56,8 +56,19 @@ export async function exists(options: ExistsOptions): Promise<boolean> {
 }
 
 export interface RepositoryOptions {
+  /**
+   * The owner of the repository
+   */
   owner: string
+
+  /**
+   * The name of the repository
+   */
   repository: string
+
+  /**
+   * The GitHub Token to use
+   */
   githubToken: string
 }
 
@@ -86,6 +97,14 @@ export const REPOSITORY_QUERY = gql`
   }
 `;
 
+/**
+ * Gets the repository node for the given repository
+ * @param {RepositoryOptions} options - The options to use
+ * @returns {RepositoryNode["repository"] | undefined} The repository node
+ *
+ * NOTE:
+ * This throws if the GitHub Token is not set or something else goes wrong, so make sure to catch it
+ */
 export async function repository(
   options: RepositoryOptions,
 ): Promise<RepositoryNode["repository"] | undefined> {
@@ -93,21 +112,25 @@ export async function repository(
     return undefined;
   }
 
+  if (!options.githubToken) {
+    throw new Error("GitHub Token is required");
+  }
+
   const { owner, repository: name, githubToken } = options;
 
-  try {
-    const { repository } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
-      headers: {
-        "Authorization": `bearer ${githubToken}`,
-        "Content-Type": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-      name,
-      owner,
-    });
+  const { repository } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
+    headers: {
+      "Authorization": `bearer ${githubToken}`,
+      "Content-Type": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    name,
+    owner,
+  });
 
-    return repository;
-  } catch (err) {
+  // to prevent returning null from the query
+  if (!repository) {
     return undefined;
   }
+  return repository;
 }

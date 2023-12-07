@@ -5,7 +5,15 @@ import type { SCHEMA } from "../src/schema";
 interface ProjectRCFile {
   content: Input<typeof SCHEMA> | string
 }
-type GitHubRepoMap = Map<string, Record<string, ProjectRCFile>>;
+
+type GitHubRepoFiles = Record<string, ProjectRCFile>;
+
+interface GitHubRepo {
+  data?: Record<string, unknown>
+  files?: GitHubRepoFiles
+}
+
+type GitHubRepoMap = Map<string, GitHubRepo>;
 
 const GitHubMockedData: GitHubRepoMap = new Map();
 

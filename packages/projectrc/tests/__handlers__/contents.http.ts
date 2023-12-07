@@ -2,14 +2,17 @@ import { Buffer } from "node:buffer";
 import type { HttpHandler } from "msw";
 import { HttpResponse, delay, http } from "msw";
 
-export const readmeHandlers = [
-  http.get<{
+export const contentsHTTPHandler
+  = http.get<{
     owner: string
-    repository: string
+    name: string
+    "0": string
   }>(
-    "https://api.github.com/repos/:owner/:repository/readme",
+    "https://api.github.com/repos/:owner/:name/contents/*",
     async ({ params }) => {
-      if (!params.owner || !params.repository) {
+      const files = params["0"];
+
+      if (!params.owner || !params.name || !files) {
         return HttpResponse.json(
           {
             message: "Not Found",
@@ -23,11 +26,10 @@ export const readmeHandlers = [
       }
 
       await delay();
-      const repo = GitHubMockedData.get(
-        `${params.owner}/${params.repository}`,
-      );
 
-      if (!repo) {
+      const repo = GitHubMockedData.get(`${params.owner}/${params.name}`);
+
+      if (!repo || !repo.files) {
         return HttpResponse.json(
           {
             message: "Not Found",
@@ -40,9 +42,9 @@ export const readmeHandlers = [
         );
       }
 
-      const files = Object.keys(repo);
+      const repoFiles = Object.keys(repo.files);
 
-      if (!files.includes("README.md")) {
+      if (!repoFiles.includes(files)) {
         return HttpResponse.json(
           {
             message: "Not Found",
@@ -55,7 +57,7 @@ export const readmeHandlers = [
         );
       }
 
-      const project = repo["README.md"];
+      const project = repo.files[files];
 
       if (!project) {
         return HttpResponse.json(
@@ -79,5 +81,4 @@ export const readmeHandlers = [
         content: Buffer.from(content).toString("base64"),
       });
     },
-  ),
-] satisfies HttpHandler[];
+  ) satisfies HttpHandler;

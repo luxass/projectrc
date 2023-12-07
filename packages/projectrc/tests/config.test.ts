@@ -1,9 +1,11 @@
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from "vitest";
 import { setupServer } from "msw/node";
 import { resolveConfig } from "../src/config";
-import { contentsHandlers } from "./__handlers__/contents.handler";
+import { contentsHTTPHandler } from "./__handlers__/contents.http";
 
-export const handlers = [...contentsHandlers];
+export const handlers = [
+  contentsHTTPHandler,
+];
 
 const server = setupServer(...handlers);
 
@@ -18,12 +20,14 @@ it("expect `luxass/lesetid` to have a `.projectrc.json`", async () => {
       [
         "luxass/lesetid",
         {
-          ".github/.projectrc.json": {
-            content: {
-              handles: ["/lesetid"],
-              npm: true,
-              readme: true,
-              website: true,
+          files: {
+            ".github/.projectrc.json": {
+              content: {
+                handles: ["/lesetid"],
+                npm: true,
+                readme: true,
+                website: true,
+              },
             },
           },
         },
@@ -53,15 +57,17 @@ it("should return next in list", async () => {
       [
         "luxass/lesetid",
         {
-          ".github/.projectrc.json": {
-            content: {
-              handles: ["/lesetid"],
+          files: {
+            ".github/.projectrc.json": {
+              content: {
+                handles: ["/lesetid"],
+              },
             },
-          },
-          ".github/.projectrc.json5": {
-            content: {
-              npm: true,
-              readme: true,
+            ".github/.projectrc.json5": {
+              content: {
+                npm: true,
+                readme: true,
+              },
             },
           },
         },
@@ -86,10 +92,12 @@ it("should return contents of `.projectrc.json5` when first two isn't there", as
       [
         "luxass/lesetid",
         {
-          ".github/.projectrc.json5": {
-            content: {
-              npm: true,
-              readme: true,
+          files: {
+            ".github/.projectrc.json5": {
+              content: {
+                npm: true,
+                readme: true,
+              },
             },
           },
         },
