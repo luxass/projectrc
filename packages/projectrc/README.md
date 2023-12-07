@@ -1,5 +1,8 @@
 # projectrc
 
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+
 You should not use this package, it is probably only useful for me.
 
 ## 📦 Installation
@@ -34,3 +37,10 @@ const projectRC = await projectRCResolver.resolve("luxass", "projectrc");
 ## 📄 License
 
 Published under [MIT License](./LICENSE).
+
+<!-- Badges -->
+
+[npm-version-src]: https://img.shields.io/npm/v/@luxass/projectrc?style=flat&colorA=18181B&colorB=4169E1
+[npm-version-href]: https://npmjs.com/package/@luxass/projectrc
+[npm-downloads-src]: https://img.shields.io/npm/dm/@luxass/projectrc?style=flat&colorA=18181B&colorB=4169E1
+[npm-downloads-href]: https://npmjs.com/package/@luxass/projectrc
