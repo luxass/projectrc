@@ -104,6 +104,24 @@ export const REPOSITORY_QUERY = gql`
  *
  * NOTE:
  * This throws if the GitHub Token is not set or something else goes wrong, so make sure to catch it
+ * This is not the full response from GitHub, as it only contains the fields we need.
+ * To see what we request, you can see the `REPOSITORY_QUERY` export.
+ *
+ * @example
+ * ```ts
+ * import { repository } from "@luxass/projectrc";
+ *
+ * const repository = await repository({
+ *   owner: "luxass",
+ *   repository: "projectrc",
+ *   githubToken: process.env.GITHUB_TOKEN,
+ * });
+ * // results in:
+ * // {
+ * //   name: "projectrc",
+ * //   GITHUB RESPONSE...
+ * // }
+ * ```
  */
 export async function repository(
   options: RepositoryOptions,
