@@ -1,12 +1,28 @@
 import type { APIRoute } from "astro";
-import SCHEMA from "@luxass/projectrc/json-schema";
+import { resolve } from "@luxass/projectrc";
 
-export const GET: APIRoute = () => {
+export const GET: APIRoute = async ({ params }) => {
+  console.log(params);
+  const name = params.name;
+  if (!name) {
+    return new Response("Not Found", { status: 404 });
+  }
+
+  const projectRC = await resolve({
+    owner: "luxass",
+    repository: name,
+    githubToken: import.meta.env.GITHUB_TOKEN,
+  });
+
+  if (!projectRC) {
+    return new Response("Not Found", { status: 404 });
+  }
   return new Response(
-    JSON.stringify(SCHEMA),
+    JSON.stringify(projectRC),
     {
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=600",
       },
     },
   );
