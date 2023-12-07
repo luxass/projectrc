@@ -1,5 +1,5 @@
 import type { GraphQLHandler } from "msw";
-import { HttpResponse, delay, graphql } from "msw";
+import { HttpResponse, graphql } from "msw";
 import { buildSchema, graphql as executeGraphQL } from "graphql";
 
 const schema = buildSchema(`#graphql

@@ -1,4 +1,4 @@
-import { graphql, withCustomRequest } from "@octokit/graphql";
+import { graphql } from "@octokit/graphql";
 import { gql } from "github-schema";
 import type { RepositoryNode } from "github-schema/github-schema";
 

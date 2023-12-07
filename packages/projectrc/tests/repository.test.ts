@@ -33,8 +33,6 @@ it("expect `luxass/projectrc` to exist", async () => {
     repository: "projectrc",
   });
 
-  console.log(result);
-
   expect(result).toBeDefined();
   expect(result).toBeTruthy();
 });
@@ -49,7 +47,7 @@ it("expect `luxass/luxass.dev` to not exist", async () => {
   expect(result).toBeFalsy();
 });
 
-it("yes", async () => {
+it("expect `luxass/projectrc` to return data", async () => {
   register(new Map([
     ["luxass/projectrc", {
       data: {
@@ -82,7 +80,7 @@ it("yes", async () => {
     githubToken: "githubToken",
   });
 
-  console.log("RESULT", result);
-
-  expect(true).toBeTruthy();
+  expect(result).toBeDefined();
+  expect(result).toBeTypeOf("object");
+  expect(result.name).toBe("projectrc");
 });
