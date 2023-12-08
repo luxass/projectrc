@@ -106,7 +106,12 @@ export const PROJECT_SCHEMA = withJSONSchemaFeatures(
   },
 );
 
-export const MONOREPO_SCHEMA = object({
+export const WORKSPACE_SCHEMA = object({
+  enabled: withJSONSchemaFeatures(optional(
+    boolean(),
+  ), {
+    description: "Is monorepo workspaces enabled",
+  }),
   ignores: withJSONSchemaFeatures(optional(array(string())), {
     description: "Ignore these projects.",
   }),
@@ -130,32 +135,10 @@ export const MONOREPO_SCHEMA = object({
 export const SCHEMA = merge([
   PROJECT_SCHEMA,
   object({
-    workspaces: withJSONSchemaFeatures(optional(
-      boolean(),
-    ), {
-      description: "Is monorepo workspaces enabled",
-    }),
-    workspaceIgnores: withJSONSchemaFeatures(optional(
-      array(
-        string(),
-      ),
-    ), {
-      description: "Ignore these workspaces.",
-    }),
-    workspaceOverrides: withJSONSchemaFeatures(
-      optional(
-        array(
-          merge([
-            object({
-              name: string(),
-            }),
-            PROJECT_SCHEMA,
-          ]),
-        ),
-      ),
-      {
-        description: "Override project configurations.",
-      },
+    workspace: optional(
+      withJSONSchemaFeatures(WORKSPACE_SCHEMA, {
+        description: "Workspace configuration",
+      }),
     ),
   }),
 ]);
