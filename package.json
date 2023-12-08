@@ -1,6 +1,6 @@
 {
   "name": "@luxass/projectrc-monorepo",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "Monorepo for @luxass/projectrc",
   "type": "module",
   "private": true,
