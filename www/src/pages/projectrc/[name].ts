@@ -16,13 +16,10 @@ export const GET: APIRoute = async ({ params }) => {
   if (!projectRC) {
     return new Response("Not Found", { status: 404 });
   }
-  return new Response(
-    JSON.stringify(projectRC),
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=600",
-      },
+  return new Response(JSON.stringify(projectRC), {
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=600",
     },
-  );
+  });
 };

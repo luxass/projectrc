@@ -26,7 +26,9 @@ export interface ExistsOptions {
  * // true or false based on whether the repository exists
  * ```
  */
-export async function repositoryExists(options: ExistsOptions): Promise<boolean> {
+export async function repositoryExists(
+  options: ExistsOptions,
+): Promise<boolean> {
   if (!options.owner || !options.repository) {
     return false;
   }

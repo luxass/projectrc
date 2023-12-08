@@ -1,6 +1,4 @@
-import type {
-  BaseSchema,
-} from "valibot";
+import type { BaseSchema } from "valibot";
 import {
   array,
   boolean,
@@ -54,7 +52,8 @@ export const DEPRECATION_SCHEMA = withJSONSchemaFeatures(
 export const PROJECT_SCHEMA = withJSONSchemaFeatures(
   object({
     description: withJSONSchemaFeatures(optional(string()), {
-      description: "The description of the project. Will be used as meta description.",
+      description:
+        "The description of the project. Will be used as meta description.",
     }),
     title: withJSONSchemaFeatures(optional(string()), {
       description: "The title of the project. Will be used as title.",
@@ -62,24 +61,28 @@ export const PROJECT_SCHEMA = withJSONSchemaFeatures(
     ignore: withJSONSchemaFeatures(optional(boolean()), {
       description: "Ignore this project in the project list.",
     }),
-    npm: withJSONSchemaFeatures(optional(union([
-      withJSONSchemaFeatures(boolean(), {
-        description: "Enable if project has a npm package,",
-      }),
-      withJSONSchemaFeatures(string(), {
-        description: "The npm package name",
-      }),
-    ])), {
-      description: "Enable if project has a npm package. If set to true the package name is based on the on the package.json name",
-    }),
+    npm: withJSONSchemaFeatures(
+      optional(
+        union([
+          withJSONSchemaFeatures(boolean(), {
+            description: "Enable if project has a npm package,",
+          }),
+          withJSONSchemaFeatures(string(), {
+            description: "The npm package name",
+          }),
+        ]),
+      ),
+      {
+        description:
+          "Enable if project has a npm package. If set to true the package name is based on the on the package.json name",
+      },
+    ),
     workdir: withJSONSchemaFeatures(optional(string()), {
       description: "The working directory of the project.",
     }),
-    readme: withJSONSchemaFeatures(optional(union([
-      boolean(),
-      string(),
-    ])), {
-      description: "The path to the readme file. If set to true the readme file is the root readme file.",
+    readme: withJSONSchemaFeatures(optional(union([boolean(), string()])), {
+      description:
+        "The path to the readme file. If set to true the readme file is the root readme file.",
     }),
     website: withJSONSchemaFeatures(
       optional(
@@ -107,9 +110,7 @@ export const PROJECT_SCHEMA = withJSONSchemaFeatures(
 );
 
 export const WORKSPACE_SCHEMA = object({
-  enabled: withJSONSchemaFeatures(optional(
-    boolean(),
-  ), {
+  enabled: withJSONSchemaFeatures(optional(boolean()), {
     description: "Is monorepo workspaces enabled",
   }),
   ignores: withJSONSchemaFeatures(optional(array(string())), {

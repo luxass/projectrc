@@ -9,7 +9,8 @@ export const repositoryHTTPHandler = http.get<{
     return HttpResponse.json(
       {
         message: "Not Found",
-        documentation_url: "https://docs.github.com/rest/repos/repos#get-a-repository",
+        documentation_url:
+          "https://docs.github.com/rest/repos/repos#get-a-repository",
       },
       {
         status: 404,
@@ -24,7 +25,8 @@ export const repositoryHTTPHandler = http.get<{
     return HttpResponse.json(
       {
         message: "Not Found",
-        documentation_url: "https://docs.github.com/rest/repos/repos#get-a-repository",
+        documentation_url:
+          "https://docs.github.com/rest/repos/repos#get-a-repository",
       },
       {
         status: 404,

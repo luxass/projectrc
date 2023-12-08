@@ -27,8 +27,5 @@ export default defineConfig({
     "bg-secondary": "bg-gray:5",
     "border-base": "border-gray/20",
   },
-  transformers: [
-    transformerDirectives(),
-    transformerVariantGroup(),
-  ],
+  transformers: [transformerDirectives(), transformerVariantGroup()],
 });

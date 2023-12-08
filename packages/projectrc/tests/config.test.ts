@@ -3,9 +3,7 @@ import { setupServer } from "msw/node";
 import { resolveConfig } from "../src/config";
 import { contentsHTTPHandler } from "./__handlers__/contents.http";
 
-export const handlers = [
-  contentsHTTPHandler,
-];
+export const handlers = [contentsHTTPHandler];
 
 const server = setupServer(...handlers);
 

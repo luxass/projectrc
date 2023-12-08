@@ -4,6 +4,7 @@
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 
 This is a monorepo containing the following projects:
+
 - [@luxass/projectrc](./packages/projectrc)
 - [website](./www)
 

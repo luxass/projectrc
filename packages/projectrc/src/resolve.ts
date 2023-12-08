@@ -1,4 +1,14 @@
-import { type Input, array, literal, number, object, optional, parseAsync, string, union } from "valibot";
+import {
+  type Input,
+  array,
+  literal,
+  number,
+  object,
+  optional,
+  parseAsync,
+  string,
+  union,
+} from "valibot";
 import ignore from "ignore";
 import { minimatch } from "minimatch";
 import { getRepository, repositoryExists } from "./repository";
@@ -89,11 +99,13 @@ export async function resolveProjectRC(
 
   const { owner, repository: name, githubToken } = options;
 
-  if (!(await repositoryExists({
-    owner,
-    repository: name,
-    githubToken,
-  }))) {
+  if (
+    !(await repositoryExists({
+      owner,
+      repository: name,
+      githubToken,
+    }))
+  ) {
     return undefined;
   }
 
@@ -159,9 +171,7 @@ export async function resolveProjectRC(
         .map((char) => char.charCodeAt(0)),
     );
 
-    const pkg: unknown = JSON.parse(
-      new TextDecoder().decode(byteArray),
-    );
+    const pkg: unknown = JSON.parse(new TextDecoder().decode(byteArray));
 
     if (
       !pkg
@@ -254,9 +264,7 @@ export async function resolveProjectRC(
             .map((char) => char.charCodeAt(0)),
         );
 
-        const pkg: unknown = JSON.parse(
-          new TextDecoder().decode(byteArray),
-        );
+        const pkg: unknown = JSON.parse(new TextDecoder().decode(byteArray));
 
         if (
           !pkg
@@ -285,9 +293,7 @@ export async function resolveProjectRC(
 
     const overrides = $raw.workspace?.overrides || [];
     for (const pkg of results) {
-      const override = overrides.find(
-        (override) => override.name === pkg.name,
-      );
+      const override = overrides.find((override) => override.name === pkg.name);
 
       // if package is inside a folder that you want to include everytime (like `packages/*`),
       // but still want to ignore a specific package.
@@ -403,9 +409,7 @@ export async function resolveProjectRC(
           .map((char) => char.charCodeAt(0)),
       );
 
-      const pkg: unknown = JSON.parse(
-        new TextDecoder().decode(byteArray),
-      );
+      const pkg: unknown = JSON.parse(new TextDecoder().decode(byteArray));
 
       if (
         !pkg

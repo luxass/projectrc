@@ -83,38 +83,46 @@ const schema = buildSchema(`#graphql
 
 const github = graphql.link("https://api.github.com/graphql");
 
-export const repositoryGraphQLHandler = github.operation(async ({ query, variables, request }) => {
-  const authorizationHeader = request.headers.get("Authorization");
+export const repositoryGraphQLHandler = github.operation(
+  async ({ query, variables, request }) => {
+    const authorizationHeader = request.headers.get("Authorization");
 
-  if (!authorizationHeader || authorizationHeader.slice(6).trim() !== "TEST") {
-    return HttpResponse.json({
-      message: "Bad credentials",
-      data: null,
-      errors: null,
-    }, {
-      status: 401,
-    });
-  }
+    if (
+      !authorizationHeader
+      || authorizationHeader.slice(6).trim() !== "TEST"
+    ) {
+      return HttpResponse.json(
+        {
+          message: "Bad credentials",
+          data: null,
+          errors: null,
+        },
+        {
+          status: 401,
+        },
+      );
+    }
 
-  const { errors, data } = await executeGraphQL({
-    schema,
-    source: query,
-    variableValues: variables,
-    rootValue: {
-      repository: ({ owner, name }) => {
-        const repo = GitHubMockedData.get(`${owner}/${name}`);
+    const { errors, data } = await executeGraphQL({
+      schema,
+      source: query,
+      variableValues: variables,
+      rootValue: {
+        repository: ({ owner, name }) => {
+          const repo = GitHubMockedData.get(`${owner}/${name}`);
 
-        if (!repo) {
-          return null;
-        }
+          if (!repo) {
+            return null;
+          }
 
-        return repo.data;
+          return repo.data;
+        },
       },
-    },
-  });
+    });
 
-  return HttpResponse.json({
-    data,
-    errors,
-  });
-}) satisfies GraphQLHandler;
+    return HttpResponse.json({
+      data,
+      errors,
+    });
+  },
+) satisfies GraphQLHandler;

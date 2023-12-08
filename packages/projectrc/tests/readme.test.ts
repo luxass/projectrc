@@ -1,20 +1,10 @@
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  expect,
-  it,
-} from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from "vitest";
 import { setupServer } from "msw/node";
 import { getREADME } from "../src/readme";
 import { readmeHTTPHandler } from "./__handlers__/readme.http";
 import { contentsHTTPHandler } from "./__handlers__/contents.http";
 
-export const handlers = [
-  contentsHTTPHandler,
-  readmeHTTPHandler,
-];
+export const handlers = [contentsHTTPHandler, readmeHTTPHandler];
 
 const server = setupServer(...handlers);
 
@@ -37,11 +27,11 @@ it("expect to find repository README when `readme: true`", async () => {
             },
             "README.md": {
               content:
-              "**[luxass.dev](https://luxass.dev)**\n"
-              + "\n"
-              + "built with **[astro](https://astro.build)** 🩵\n"
-              + "\n"
-              + "<samp>licensed under <a href=\"./LICENSE\">MIT</a></samp>\n",
+                "**[luxass.dev](https://luxass.dev)**\n"
+                + "\n"
+                + "built with **[astro](https://astro.build)** 🩵\n"
+                + "\n"
+                + "<samp>licensed under <a href=\"./LICENSE\">MIT</a></samp>\n",
             },
           },
         },
@@ -88,7 +78,8 @@ it("expect to find specific repository README when readme is a string", async ()
               content: "# Packages\n\n> This is located in `packages`",
             },
             "packages/projectrc/README.md": {
-              content: "# ProjectRC\n\n> This is located in `packages/projectrc`",
+              content:
+                "# ProjectRC\n\n> This is located in `packages/projectrc`",
             },
           },
         },

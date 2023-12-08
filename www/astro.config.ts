@@ -13,24 +13,25 @@ export interface ReplaceOptions {
   replacements: Record<string, string>
 }
 
-export function replace(options?: Readonly<ReplaceOptions> | null | undefined): Transformer<Root> {
+export function replace(
+  options?: Readonly<ReplaceOptions> | null | undefined,
+): Transformer<Root> {
   const replacements = options?.replacements || {};
   const attachPrefix = (str: string) => `%${str}`;
 
   // Removes prefix from the start of the string.
-  const stripPrefix = (str: string) =>
-    str.replace(/^%/, "");
+  const stripPrefix = (str: string) => str.replace(/^%/, "");
 
   // RegExp to find any replacement keys.
   const regexp = RegExp(
     `(${Object.keys(replacements)
       .map((key) => escapeStringRegexp(attachPrefix(key)))
-      .join("|")
-    })`,
+      .join("|")})`,
     "g",
   );
 
-  const replacer = (_match: any, name: string) => replacements[stripPrefix(name)];
+  const replacer = (_match: any, name: string) =>
+    replacements[stripPrefix(name)];
 
   const transformer: Transformer<Root> = (tree) => {
     visit(tree, ["text", "html", "code", "inlineCode", "link"], (node) => {
@@ -66,11 +67,14 @@ export default defineConfig({
       },
     },
     remarkPlugins: [
-      [replace, {
-        replacements: {
-          SCHEMA: JSON.stringify(SCHEMA, null, 2),
+      [
+        replace,
+        {
+          replacements: {
+            SCHEMA: JSON.stringify(SCHEMA, null, 2),
+          },
         },
-      }],
+      ],
     ],
   },
   output: "server",

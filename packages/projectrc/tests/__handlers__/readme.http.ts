@@ -13,7 +13,7 @@ export const readmeHTTPHandler = http.get<{
         {
           message: "Not Found",
           documentation_url:
-              "https://docs.github.com/rest/repos/contents#get-repository-content",
+            "https://docs.github.com/rest/repos/contents#get-repository-content",
         },
         {
           status: 404,
@@ -22,16 +22,14 @@ export const readmeHTTPHandler = http.get<{
     }
 
     await delay();
-    const repo = GitHubMockedData.get(
-        `${params.owner}/${params.repository}`,
-    );
+    const repo = GitHubMockedData.get(`${params.owner}/${params.repository}`);
 
     if (!repo || !repo.files) {
       return HttpResponse.json(
         {
           message: "Not Found",
           documentation_url:
-              "https://docs.github.com/rest/repos/contents#get-repository-content",
+            "https://docs.github.com/rest/repos/contents#get-repository-content",
         },
         {
           status: 404,
@@ -46,7 +44,7 @@ export const readmeHTTPHandler = http.get<{
         {
           message: "Not Found",
           documentation_url:
-              "https://docs.github.com/rest/repos/contents#get-repository-content",
+            "https://docs.github.com/rest/repos/contents#get-repository-content",
         },
         {
           status: 404,
@@ -61,7 +59,7 @@ export const readmeHTTPHandler = http.get<{
         {
           message: "Not Found",
           documentation_url:
-              "https://docs.github.com/rest/repos/contents#get-repository-content",
+            "https://docs.github.com/rest/repos/contents#get-repository-content",
         },
         {
           status: 404,
@@ -70,9 +68,9 @@ export const readmeHTTPHandler = http.get<{
     }
 
     const content
-        = typeof project.content === "object"
-          ? JSON.stringify(project.content)
-          : project.content;
+      = typeof project.content === "object"
+        ? JSON.stringify(project.content)
+        : project.content;
 
     return HttpResponse.json({
       content: Buffer.from(content).toString("base64"),
