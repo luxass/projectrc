@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { resolve } from "@luxass/projectrc";
+import { resolveProjectRC } from "@luxass/projectrc";
 
 export const GET: APIRoute = async ({ params }) => {
   const name = params.name;
@@ -7,7 +7,7 @@ export const GET: APIRoute = async ({ params }) => {
     return new Response("Not Found", { status: 404 });
   }
 
-  const projectRC = await resolve({
+  const projectRC = await resolveProjectRC({
     owner: "luxass",
     repository: name,
     githubToken: import.meta.env.GITHUB_TOKEN,

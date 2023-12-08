@@ -1,11 +1,12 @@
+import type {
+  BaseSchema,
+} from "valibot";
 import {
-  type BaseSchema,
   array,
   boolean,
   merge,
   object,
   optional,
-  regex,
   string,
   union,
 } from "valibot";
@@ -130,9 +131,16 @@ export const SCHEMA = merge([
   PROJECT_SCHEMA,
   object({
     workspaces: withJSONSchemaFeatures(optional(
-      array(string()),
+      boolean(),
     ), {
-      description: "Monorepo workspaces",
+      description: "Is monorepo workspaces enabled",
+    }),
+    workspaceIgnores: withJSONSchemaFeatures(optional(
+      array(
+        string(),
+      ),
+    ), {
+      description: "Ignore these workspaces.",
     }),
     workspaceOverrides: withJSONSchemaFeatures(
       optional(

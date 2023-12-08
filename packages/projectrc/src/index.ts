@@ -17,7 +17,7 @@ export {
 
 export type { ProjectRCResponse, ResolveOptions } from "./resolve";
 export {
-  resolve,
+  resolveProjectRC,
 } from "./resolve";
 
 export type { ProjectRCFile } from "./types";
