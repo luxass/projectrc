@@ -130,7 +130,7 @@ export async function resolveProjectRC(
     projects: [],
   };
 
-  if ($raw.workspaces ?? false) {
+  if ($raw.workspace && $raw.workspace.enabled) {
     const pkgResult = await fetch(
       `https://api.github.com/repos/${owner}/${name}/contents/package.json`,
       {
@@ -218,7 +218,7 @@ export async function resolveProjectRC(
     const files = await parseAsync(FileTreeSchema, filesResult.tree);
 
     const filePaths = files.map((file) => file.path);
-    const _ignore = ignore().add($raw.workspaceIgnores || []);
+    const _ignore = ignore().add($raw.workspace?.ignores || []);
 
     const matchedFilePaths = filePaths.filter(
       (filePath) =>
@@ -283,7 +283,7 @@ export async function resolveProjectRC(
       }),
     );
 
-    const overrides = $raw.workspaceOverrides || [];
+    const overrides = $raw.workspace?.overrides || [];
     for (const pkg of results) {
       const override = overrides.find(
         (override) => override.name === pkg.name,
