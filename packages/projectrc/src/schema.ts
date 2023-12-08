@@ -1,11 +1,12 @@
+import type {
+  BaseSchema,
+} from "valibot";
 import {
-  type BaseSchema,
   array,
   boolean,
   merge,
   object,
   optional,
-  regex,
   string,
   union,
 } from "valibot";
