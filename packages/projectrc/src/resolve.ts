@@ -301,6 +301,7 @@ export async function resolveProjectRC(
           || $raw.description
           || repository.description
           || undefined,
+        title: override?.title || $raw.title || pkg.name,
         name: pkg.name,
       };
 
@@ -351,6 +352,7 @@ export async function resolveProjectRC(
   } else {
     const project: ProjectRCResponse["projects"][0] = {
       description: $raw.description || repository.description || undefined,
+      title: $raw.title || repository.name,
       name: repository.name,
     };
 
