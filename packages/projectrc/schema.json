@@ -4,30 +4,32 @@
   "properties": {
     "description": {
       "type": "string",
-      "description": "The description of the project."
+      "description": "The description of the project. Will be used as meta description."
     },
-    "handles": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^"
-      },
-      "description": "The handles of the project. Will be able to be used in luxass.dev/<PROJECT_HANDLE>"
+    "title": {
+      "type": "string",
+      "description": "The title of the project. Will be used as title."
     },
     "ignore": {
       "type": "boolean",
-      "description": "Ignore this project."
+      "description": "Ignore this project in the project list."
     },
     "npm": {
       "anyOf": [
         {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Enable if project has a npm package,"
         },
         {
-          "type": "string"
+          "type": "string",
+          "description": "The npm package name"
         }
       ],
-      "description": "The npm package name of the project."
+      "description": "Enable if project has a npm package. If set to true the package name is based on the on the package.json name"
+    },
+    "workdir": {
+      "type": "string",
+      "description": "The working directory of the project."
     },
     "readme": {
       "anyOf": [
@@ -38,7 +40,7 @@
           "type": "string"
         }
       ],
-      "description": "The path to the readme file."
+      "description": "The path to the readme file. If set to true the readme file is the root readme file."
     },
     "website": {
       "anyOf": [
@@ -69,104 +71,96 @@
       ],
       "description": "Deprecation information."
     },
-    "monorepo": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable monorepo mode."
-        },
-        "ignores": {
-          "type": "array",
-          "items": {
+    "workspaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Monorepo workspaces"
+    },
+    "workspaceOverrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
             "type": "string"
           },
-          "description": "Ignore these projects."
-        },
-        "overrides": {
-          "type": "array",
-          "items": {
+          "description": {
+            "type": "string",
+            "description": "The description of the project. Will be used as meta description."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the project. Will be used as title."
+          },
+          "ignore": {
+            "type": "boolean",
+            "description": "Ignore this project in the project list."
+          },
+          "npm": {
+            "anyOf": [
+              {
+                "type": "boolean",
+                "description": "Enable if project has a npm package,"
+              },
+              {
+                "type": "string",
+                "description": "The npm package name"
+              }
+            ],
+            "description": "Enable if project has a npm package. If set to true the package name is based on the on the package.json name"
+          },
+          "workdir": {
+            "type": "string",
+            "description": "The working directory of the project."
+          },
+          "readme": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "The path to the readme file. If set to true the readme file is the root readme file."
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "format": "uri"
+              }
+            ],
+            "description": "The website of the project. If set to `true`, the website is based on repository URL."
+          },
+          "deprecated": {
             "type": "object",
             "properties": {
-              "name": {
-                "type": "string"
-              },
-              "description": {
+              "message": {
                 "type": "string",
-                "description": "The description of the project."
+                "description": "The deprecation message."
               },
-              "handles": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "pattern": "^"
-                },
-                "description": "The handles of the project. Will be able to be used in luxass.dev/<PROJECT_HANDLE>"
-              },
-              "ignore": {
-                "type": "boolean",
-                "description": "Ignore this project."
-              },
-              "npm": {
-                "anyOf": [
-                  {
-                    "type": "boolean"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ],
-                "description": "The npm package name of the project."
-              },
-              "readme": {
-                "anyOf": [
-                  {
-                    "type": "boolean"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ],
-                "description": "The path to the readme file."
-              },
-              "website": {
-                "anyOf": [
-                  {
-                    "type": "boolean"
-                  },
-                  {
-                    "type": "string",
-                    "format": "uri"
-                  }
-                ],
-                "description": "The website of the project. If set to `true`, the website is based on repository URL."
-              },
-              "deprecated": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "The deprecation message."
-                  },
-                  "replacement": {
-                    "type": "string",
-                    "description": "The replacement package. If not set, the package is considered deprecated without a replacement."
-                  }
-                },
-                "required": [
-                  "message"
-                ],
-                "description": "Deprecation information."
+              "replacement": {
+                "type": "string",
+                "description": "The replacement package. If not set, the package is considered deprecated without a replacement."
               }
             },
             "required": [
-              "name"
-            ]
-          },
-          "description": "Override project configuration."
-        }
+              "message"
+            ],
+            "description": "Deprecation information."
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
-      "description": "Monorepo configuration"
+      "description": "Override project configurations."
     }
   }
 }

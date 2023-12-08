@@ -129,314 +129,314 @@ export async function resolve(
     projects: [],
   };
 
-  if ($raw.monorepo && $raw.monorepo.enabled) {
-    const pkgResult = await fetch(
-      `https://api.github.com/repos/${owner}/${name}/contents/package.json`,
-      {
-        headers: {
-          "Authorization": `bearer ${githubToken}`,
-          "Content-Type": "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      },
-    ).then((res) => res.json());
+  // if ($raw.monorepo && $raw.monorepo.enabled) {
+  //   const pkgResult = await fetch(
+  //     `https://api.github.com/repos/${owner}/${name}/contents/package.json`,
+  //     {
+  //       headers: {
+  //         "Authorization": `bearer ${githubToken}`,
+  //         "Content-Type": "application/vnd.github+json",
+  //         "X-GitHub-Api-Version": "2022-11-28",
+  //       },
+  //     },
+  //   ).then((res) => res.json());
 
-    if (
-      !pkgResult
-      || typeof pkgResult !== "object"
-      || !("content" in pkgResult)
-      || typeof pkgResult.content !== "string"
-    ) {
-      throw new Error(
-        "projectrc: monorepo is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
-      );
-    }
+  //   if (
+  //     !pkgResult
+  //     || typeof pkgResult !== "object"
+  //     || !("content" in pkgResult)
+  //     || typeof pkgResult.content !== "string"
+  //   ) {
+  //     throw new Error(
+  //       "projectrc: monorepo is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
+  //     );
+  //   }
 
-    const byteArray = new Uint8Array(
-      atob(pkgResult.content)
-        .split("")
-        .map((char) => char.charCodeAt(0)),
-    );
+  //   const byteArray = new Uint8Array(
+  //     atob(pkgResult.content)
+  //       .split("")
+  //       .map((char) => char.charCodeAt(0)),
+  //   );
 
-    const pkg: unknown = JSON.parse(
-      new TextDecoder().decode(byteArray),
-    );
+  //   const pkg: unknown = JSON.parse(
+  //     new TextDecoder().decode(byteArray),
+  //   );
 
-    if (
-      !pkg
-      || typeof pkg !== "object"
-      || !("workspaces" in pkg)
-      || !Array.isArray(pkg.workspaces)
-    ) {
-      throw new Error(
-        "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
-      );
-    }
+  //   if (
+  //     !pkg
+  //     || typeof pkg !== "object"
+  //     || !("workspaces" in pkg)
+  //     || !Array.isArray(pkg.workspaces)
+  //   ) {
+  //     throw new Error(
+  //       "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
+  //     );
+  //   }
 
-    // infer pkg.workspaces as a string array with if checks
-    const workspaces = pkg.workspaces as string[];
+  //   // infer pkg.workspaces as a string array with if checks
+  //   const workspaces = pkg.workspaces as string[];
 
-    if (!workspaces.length) {
-      throw new Error(
-        "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
-      );
-    }
+  //   if (!workspaces.length) {
+  //     throw new Error(
+  //       "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
+  //     );
+  //   }
 
-    const filesResult = await fetch(
-      `https://api.github.com/repos/${owner}/${name}/git/trees/main?recursive=1`,
-      {
-        headers: {
-          "Authorization": `bearer ${githubToken}`,
-          "Content-Type": "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      },
-    ).then((res) => res.json());
+  //   const filesResult = await fetch(
+  //     `https://api.github.com/repos/${owner}/${name}/git/trees/main?recursive=1`,
+  //     {
+  //       headers: {
+  //         "Authorization": `bearer ${githubToken}`,
+  //         "Content-Type": "application/vnd.github+json",
+  //         "X-GitHub-Api-Version": "2022-11-28",
+  //       },
+  //     },
+  //   ).then((res) => res.json());
 
-    if (!filesResult || typeof filesResult !== "object") {
-      throw new Error(
-        "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
-      );
-    }
+  //   if (!filesResult || typeof filesResult !== "object") {
+  //     throw new Error(
+  //       "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
+  //     );
+  //   }
 
-    if (!("truncated" in filesResult) || filesResult.truncated) {
-      throw new Error(
-        "projectrc: monorepo is enabled, but the file tree is too large.\nWe are not currently supporting this.",
-      );
-    }
+  //   if (!("truncated" in filesResult) || filesResult.truncated) {
+  //     throw new Error(
+  //       "projectrc: monorepo is enabled, but the file tree is too large.\nWe are not currently supporting this.",
+  //     );
+  //   }
 
-    if (
-      !("tree" in filesResult)
-      || !Array.isArray(filesResult.tree)
-      || !filesResult.tree.length
-    ) {
-      throw new Error(
-        "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
-      );
-    }
+  //   if (
+  //     !("tree" in filesResult)
+  //     || !Array.isArray(filesResult.tree)
+  //     || !filesResult.tree.length
+  //   ) {
+  //     throw new Error(
+  //       "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
+  //     );
+  //   }
 
-    const files = await parseAsync(FileTreeSchema, filesResult.tree);
+  //   const files = await parseAsync(FileTreeSchema, filesResult.tree);
 
-    const filePaths = files.map((file) => file.path);
-    const _ignore = ignore().add($raw.monorepo.ignores || []);
+  //   const filePaths = files.map((file) => file.path);
+  //   const _ignore = ignore().add($raw.monorepo.ignores || []);
 
-    const matchedFilePaths = filePaths.filter(
-      (filePath) =>
-        workspaces.some((pattern) => minimatch(filePath, pattern))
-        && !_ignore.ignores(filePath),
-    );
+  //   const matchedFilePaths = filePaths.filter(
+  //     (filePath) =>
+  //       workspaces.some((pattern) => minimatch(filePath, pattern))
+  //       && !_ignore.ignores(filePath),
+  //   );
 
-    const results = await Promise.all(
-      matchedFilePaths.map(async (filePath) => {
-        const url = `https://api.github.com/repos/${owner}/${name}/contents/${filePath}/package.json`;
-        const file = await fetch(url, {
-          headers: {
-            "Authorization": `bearer ${githubToken}`,
-            "Content-Type": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }).then((res) => res.json());
+  //   const results = await Promise.all(
+  //     matchedFilePaths.map(async (filePath) => {
+  //       const url = `https://api.github.com/repos/${owner}/${name}/contents/${filePath}/package.json`;
+  //       const file = await fetch(url, {
+  //         headers: {
+  //           "Authorization": `bearer ${githubToken}`,
+  //           "Content-Type": "application/vnd.github+json",
+  //           "X-GitHub-Api-Version": "2022-11-28",
+  //         },
+  //       }).then((res) => res.json());
 
-        if (
-          !file
-          || typeof file !== "object"
-          || !("content" in file)
-          || typeof file.content !== "string"
-        ) {
-          throw new Error(
-            `projectrc: could not find a \`content\` field in \`${url}\`.`,
-          );
-        }
+  //       if (
+  //         !file
+  //         || typeof file !== "object"
+  //         || !("content" in file)
+  //         || typeof file.content !== "string"
+  //       ) {
+  //         throw new Error(
+  //           `projectrc: could not find a \`content\` field in \`${url}\`.`,
+  //         );
+  //       }
 
-        const byteArray = new Uint8Array(
-          atob(file.content)
-            .split("")
-            .map((char) => char.charCodeAt(0)),
-        );
+  //       const byteArray = new Uint8Array(
+  //         atob(file.content)
+  //           .split("")
+  //           .map((char) => char.charCodeAt(0)),
+  //       );
 
-        const pkg: unknown = JSON.parse(
-          new TextDecoder().decode(byteArray),
-        );
+  //       const pkg: unknown = JSON.parse(
+  //         new TextDecoder().decode(byteArray),
+  //       );
 
-        if (
-          !pkg
-          || typeof pkg !== "object"
-          || !("name" in pkg)
-          || typeof pkg.name !== "string"
-        ) {
-          throw new Error(
-            `projectrc: could not find a \`name\` field in \`${url}\`.`,
-          );
-        }
+  //       if (
+  //         !pkg
+  //         || typeof pkg !== "object"
+  //         || !("name" in pkg)
+  //         || typeof pkg.name !== "string"
+  //       ) {
+  //         throw new Error(
+  //           `projectrc: could not find a \`name\` field in \`${url}\`.`,
+  //         );
+  //       }
 
-        let _private = false;
+  //       let _private = false;
 
-        if ("private" in pkg && typeof pkg.private === "boolean") {
-          _private = pkg.private;
-        }
+  //       if ("private" in pkg && typeof pkg.private === "boolean") {
+  //         _private = pkg.private;
+  //       }
 
-        return {
-          name: pkg.name,
-          path: filePath,
-          private: _private,
-        };
-      }),
-    );
+  //       return {
+  //         name: pkg.name,
+  //         path: filePath,
+  //         private: _private,
+  //       };
+  //     }),
+  //   );
 
-    const overrides = $raw.monorepo.overrides || [];
-    for (const pkg of results) {
-      const override = overrides.find(
-        (override) => override.name === pkg.name,
-      );
+  //   const overrides = $raw.monorepo.overrides || [];
+  //   for (const pkg of results) {
+  //     const override = overrides.find(
+  //       (override) => override.name === pkg.name,
+  //     );
 
-      // if package is inside a folder that you want to include everytime (like `packages/*`),
-      // but still want to ignore a specific package.
-      if (override && override.ignore) {
-        continue;
-      }
+  //     // if package is inside a folder that you want to include everytime (like `packages/*`),
+  //     // but still want to ignore a specific package.
+  //     if (override && override.ignore) {
+  //       continue;
+  //     }
 
-      const project: ProjectRCResponse["projects"][0] = {
-        description:
-          override?.description
-          || $raw.description
-          || repository.description
-          || undefined,
-        name: pkg.name,
-      };
+  //     const project: ProjectRCResponse["projects"][0] = {
+  //       description:
+  //         override?.description
+  //         || $raw.description
+  //         || repository.description
+  //         || undefined,
+  //       name: pkg.name,
+  //     };
 
-      project.handles = override?.handles || $raw.handles;
+  //     project.handles = override?.handles || $raw.handles;
 
-      let website;
+  //     let website;
 
-      if (override?.website && typeof override.website === "string") {
-        website = override.website;
-      } else if ($raw.website && typeof $raw.website === "string") {
-        website = $raw.website;
-      } else {
-        website = repository.homepageUrl || null;
-      }
+  //     if (override?.website && typeof override.website === "string") {
+  //       website = override.website;
+  //     } else if ($raw.website && typeof $raw.website === "string") {
+  //       website = $raw.website;
+  //     } else {
+  //       website = repository.homepageUrl || null;
+  //     }
 
-      project.website = website;
+  //     project.website = website;
 
-      let readmeSrc = override?.readme || $raw.readme;
+  //     let readmeSrc = override?.readme || $raw.readme;
 
-      if (typeof readmeSrc === "boolean") {
-        // use package readmes if true
-        readmeSrc = `/${pkg.path}/README.md`;
-      }
+  //     if (typeof readmeSrc === "boolean") {
+  //       // use package readmes if true
+  //       readmeSrc = `/${pkg.path}/README.md`;
+  //     }
 
-      if (readmeSrc) {
-        const readme = await getREADME({
-          owner,
-          repository: name,
-          readmePath: readmeSrc,
-          githubToken,
-        });
-        if (readme) {
-          project.readme = readme;
-        }
-      }
+  //     if (readmeSrc) {
+  //       const readme = await getREADME({
+  //         owner,
+  //         repository: name,
+  //         readmePath: readmeSrc,
+  //         githubToken,
+  //       });
+  //       if (readme) {
+  //         project.readme = readme;
+  //       }
+  //     }
 
-      const npmSrc = override?.npm || $raw.npm;
+  //     const npmSrc = override?.npm || $raw.npm;
 
-      if (npmSrc && !pkg.private) {
-        project.npm
-          = typeof npmSrc === "string"
-            ? npmSrc
-            : `https://www.npmjs.com/package/${pkg.name}`;
-      }
+  //     if (npmSrc && !pkg.private) {
+  //       project.npm
+  //         = typeof npmSrc === "string"
+  //           ? npmSrc
+  //           : `https://www.npmjs.com/package/${pkg.name}`;
+  //     }
 
-      project.deprecated = override?.deprecated || $raw.deprecated;
+  //     project.deprecated = override?.deprecated || $raw.deprecated;
 
-      result.projects.push(project);
-    }
-  } else {
-    const project: ProjectRCResponse["projects"][0] = {
-      description: $raw.description || repository.description || undefined,
-      name: repository.name,
-    };
+  //     result.projects.push(project);
+  //   }
+  // } else {
+  //   const project: ProjectRCResponse["projects"][0] = {
+  //     description: $raw.description || repository.description || undefined,
+  //     name: repository.name,
+  //   };
 
-    if ($raw.handles) {
-      project.handles = $raw.handles;
-    }
+  //   if ($raw.handles) {
+  //     project.handles = $raw.handles;
+  //   }
 
-    if ($raw.website) {
-      project.website
-        = typeof $raw.website === "string"
-          ? $raw.website
-          : repository.homepageUrl || null;
-    }
+  //   if ($raw.website) {
+  //     project.website
+  //       = typeof $raw.website === "string"
+  //         ? $raw.website
+  //         : repository.homepageUrl || null;
+  //   }
 
-    if ($raw.readme) {
-      const readme = await getREADME({
-        owner,
-        repository: name,
-        readmePath: $raw.readme,
-        githubToken,
-      });
+  //   if ($raw.readme) {
+  //     const readme = await getREADME({
+  //       owner,
+  //       repository: name,
+  //       readmePath: $raw.readme,
+  //       githubToken,
+  //     });
 
-      if (readme) {
-        project.readme = readme;
-      }
-    }
+  //     if (readme) {
+  //       project.readme = readme;
+  //     }
+  //   }
 
-    if ($raw.npm) {
-      const url = `https://api.github.com/repos/${owner}/${name}/contents/package.json`;
-      const file = await fetch(url, {
-        headers: {
-          "Authorization": `bearer ${githubToken}`,
-          "Content-Type": "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }).then((res) => res.json());
+  //   if ($raw.npm) {
+  //     const url = `https://api.github.com/repos/${owner}/${name}/contents/package.json`;
+  //     const file = await fetch(url, {
+  //       headers: {
+  //         "Authorization": `bearer ${githubToken}`,
+  //         "Content-Type": "application/vnd.github+json",
+  //         "X-GitHub-Api-Version": "2022-11-28",
+  //       },
+  //     }).then((res) => res.json());
 
-      if (
-        !file
-        || typeof file !== "object"
-        || !("content" in file)
-        || typeof file.content !== "string"
-      ) {
-        throw new Error(
-          `projectrc: could not find a \`content\` field in \`${url}\`.`,
-        );
-      }
+  //     if (
+  //       !file
+  //       || typeof file !== "object"
+  //       || !("content" in file)
+  //       || typeof file.content !== "string"
+  //     ) {
+  //       throw new Error(
+  //         `projectrc: could not find a \`content\` field in \`${url}\`.`,
+  //       );
+  //     }
 
-      const byteArray = new Uint8Array(
-        atob(file.content)
-          .split("")
-          .map((char) => char.charCodeAt(0)),
-      );
+  //     const byteArray = new Uint8Array(
+  //       atob(file.content)
+  //         .split("")
+  //         .map((char) => char.charCodeAt(0)),
+  //     );
 
-      const pkg: unknown = JSON.parse(
-        new TextDecoder().decode(byteArray),
-      );
+  //     const pkg: unknown = JSON.parse(
+  //       new TextDecoder().decode(byteArray),
+  //     );
 
-      if (
-        !pkg
-        || typeof pkg !== "object"
-        || !("name" in pkg)
-        || typeof pkg.name !== "string"
-      ) {
-        throw new Error(
-          `projectrc: could not find a \`name\` field in \`${url}\`.`,
-        );
-      }
-      project.npm
-        = typeof $raw.npm === "string"
-          ? $raw.npm
-          : `https://www.npmjs.com/package/${pkg.name}`;
-    }
+  //     if (
+  //       !pkg
+  //       || typeof pkg !== "object"
+  //       || !("name" in pkg)
+  //       || typeof pkg.name !== "string"
+  //     ) {
+  //       throw new Error(
+  //         `projectrc: could not find a \`name\` field in \`${url}\`.`,
+  //       );
+  //     }
+  //     project.npm
+  //       = typeof $raw.npm === "string"
+  //         ? $raw.npm
+  //         : `https://www.npmjs.com/package/${pkg.name}`;
+  //   }
 
-    if ($raw.ignore) {
-      throw new Error("projectrc: how did you get here?");
-    }
+  //   if ($raw.ignore) {
+  //     throw new Error("projectrc: how did you get here?");
+  //   }
 
-    if ($raw.deprecated) {
-      project.deprecated = $raw.deprecated;
-    }
+  //   if ($raw.deprecated) {
+  //     project.deprecated = $raw.deprecated;
+  //   }
 
-    result.projects.push(project);
-  }
+  //   result.projects.push(project);
+  // }
 
   return result;
 }
