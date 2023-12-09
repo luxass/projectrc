@@ -15,6 +15,7 @@ import { getRepository, repositoryExists } from "./repository";
 import { resolveConfig } from "./config";
 import type { SCHEMA } from "./schema";
 import { type READMEResult, getREADME } from "./readme";
+import { base64ToString } from "./utils";
 
 const FileTreeSchema = array(
   object({
@@ -165,13 +166,7 @@ export async function resolveProjectRC(
       );
     }
 
-    const byteArray = new Uint8Array(
-      atob(pkgResult.content)
-        .split("")
-        .map((char) => char.charCodeAt(0)),
-    );
-
-    const pkg: unknown = JSON.parse(new TextDecoder().decode(byteArray));
+    const pkg: unknown = JSON.parse(base64ToString(pkgResult.content));
 
     if (
       !pkg
@@ -258,13 +253,7 @@ export async function resolveProjectRC(
           );
         }
 
-        const byteArray = new Uint8Array(
-          atob(file.content)
-            .split("")
-            .map((char) => char.charCodeAt(0)),
-        );
-
-        const pkg: unknown = JSON.parse(new TextDecoder().decode(byteArray));
+        const pkg: unknown = JSON.parse(base64ToString(file.content));
 
         if (
           !pkg
@@ -402,14 +391,7 @@ export async function resolveProjectRC(
           `projectrc: could not find a \`content\` field in \`${url}\`.`,
         );
       }
-
-      const byteArray = new Uint8Array(
-        atob(file.content)
-          .split("")
-          .map((char) => char.charCodeAt(0)),
-      );
-
-      const pkg: unknown = JSON.parse(new TextDecoder().decode(byteArray));
+      const pkg: unknown = JSON.parse(base64ToString(file.content));
 
       if (
         !pkg
