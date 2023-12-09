@@ -1,3 +1,5 @@
+import { base64ToString } from "./utils";
+
 export interface READMEOptions {
   owner: string
   repository: string
@@ -78,13 +80,8 @@ export async function getREADME(
       return undefined;
     }
 
-    const byteArray = new Uint8Array(
-      atob(result.content)
-        .split("")
-        .map((char) => char.charCodeAt(0)),
-    );
     return {
-      content: new TextDecoder().decode(byteArray),
+      content: base64ToString(result.content),
       path: readmeUrl.toString(),
     };
   } catch (err) {

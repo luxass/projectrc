@@ -1,6 +1,7 @@
 import { parseAsync } from "valibot";
 import type { ProjectRCFile } from "./types";
 import { SCHEMA } from "./schema";
+import { base64ToString } from "./utils";
 
 export const CONFIG_FILE_NAMES: string[] = [
   "projectrc.json",
@@ -71,13 +72,7 @@ export async function resolveConfig(
         continue;
       }
 
-      const byteArray = new Uint8Array(
-        atob(result.content)
-          .split("")
-          .map((char) => char.charCodeAt(0)),
-      );
-
-      const content = JSON.parse(new TextDecoder().decode(byteArray));
+      const content = JSON.parse(base64ToString(result.content));
 
       const parsed = await parseAsync(SCHEMA, content);
 
