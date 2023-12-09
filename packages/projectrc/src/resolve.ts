@@ -17,6 +17,8 @@ import type { SCHEMA } from "./schema";
 import { type READMEResult, getREADME } from "./readme";
 import { base64ToString } from "./utils";
 
+type SafeOmit<T, K extends keyof T> = Omit<T, K>;
+
 const FileTreeSchema = array(
   object({
     mode: string(),
@@ -31,9 +33,10 @@ const FileTreeSchema = array(
 export type ProjectRCResponse = {
   $projectrc: Input<typeof SCHEMA> & {
     $path: string
+    $gitPath: string
   }
 } & {
-  projects: (Omit<Input<typeof SCHEMA>, "monorepo" | "readme"> & {
+  projects: (SafeOmit<Input<typeof SCHEMA>, "workspace" | "readme"> & {
     name: string
     readme?: READMEResult
   })[]
@@ -77,7 +80,8 @@ export interface ResolveOptions {
  * //     handles: [
  * //       "/projectrc"
  * //     ],
- * //     $path: "https://api.github.com/repos/luxass/projectrc/contents/.github/.projectrc.json",
+ * //     $gitPath: "https://api.github.com/repos/luxass/projectrc/contents/.github/.projectrc.json",
+ * //     $path: "https://projectrc.luxass.dev/resolve/projectrc/rc",
  * //   },
  * //   projects: [
  * //     {
@@ -139,7 +143,8 @@ export async function resolveProjectRC(
   const result: ProjectRCResponse = {
     $projectrc: {
       ...$raw,
-      $path: projectRCFile.path,
+      $gitPath: projectRCFile.path,
+      $path: `https://projectrc.luxass.dev/resolve/${name}/rc`,
     },
     projects: [],
   };
@@ -163,7 +168,7 @@ export async function resolveProjectRC(
       || typeof pkgResult.content !== "string"
     ) {
       throw new Error(
-        "projectrc: monorepo is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
+        "projectrc: workspace is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
       );
     }
 
@@ -176,7 +181,7 @@ export async function resolveProjectRC(
       || !Array.isArray(pkg.workspaces)
     ) {
       throw new Error(
-        "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
+        "projectrc: workspace is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
       );
     }
 
@@ -184,7 +189,7 @@ export async function resolveProjectRC(
 
     if (!workspaces.length) {
       throw new Error(
-        "projectrc: monorepo is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
+        "projectrc: workspace is enabled, but no workspaces are defined in your `package.json`.\nPlease add a `workspaces` field to your `package.json`.",
       );
     }
 
@@ -201,13 +206,13 @@ export async function resolveProjectRC(
 
     if (!filesResult || typeof filesResult !== "object") {
       throw new Error(
-        "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
+        "projectrc: workspace is enabled, but no files were found.\nPlease add files to your repository.",
       );
     }
 
     if (!("truncated" in filesResult) || filesResult.truncated) {
       throw new Error(
-        "projectrc: monorepo is enabled, but the file tree is too large.\nWe are not currently supporting this.",
+        "projectrc: workspace is enabled, but the file tree is too large.\nWe are not currently supporting this.",
       );
     }
 
@@ -217,7 +222,7 @@ export async function resolveProjectRC(
       || !filesResult.tree.length
     ) {
       throw new Error(
-        "projectrc: monorepo is enabled, but no files were found.\nPlease add files to your repository.",
+        "projectrc: workspace is enabled, but no files were found.\nPlease add files to your repository.",
       );
     }
 
@@ -300,18 +305,19 @@ export async function resolveProjectRC(
         title: override?.title || $raw.title || pkg.name,
         name: pkg.name,
       };
+      if (override?.website ?? $raw.website) {
+        let website;
 
-      let website;
+        if (override?.website && typeof override.website === "string") {
+          website = override.website;
+        } else if ($raw.website && typeof $raw.website === "string") {
+          website = $raw.website;
+        } else {
+          website = repository.homepageUrl || null;
+        }
 
-      if (override?.website && typeof override.website === "string") {
-        website = override.website;
-      } else if ($raw.website && typeof $raw.website === "string") {
-        website = $raw.website;
-      } else {
-        website = repository.homepageUrl || null;
+        project.website = website;
       }
-
-      project.website = website;
 
       let readmeSrc = override?.readme || $raw.readme;
 
@@ -341,7 +347,9 @@ export async function resolveProjectRC(
             : `https://www.npmjs.com/package/${pkg.name}`;
       }
 
-      project.deprecated = override?.deprecated || $raw.deprecated;
+      if ($raw.deprecated) {
+        project.deprecated = override?.deprecated || $raw.deprecated;
+      }
 
       result.projects.push(project);
     }

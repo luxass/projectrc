@@ -1,7 +1,4 @@
 {
   "$schema": "https://projectrc.luxass.dev/schema",
-  "website": true,
-  "handles": [
-    "/projectrc"
-  ]
+  "website": true
 }

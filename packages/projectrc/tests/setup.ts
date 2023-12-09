@@ -2,14 +2,15 @@ import { vi } from "vitest";
 import type { Input } from "valibot";
 import type { SCHEMA } from "../src/schema";
 
-interface ProjectRCFile {
-  content: Input<typeof SCHEMA> | string
+interface GitFile {
+  content: string | Input<typeof SCHEMA> & Record<string, unknown>
 }
 
-type GitHubRepoFiles = Record<string, ProjectRCFile>;
+type GitHubRepoFiles = Record<string, GitFile>;
 
 interface GitHubRepo {
   data?: Record<string, unknown>
+  truncated?: boolean
   files?: GitHubRepoFiles
 }
 

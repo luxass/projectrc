@@ -30,24 +30,7 @@ export function withJSONSchemaFeatures<S extends BaseSchema>(
   features: JSONSchemaFeatures,
 ): S & WithJSONSchemaFeatures {
   return Object.assign(schema, { [JSON_SCHEMA_FEATURES_KEY]: features });
-}
-
-export const DEPRECATION_SCHEMA = withJSONSchemaFeatures(
-  optional(
-    object({
-      message: withJSONSchemaFeatures(string(), {
-        description: "The deprecation message.",
-      }),
-      replacement: withJSONSchemaFeatures(optional(string()), {
-        description:
-          "The replacement package. If not set, the package is considered deprecated without a replacement.",
-      }),
-    }),
-  ),
-  {
-    description: "Deprecation information.",
-  },
-);
+};
 
 export const PROJECT_SCHEMA = withJSONSchemaFeatures(
   object({
@@ -99,7 +82,22 @@ export const PROJECT_SCHEMA = withJSONSchemaFeatures(
           "The website of the project. If set to `true`, the website is based on repository URL.",
       },
     ),
-    deprecated: DEPRECATION_SCHEMA,
+    deprecated: withJSONSchemaFeatures(
+      optional(
+        object({
+          message: withJSONSchemaFeatures(string(), {
+            description: "The deprecation message.",
+          }),
+          replacement: withJSONSchemaFeatures(optional(string()), {
+            description:
+              "The replacement package. If not set, the package is considered deprecated without a replacement.",
+          }),
+        }),
+      ),
+      {
+        description: "Deprecation information.",
+      },
+    ),
   }),
   {
     description: "Project configuration",
