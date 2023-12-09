@@ -77,9 +77,6 @@ export const PROJECT_SCHEMA = withJSONSchemaFeatures(
           "Enable if project has a npm package. If set to true the package name is based on the on the package.json name",
       },
     ),
-    workdir: withJSONSchemaFeatures(optional(string()), {
-      description: "The working directory of the project.",
-    }),
     readme: withJSONSchemaFeatures(optional(union([boolean(), string()])), {
       description:
         "The path to the readme file. If set to true the readme file is the root readme file.",
