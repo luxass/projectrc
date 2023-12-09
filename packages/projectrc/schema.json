@@ -27,10 +27,6 @@
       ],
       "description": "Enable if project has a npm package. If set to true the package name is based on the on the package.json name"
     },
-    "workdir": {
-      "type": "string",
-      "description": "The working directory of the project."
-    },
     "readme": {
       "anyOf": [
         {
@@ -117,10 +113,6 @@
                   }
                 ],
                 "description": "Enable if project has a npm package. If set to true the package name is based on the on the package.json name"
-              },
-              "workdir": {
-                "type": "string",
-                "description": "The working directory of the project."
               },
               "readme": {
                 "anyOf": [
