@@ -4,9 +4,10 @@ import { getREADME } from "../src/readme";
 import { readmeHTTPHandler } from "./__handlers__/readme.http";
 import { contentsHTTPHandler } from "./__handlers__/contents.http";
 
-export const handlers = [contentsHTTPHandler, readmeHTTPHandler];
-
-const server = setupServer(...handlers);
+const server = setupServer(
+  contentsHTTPHandler,
+  readmeHTTPHandler,
+);
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 beforeEach(() => GitHubMockedData.clear());

@@ -115,6 +115,7 @@ export async function resolveProjectRC(
     repository: name,
     githubToken,
   });
+
   if (!projectRCFile) {
     return undefined;
   }

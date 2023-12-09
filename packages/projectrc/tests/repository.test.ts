@@ -4,7 +4,10 @@ import { getRepository, repositoryExists } from "../src/repository";
 import { repositoryHTTPHandler } from "./__handlers__/repository.http";
 import { repositoryGraphQLHandler } from "./__handlers__/repository.graphql";
 
-const server = setupServer(repositoryHTTPHandler, repositoryGraphQLHandler);
+const server = setupServer(
+  repositoryHTTPHandler,
+  repositoryGraphQLHandler,
+);
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 beforeEach(() => GitHubMockedData.clear());

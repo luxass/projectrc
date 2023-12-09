@@ -3,23 +3,21 @@ import { setupServer } from "msw/node";
 import { resolveConfig } from "../src/config";
 import { contentsHTTPHandler } from "./__handlers__/contents.http";
 
-export const handlers = [contentsHTTPHandler];
-
-const server = setupServer(...handlers);
+const server = setupServer(contentsHTTPHandler);
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 beforeEach(() => GitHubMockedData.clear());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-it("expect `luxass/lesetid` to have a `.projectrc.json`", async () => {
+it("expect `luxass/lesetid` to have a `projectrc.json`", async () => {
   register(
     new Map([
       [
         "luxass/lesetid",
         {
           files: {
-            ".github/.projectrc.json": {
+            ".github/projectrc.json": {
               content: {
                 npm: true,
                 readme: true,
@@ -37,7 +35,7 @@ it("expect `luxass/lesetid` to have a `.projectrc.json`", async () => {
   });
   expect(result).toBeDefined();
   expect(result?.path).toBe(
-    "https://api.github.com/repos/luxass/lesetid/contents/.github/.projectrc.json",
+    "https://api.github.com/repos/luxass/lesetid/contents/.github/projectrc.json",
   );
   expect(result?.content).toBeDefined();
   expect(result?.content).toStrictEqual({
@@ -54,12 +52,12 @@ it("should return next in list", async () => {
         "luxass/lesetid",
         {
           files: {
-            ".github/.projectrc.json": {
+            ".github/projectrc.json5": {
               content: {
                 readme: true,
               },
             },
-            ".github/.projectrc.json5": {
+            ".github/projectrc.json": {
               content: {
                 npm: true,
                 readme: false,
@@ -76,20 +74,20 @@ it("should return next in list", async () => {
   });
   expect(result).toBeDefined();
   expect(result?.path).toBe(
-    "https://api.github.com/repos/luxass/lesetid/contents/.github/.projectrc.json",
+    "https://api.github.com/repos/luxass/lesetid/contents/.github/projectrc.json",
   );
   expect(result?.content).toBeDefined();
-  expect(result?.content).toHaveProperty("readme", true);
+  expect(result?.content).toHaveProperty("readme", false);
 });
 
-it("should return contents of `.projectrc.json5` when first two isn't there", async () => {
+it("should return contents of `projectrc.json5` when first two isn't there", async () => {
   register(
     new Map([
       [
         "luxass/lesetid",
         {
           files: {
-            ".github/.projectrc.json5": {
+            ".github/projectrc.json5": {
               content: {
                 npm: true,
                 readme: true,
@@ -106,7 +104,7 @@ it("should return contents of `.projectrc.json5` when first two isn't there", as
   });
   expect(result).toBeDefined();
   expect(result?.path).toBe(
-    "https://api.github.com/repos/luxass/lesetid/contents/.github/.projectrc.json5",
+    "https://api.github.com/repos/luxass/lesetid/contents/.github/projectrc.json5",
   );
   expect(result?.content).toBeDefined();
   expect(result?.content).toHaveProperty("npm", true);
