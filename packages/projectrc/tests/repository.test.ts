@@ -3,8 +3,12 @@ import { setupServer } from "msw/node";
 import { getRepository, repositoryExists } from "../src/repository";
 import { repositoryHTTPHandler } from "./__handlers__/repository.http";
 import { repositoryGraphQLHandler } from "./__handlers__/repository.graphql";
+import * as REPOSITORY from "./repositories";
 
-const server = setupServer(repositoryHTTPHandler, repositoryGraphQLHandler);
+const server = setupServer(
+  repositoryHTTPHandler,
+  repositoryGraphQLHandler,
+);
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 beforeEach(() => GitHubMockedData.clear());
@@ -38,27 +42,7 @@ it("expect `luxass/projectrc` to return data", async () => {
       [
         "luxass/projectrc",
         {
-          data: {
-            name: "projectrc",
-            homepageUrl: "https://projectrc.luxass.dev",
-            isFork: false,
-            isPrivate: false,
-            nameWithOwner: "luxass/projectrc",
-            description: "⚙️ Customize my projects on luxass.dev",
-            pushedAt: "2023-12-06T20:01:46Z",
-            url: "https://github.com/luxass/projectrc",
-            defaultBranchRef: {
-              name: "main",
-            },
-            languages: {
-              nodes: [
-                {
-                  name: "TypeScript",
-                  color: "#3178c6",
-                },
-              ],
-            },
-          },
+          data: REPOSITORY.projectrc,
         },
       ],
     ]),
@@ -72,7 +56,7 @@ it("expect `luxass/projectrc` to return data", async () => {
 
   expect(result).toBeDefined();
   expect(result).toBeTypeOf("object");
-  expect(result.name).toBe("projectrc");
+  expect(result?.name).toBe("projectrc");
 });
 
 it("expect `luxass/luxass.dev` to return nothing", async () => {
@@ -81,27 +65,7 @@ it("expect `luxass/luxass.dev` to return nothing", async () => {
       [
         "luxass/projectrc",
         {
-          data: {
-            name: "projectrc",
-            homepageUrl: "https://projectrc.luxass.dev",
-            isFork: false,
-            isPrivate: false,
-            nameWithOwner: "luxass/projectrc",
-            description: "⚙️ Customize my projects on luxass.dev",
-            pushedAt: "2023-12-06T20:01:46Z",
-            url: "https://github.com/luxass/projectrc",
-            defaultBranchRef: {
-              name: "main",
-            },
-            languages: {
-              nodes: [
-                {
-                  name: "TypeScript",
-                  color: "#3178c6",
-                },
-              ],
-            },
-          },
+          data: REPOSITORY.projectrc,
         },
       ],
     ]),

@@ -108,7 +108,7 @@ export const repositoryGraphQLHandler = github.operation(
       source: query,
       variableValues: variables,
       rootValue: {
-        repository: ({ owner, name }) => {
+        repository: ({ owner, name }: { owner: string, name: string }) => {
           const repo = GitHubMockedData.get(`${owner}/${name}`);
 
           if (!repo) {
