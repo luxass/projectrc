@@ -10,16 +10,18 @@ export interface Props {
 const {
   title,
   description,
-  // image = new URL(
-  //   `https://image.luxass.dev/api/image/text?input=${encodeURIComponent(
-  //     JSON.stringify({
-  //       width: 300,
-  //       height: 300,
-  //     }),
-  //   )}`,
-  // ),
   class: clazz,
 } = Astro.props;
+
+const image = new URL(
+  `https://image.luxass.dev/api/image/text?input=${encodeURIComponent(
+    JSON.stringify({
+      width: 300,
+      height: 300,
+      text: "📖",
+    }),
+  )}`,
+);
 ---
 
 <!doctype html>
@@ -45,14 +47,14 @@ const {
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <!-- <meta property="og:image" content={image} /> -->
+    <meta property="og:image" content={image} />
 
     <!-- twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={Astro.url} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <!-- <meta property="twitter:image" content={image} /> -->
+    <meta property="twitter:image" content={image} />
 
     <!-- links -->
     <link rel="sitemap" href="/sitemap-index.xml" />
