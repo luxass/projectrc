@@ -5,13 +5,10 @@ export interface Props {
   title: string
   description: string
   class?: string
+  frontmatter?: Record<string, any>
 }
 
-const {
-  title,
-  description,
-  class: clazz,
-} = Astro.props;
+const { frontmatter, class: clazz } = Astro.props;
 
 const image = new URL(
   `https://image.luxass.dev/api/image/text?input=${encodeURIComponent(
@@ -22,6 +19,9 @@ const image = new URL(
     }),
   )}`,
 );
+
+const title = frontmatter?.title || Astro.props.title || ".projectrc";
+const description = frontmatter?.description || Astro.props.description || "A file that are used by my website to generate a list of projects.";
 ---
 
 <!doctype html>
