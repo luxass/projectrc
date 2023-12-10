@@ -59,6 +59,16 @@
         "default": "./dist/repository.cjs"
       }
     },
+    "./resolve": {
+      "import": {
+        "types": "./dist/resolve.d.ts",
+        "default": "./dist/resolve.mjs"
+      },
+      "require": {
+        "types": "./dist/resolve.d.cts",
+        "default": "./dist/resolve.cjs"
+      }
+    },
     "./schema": {
       "import": {
         "types": "./dist/schema.d.ts",
