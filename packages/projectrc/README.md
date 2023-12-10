@@ -14,24 +14,41 @@ npm install @luxass/projectrc
 ## 📚 Usage
 
 ```ts
-import { createProjectRCResolver } from "@luxass/projectrc";
-
-const projectRCResolver = createProjectRCResolver(process.env.GITHUB_TOKEN);
+import { getREADME, getRepository, repositoryExists, resolveConfig, resolveProjectRC } from "@luxass/projectrc";
 
 // check if a repository exists
-const exists = await projectRCResolver.exists("luxass", "projectrc");
+const exists = await repositoryExists({
+  owner: "luxass",
+  repo: "projectrc",
+  githubToken: process.env.GITHUB_TOKEN
+});
 
 // get the repository's ProjectRC file
-const projectRCFile = await projectRCResolver.config("luxass", "projectrc");
+const projectRCFile = await resolveConfig({
+  owner: "luxass",
+  repo: "projectrc"
+});
 
 // get the repository
-const repository = await projectRCResolver.repository("luxass", "projectrc");
+const repository = await getRepository({
+  owner: "luxass",
+  repo: "projectrc",
+  githubToken: process.env.GITHUB_TOKEN
+});
 
 // get the repository's readme
-const readme = await projectRCResolver.readme("luxass", "projectrc");
+const readme = await getREADME({
+  owner: "luxass",
+  repo: "projectrc",
+  githubToken: process.env.GITHUB_TOKEN
+});
 
 // resolve the projectrc file
-const projectRC = await projectRCResolver.resolve("luxass", "projectrc");
+const projectRC = await resolveProjectRC({
+  owner: "luxass",
+  repo: "projectrc",
+  githubToken: process.env.GITHUB_TOKEN
+});
 ```
 
 ## 📄 License
