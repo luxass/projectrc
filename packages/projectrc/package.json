@@ -1,6 +1,6 @@
 {
   "name": "@luxass/projectrc",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Utils for .projectrc",
   "type": "module",
   "author": {
