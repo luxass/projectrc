@@ -37,7 +37,7 @@ importers:
     dependencies:
       '@gcornut/valibot-json-schema':
         specifier: ^0.0.19
-        version: 0.0.19(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.8)(valibot@0.22.0)
+        version: 0.0.19(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.8)(valibot@0.24.1)
       '@octokit/graphql':
         specifier: ^7.0.2
         version: 7.0.2
@@ -51,8 +51,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       valibot:
-        specifier: ^0.22.0
-        version: 0.22.0
+        specifier: ^0.24.0
+        version: 0.24.1
       yaml:
         specifier: ^2.3.4
         version: 2.3.4
@@ -899,7 +899,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@gcornut/valibot-json-schema@0.0.19(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.8)(valibot@0.22.0):
+  /@gcornut/valibot-json-schema@0.0.19(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.8)(valibot@0.24.1):
     resolution: {integrity: sha512-sxuF2ODHBLWULQkt5BjDp98fHh07LEumkKLpR/vYIpldXwWzZUTe5Zmy1xHEpbGu14TnDp6UTV4/Fclu/rRGUg==}
     hasBin: true
     peerDependencies:
@@ -911,7 +911,7 @@ packages:
       '@types/json-schema': 7.0.15
       esbuild: 0.19.8
       esbuild-runner: 2.2.2(esbuild@0.19.8)
-      valibot: 0.22.0
+      valibot: 0.24.1
     dev: false
 
   /@humanwhocodes/config-array@0.11.13:
@@ -7808,8 +7808,8 @@ packages:
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  /valibot@0.22.0:
-    resolution: {integrity: sha512-tINTvsrvSaN6wN4Hxes1KG7VMM7nysk4zD0Q7CjE8Id7Zx1tKKaF3eGGP84N6nkhqiv0fgyArUeDoRNF0JO4ng==}
+  /valibot@0.24.1:
+    resolution: {integrity: sha512-Toclbuy20XsECZiueh2dkQ63he2AGaBIj/FJRDAFti2kueFldm9bjJzSYvPaL5CE1HXDMRhq7olak8at7xCz5A==}
     dev: false
 
   /validate-npm-package-license@3.0.4:
