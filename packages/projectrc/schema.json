@@ -15,17 +15,21 @@
       "description": "Ignore this project in the project list."
     },
     "npm": {
-      "anyOf": [
-        {
+      "type": "object",
+      "properties": {
+        "enabled": {
           "type": "boolean",
-          "description": "Enable if project has a npm package,"
+          "description": "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository"
         },
-        {
+        "link": {
           "type": "string",
-          "description": "The npm package name"
+          "description": "Override the auto inferred npm package name."
+        },
+        "downloads": {
+          "type": "boolean",
+          "description": "Include the npm package downloads."
         }
-      ],
-      "description": "Enable if project has a npm package. If set to true the package name is based on the on the package.json name"
+      }
     },
     "readme": {
       "anyOf": [
@@ -49,6 +53,14 @@
         }
       ],
       "description": "The website of the project. If set to `true`, the website is based on repository URL."
+    },
+    "stars": {
+      "type": "boolean",
+      "description": "Include repository stars"
+    },
+    "version": {
+      "type": "boolean",
+      "description": "Include latest version of the npm package, will use either the latest tag from github or the latest version from npm."
     },
     "deprecated": {
       "type": "object",
@@ -102,17 +114,21 @@
                 "description": "Ignore this project in the project list."
               },
               "npm": {
-                "anyOf": [
-                  {
+                "type": "object",
+                "properties": {
+                  "enabled": {
                     "type": "boolean",
-                    "description": "Enable if project has a npm package,"
+                    "description": "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository"
                   },
-                  {
+                  "link": {
                     "type": "string",
-                    "description": "The npm package name"
+                    "description": "Override the auto inferred npm package name."
+                  },
+                  "downloads": {
+                    "type": "boolean",
+                    "description": "Include the npm package downloads."
                   }
-                ],
-                "description": "Enable if project has a npm package. If set to true the package name is based on the on the package.json name"
+                }
               },
               "readme": {
                 "anyOf": [
@@ -136,6 +152,14 @@
                   }
                 ],
                 "description": "The website of the project. If set to `true`, the website is based on repository URL."
+              },
+              "stars": {
+                "type": "boolean",
+                "description": "Include repository stars"
+              },
+              "version": {
+                "type": "boolean",
+                "description": "Include latest version of the npm package, will use either the latest tag from github or the latest version from npm."
               },
               "deprecated": {
                 "type": "object",

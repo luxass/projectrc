@@ -89,6 +89,7 @@ const REPOSITORY_QUERY = gql`
       defaultBranchRef {
         name
       }
+      stargazerCount
       languages(first: 1, orderBy: { field: SIZE, direction: DESC }) {
         nodes {
           name

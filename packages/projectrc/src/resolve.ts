@@ -36,9 +36,19 @@ export type ProjectRCResponse = {
     $gitPath: string
   }
 } & {
-  projects: (SafeOmit<Input<typeof SCHEMA>, "workspace" | "readme"> & {
+  projects: (SafeOmit<Input<typeof SCHEMA>, "workspace" | "readme" | "stars" | "npm" | "version"> & {
     name: string
     readme?: READMEResult
+    stars?: number
+    npm?: {
+      name?: string
+      url?: string
+      downloads?: number
+    }
+    version?: {
+      name: string
+      url: string
+    }
   })[]
 };
 
@@ -319,6 +329,10 @@ export async function resolveProjectRC(
         project.website = website;
       }
 
+      if (override?.stars ?? $raw.stars) {
+        project.stars = repository.stargazerCount;
+      }
+
       let readmeSrc = override?.readme || $raw.readme;
 
       if (typeof readmeSrc === "boolean") {
@@ -338,13 +352,67 @@ export async function resolveProjectRC(
         }
       }
 
-      const npmSrc = override?.npm || $raw.npm;
+      const npm = override?.npm || $raw.npm;
 
-      if (npmSrc && !pkg.private) {
-        project.npm
-          = typeof npmSrc === "string"
-            ? npmSrc
-            : `https://www.npmjs.com/package/${pkg.name}`;
+      if (npm && npm.enabled && !pkg.private) {
+        if (npm.link) {
+          project.npm = {
+            name: npm.link,
+            url: `https://www.npmjs.com/package/${npm.link}`,
+          };
+        } else {
+          const pkgResult = await fetch(
+            `https://api.github.com/repos/${owner}/${name}/contents/package.json`,
+            {
+              headers: {
+                "Authorization": `bearer ${githubToken}`,
+                "Content-Type": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+              },
+            },
+          ).then((res) => res.json());
+
+          if (
+            !pkgResult
+            || typeof pkgResult !== "object"
+            || !("content" in pkgResult)
+            || typeof pkgResult.content !== "string"
+          ) {
+            throw new Error(
+              "projectrc: npm is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
+            );
+          }
+
+          const pkg: unknown = JSON.parse(base64ToString(pkgResult.content));
+
+          if (
+            !pkg
+            || typeof pkg !== "object"
+            || !("name" in pkg)
+            || typeof pkg.name !== "string"
+          ) {
+            throw new Error(
+              "projectrc: npm is enabled, but no `name` field was found in your `package.json` file.\nPlease add a `name` field to your `package.json` file.",
+            );
+          }
+
+          project.npm = {
+            name: pkg.name,
+            url: `https://www.npmjs.com/package/${pkg.name}`,
+          };
+
+          if (npm.downloads && project.npm.name) {
+            const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then((res) => res.json());
+
+            if (!result || typeof result !== "object" || !("downloads" in result) || typeof result.downloads !== "number") {
+              throw new Error(
+                "projectrc: npm.downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.",
+              );
+            }
+
+            project.npm.downloads = result.downloads;
+          }
+        }
       }
 
       if ($raw.deprecated) {
@@ -367,6 +435,10 @@ export async function resolveProjectRC(
           : repository.homepageUrl || null;
     }
 
+    if ($raw.stars) {
+      project.stars = repository.stargazerCount;
+    }
+
     if ($raw.readme) {
       const readme = await getREADME({
         owner,
@@ -380,42 +452,80 @@ export async function resolveProjectRC(
       }
     }
 
-    if ($raw.npm) {
-      const url = `https://api.github.com/repos/${owner}/${name}/contents/package.json`;
-      const file = await fetch(url, {
-        headers: {
-          "Authorization": `bearer ${githubToken}`,
-          "Content-Type": "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }).then((res) => res.json());
+    if ($raw.npm && $raw.npm?.enabled) {
+      if ($raw.npm.link) {
+        project.npm = {
+          name: $raw.npm.link,
+          url: `https://www.npmjs.com/package/${$raw.npm.link}`,
+        };
+      } else {
+        const pkgResult = await fetch(
+          `https://api.github.com/repos/${owner}/${name}/contents/package.json`,
+          {
+            headers: {
+              "Authorization": `bearer ${githubToken}`,
+              "Content-Type": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+          },
+        ).then((res) => res.json());
 
-      if (
-        !file
-        || typeof file !== "object"
-        || !("content" in file)
-        || typeof file.content !== "string"
-      ) {
+        if (
+          !pkgResult
+          || typeof pkgResult !== "object"
+          || !("content" in pkgResult)
+          || typeof pkgResult.content !== "string"
+        ) {
+          throw new Error(
+            "projectrc: npm is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
+          );
+        }
+
+        const pkg: unknown = JSON.parse(base64ToString(pkgResult.content));
+
+        if (
+          !pkg
+          || typeof pkg !== "object"
+          || !("name" in pkg)
+          || typeof pkg.name !== "string"
+        ) {
+          throw new Error(
+            "projectrc: npm is enabled, but no `name` field was found in your `package.json` file.\nPlease add a `name` field to your `package.json` file.",
+          );
+        }
+
+        project.npm = {
+          name: pkg.name,
+          url: `https://www.npmjs.com/package/${pkg.name}`,
+        };
+
+        if ($raw.npm.downloads && project.npm.name) {
+          const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then((res) => res.json());
+
+          if (!result || typeof result !== "object" || !("downloads" in result) || typeof result.downloads !== "number") {
+            throw new Error(
+              "projectrc: npm.downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.",
+            );
+          }
+
+          project.npm.downloads = result.downloads;
+        }
+      }
+    }
+
+    if ($raw.version) {
+      const result = await fetch(`https://api.github.com/repos/${owner}/${name}/releases/latest`).then((res) => res.json());
+
+      if (!result || typeof result !== "object" || !("tag_name" in result) || typeof result.tag_name !== "string") {
         throw new Error(
-          `projectrc: could not find a \`content\` field in \`${url}\`.`,
+          "projectrc: version is enabled, but no `tag_name` field was found in the GitHub API response.\nPlease try again later.",
         );
       }
-      const pkg: unknown = JSON.parse(base64ToString(file.content));
 
-      if (
-        !pkg
-        || typeof pkg !== "object"
-        || !("name" in pkg)
-        || typeof pkg.name !== "string"
-      ) {
-        throw new Error(
-          `projectrc: could not find a \`name\` field in \`${url}\`.`,
-        );
-      }
-      project.npm
-        = typeof $raw.npm === "string"
-          ? $raw.npm
-          : `https://www.npmjs.com/package/${pkg.name}`;
+      project.version = {
+        name: result.tag_name,
+        url: `https://github.com/${owner}/${name}/releases/latest`,
+      };
     }
 
     if ($raw.ignore) {

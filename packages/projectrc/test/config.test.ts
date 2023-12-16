@@ -19,7 +19,9 @@ it("expect `luxass/lesetid` to have a `projectrc.json`", async () => {
           files: {
             ".github/projectrc.json": {
               content: {
-                npm: true,
+                npm: {
+                  enabled: true,
+                },
                 readme: true,
                 website: true,
               },
@@ -39,7 +41,9 @@ it("expect `luxass/lesetid` to have a `projectrc.json`", async () => {
   );
   expect(result?.content).toBeDefined();
   expect(result?.content).toStrictEqual({
-    npm: true,
+    npm: {
+      enabled: true,
+    },
     readme: true,
     website: true,
   });
@@ -59,7 +63,9 @@ it("should return next in list", async () => {
             },
             ".github/projectrc.json": {
               content: {
-                npm: true,
+                npm: {
+                  enabled: true,
+                },
                 readme: false,
               },
             },
@@ -89,7 +95,9 @@ it("should return contents of `projectrc.json5` when first two isn't there", asy
           files: {
             ".github/projectrc.json5": {
               content: {
-                npm: true,
+                npm: {
+                  enabled: true,
+                },
                 readme: true,
               },
             },
@@ -107,7 +115,7 @@ it("should return contents of `projectrc.json5` when first two isn't there", asy
     "https://api.github.com/repos/luxass/lesetid/contents/.github/projectrc.json5",
   );
   expect(result?.content).toBeDefined();
-  expect(result?.content).toHaveProperty("npm", true);
+  expect(result?.content).toHaveProperty("npm", { enabled: true });
   expect(result?.content).toHaveProperty("readme", true);
 });
 
