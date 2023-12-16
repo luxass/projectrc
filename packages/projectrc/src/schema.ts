@@ -32,6 +32,40 @@ export function withJSONSchemaFeatures<S extends BaseSchema>(
   return Object.assign(schema, { [JSON_SCHEMA_FEATURES_KEY]: features });
 };
 
+export const NPM_PROJECT_SCHEMA = withJSONSchemaFeatures(
+  optional(
+    object({
+      enabled: withJSONSchemaFeatures(
+        boolean(),
+        {
+          description: "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository",
+        },
+      ),
+      link: withJSONSchemaFeatures(
+        optional(
+          withJSONSchemaFeatures(string(), {
+            description: "The npm package name",
+          }),
+        ),
+        {
+          description:
+            "Override the auto inferred npm package name.",
+        },
+      ),
+      downloads: withJSONSchemaFeatures(
+        optional(
+          boolean(),
+        ),
+        {
+          description:
+            "Include the npm package downloads.",
+        },
+      ),
+    }),
+  ),
+  {},
+);
+
 export const PROJECT_SCHEMA = withJSONSchemaFeatures(
   object({
     description: withJSONSchemaFeatures(optional(string()), {
@@ -44,22 +78,7 @@ export const PROJECT_SCHEMA = withJSONSchemaFeatures(
     ignore: withJSONSchemaFeatures(optional(boolean()), {
       description: "Ignore this project in the project list.",
     }),
-    npm: withJSONSchemaFeatures(
-      optional(
-        union([
-          withJSONSchemaFeatures(boolean(), {
-            description: "Enable if project has a npm package,",
-          }),
-          withJSONSchemaFeatures(string(), {
-            description: "The npm package name",
-          }),
-        ]),
-      ),
-      {
-        description:
-          "Enable if project has a npm package. If set to true the package name is based on the on the package.json name",
-      },
-    ),
+    npm: NPM_PROJECT_SCHEMA,
     readme: withJSONSchemaFeatures(optional(union([boolean(), string()])), {
       description:
         "The path to the readme file. If set to true the readme file is the root readme file.",
@@ -80,6 +99,24 @@ export const PROJECT_SCHEMA = withJSONSchemaFeatures(
       {
         description:
           "The website of the project. If set to `true`, the website is based on repository URL.",
+      },
+    ),
+    stars: withJSONSchemaFeatures(
+      optional(
+        boolean(),
+      ),
+      {
+        description:
+          "Include repository stars",
+      },
+    ),
+    version: withJSONSchemaFeatures(
+      optional(
+        boolean(),
+      ),
+      {
+        description:
+          "Include latest version of the npm package, will use either a tag from github or the latest version from npm.",
       },
     ),
     deprecated: withJSONSchemaFeatures(

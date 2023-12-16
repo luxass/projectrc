@@ -63,6 +63,7 @@ const schema = buildSchema(`#graphql
     pushedAt: DateTime
     url: URI!
     defaultBranchRef: Ref
+    stargazerCount: Int!
     languages(
       after: String
       before: String
@@ -113,6 +114,10 @@ export const repositoryGraphQLHandler = github.operation(
 
           if (!repo) {
             return null;
+          }
+
+          if (!repo.data!.stargazerCount) {
+            repo.data!.stargazerCount = 0;
           }
 
           return repo.data;

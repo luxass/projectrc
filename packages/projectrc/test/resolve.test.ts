@@ -54,14 +54,15 @@ it("should return undefined if the repository is ignored", async () => {
             ".github/projectrc.json": {
               content: {
                 website: true,
-                npm: true,
+                npm: {
+                  enabled: true,
+                },
                 ignore: true,
               },
             },
             "package.json": {
               content: {
                 name: "projectrc",
-                version: "1.0.0",
                 private: true,
               },
             },
@@ -91,7 +92,9 @@ it("should mark deprecated", async () => {
             ".github/projectrc.json": {
               content: {
                 website: true,
-                npm: true,
+                npm: {
+                  enabled: true,
+                },
                 deprecated: {
                   message: "This project is deprecated",
                 },
@@ -100,7 +103,6 @@ it("should mark deprecated", async () => {
             "package.json": {
               content: {
                 name: "@luxass/projectrc",
-                version: "1.0.0",
                 private: true,
               },
             },
@@ -122,7 +124,10 @@ it("should mark deprecated", async () => {
     title: "projectrc",
     name: "projectrc",
     website: "https://projectrc.luxass.dev",
-    npm: "https://www.npmjs.com/package/@luxass/projectrc",
+    npm: {
+      name: "@luxass/projectrc",
+      url: "https://www.npmjs.com/package/@luxass/projectrc",
+    },
     deprecated: {
       message: "This project is deprecated",
     },
@@ -182,7 +187,6 @@ describe("workspace", () => {
               "package.json": {
                 content: {
                   name: "projectrc",
-                  version: "1.0.0",
                 },
               },
             },
@@ -220,7 +224,6 @@ describe("workspace", () => {
               "package.json": {
                 content: {
                   name: "projectrc",
-                  version: "1.0.0",
                   private: true,
                   workspaces: [],
                 },
@@ -261,7 +264,6 @@ describe("workspace", () => {
               "package.json": {
                 content: {
                   name: "projectrc",
-                  version: "1.0.0",
                   private: true,
                   workspaces: [
                     "packages/*",
@@ -286,7 +288,9 @@ describe("workspace", () => {
   it("should ignore packages", async () => {
     const PROJECTRC = {
       website: true,
-      npm: true,
+      npm: {
+        enabled: true,
+      },
       workspace: {
         enabled: true,
         ignores: [
@@ -308,21 +312,18 @@ describe("workspace", () => {
               "packages/package1/package.json": {
                 content: {
                   name: "package1",
-                  version: "1.0.0",
                   private: true,
                 },
               },
               "packages/package2/package.json": {
                 content: {
                   name: "package2",
-                  version: "1.0.0",
                   private: true,
                 },
               },
               "package.json": {
                 content: {
                   name: "projectrc",
-                  version: "1.0.0",
                   private: true,
                   workspaces: [
                     "packages/*",
@@ -360,7 +361,9 @@ describe("workspace", () => {
   it("should ignore multiple packages", async () => {
     const PROJECTRC = {
       website: true,
-      npm: true,
+      npm: {
+        enabled: true,
+      },
       workspace: {
         enabled: true,
         ignores: [
@@ -383,21 +386,18 @@ describe("workspace", () => {
               "packages/package1/package.json": {
                 content: {
                   name: "package1",
-                  version: "1.0.0",
                   private: true,
                 },
               },
               "packages/package2/package.json": {
                 content: {
                   name: "package2",
-                  version: "1.0.0",
                   private: true,
                 },
               },
               "package.json": {
                 content: {
                   name: "projectrc",
-                  version: "1.0.0",
                   private: true,
                   workspaces: [
                     "packages/*",
@@ -459,21 +459,18 @@ describe("workspace", () => {
               "packages/package1/package.json": {
                 content: {
                   name: "package1",
-                  version: "1.0.0",
                   private: true,
                 },
               },
               "packages/package2/package.json": {
                 content: {
                   name: "package2",
-                  version: "1.0.0",
                   private: true,
                 },
               },
               "packages/package3/package.json": {
                 content: {
                   name: "package3",
-                  version: "1.0.0",
                   private: true,
                 },
               },
@@ -483,7 +480,6 @@ describe("workspace", () => {
               "package.json": {
                 content: {
                   name: "projectrc",
-                  version: "1.0.0",
                   private: true,
                   workspaces: [
                     "packages/*",
