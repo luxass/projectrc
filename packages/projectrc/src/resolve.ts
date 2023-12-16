@@ -361,63 +361,22 @@ export async function resolveProjectRC(
       }
 
       if (npm && npm.enabled && !pkg.private) {
-        if (npm.name) {
-          project.npm = {
-            name: npm.name,
-            url: `https://www.npmjs.com/package/${npm.name}`,
-          };
-        } else {
-          const pkgResult = await fetch(
-            `https://api.github.com/repos/${owner}/${name}/contents/package.json`,
-            {
-              headers: {
-                "Authorization": `bearer ${githubToken}`,
-                "Content-Type": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-              },
-            },
-          ).then((res) => res.json());
+        const name = npm.name || pkg.name;
+        project.npm = {
+          name,
+          url: `https://www.npmjs.com/package/${name}`,
+        };
 
-          if (
-            !pkgResult
-            || typeof pkgResult !== "object"
-            || !("content" in pkgResult)
-            || typeof pkgResult.content !== "string"
-          ) {
+        if (npm.downloads && project.npm.name) {
+          const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then((res) => res.json());
+
+          if (!result || typeof result !== "object" || !("downloads" in result) || typeof result.downloads !== "number") {
             throw new Error(
-              "projectrc: npm is enabled, but no `package.json` file was found.\nPlease add a `package.json` file to the root of your repository.",
+              "projectrc: npm.downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.",
             );
           }
 
-          const pkg: unknown = JSON.parse(base64ToString(pkgResult.content));
-
-          if (
-            !pkg
-            || typeof pkg !== "object"
-            || !("name" in pkg)
-            || typeof pkg.name !== "string"
-          ) {
-            throw new Error(
-              "projectrc: npm is enabled, but no `name` field was found in your `package.json` file.\nPlease add a `name` field to your `package.json` file.",
-            );
-          }
-
-          project.npm = {
-            name: pkg.name,
-            url: `https://www.npmjs.com/package/${pkg.name}`,
-          };
-
-          if (npm.downloads && project.npm.name) {
-            const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then((res) => res.json());
-
-            if (!result || typeof result !== "object" || !("downloads" in result) || typeof result.downloads !== "number") {
-              throw new Error(
-                "projectrc: npm.downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.",
-              );
-            }
-
-            project.npm.downloads = result.downloads;
-          }
+          project.npm.downloads = result.downloads;
         }
       }
 
