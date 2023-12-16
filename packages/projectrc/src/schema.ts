@@ -34,34 +34,39 @@ export function withJSONSchemaFeatures<S extends BaseSchema>(
 
 export const NPM_PROJECT_SCHEMA = withJSONSchemaFeatures(
   optional(
-    object({
-      enabled: withJSONSchemaFeatures(
-        boolean(),
-        {
-          description: "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository",
-        },
-      ),
-      link: withJSONSchemaFeatures(
-        optional(
-          withJSONSchemaFeatures(string(), {
-            description: "The npm package name",
-          }),
-        ),
-        {
-          description:
-            "Override the auto inferred npm package name.",
-        },
-      ),
-      downloads: withJSONSchemaFeatures(
-        optional(
+    union([
+      withJSONSchemaFeatures(boolean(), {
+        description: "If set to true, will infer the npm package name from repository and also include downloads",
+      }),
+      object({
+        enabled: withJSONSchemaFeatures(
           boolean(),
+          {
+            description: "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository",
+          },
         ),
-        {
-          description:
-            "Include the npm package downloads.",
-        },
-      ),
-    }),
+        name: withJSONSchemaFeatures(
+          optional(
+            withJSONSchemaFeatures(string(), {
+              description: "The npm package name",
+            }),
+          ),
+          {
+            description:
+              "Override the auto inferred npm package name.",
+          },
+        ),
+        downloads: withJSONSchemaFeatures(
+          optional(
+            boolean(),
+          ),
+          {
+            description:
+              "Include the npm package downloads.",
+          },
+        ),
+      }),
+    ]),
   ),
   {},
 );

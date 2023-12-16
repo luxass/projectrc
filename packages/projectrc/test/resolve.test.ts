@@ -10,12 +10,14 @@ import { repositoryGraphQLHandler } from "./__handlers__/repository.graphql";
 import { repositoryHTTPHandler } from "./__handlers__/repository.http";
 import * as REPOSITORY from "./repositories";
 import { treesHTTPHandler } from "./__handlers__/trees.http";
+import { npmDownloadsHTTPHandler } from "./__handlers__/npm-downloads.http";
 
 const server = setupServer(
   contentsHTTPHandler,
   repositoryHTTPHandler,
   repositoryGraphQLHandler,
   treesHTTPHandler,
+  npmDownloadsHTTPHandler,
 );
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
@@ -132,6 +134,44 @@ it("should mark deprecated", async () => {
       message: "This project is deprecated",
     },
   });
+});
+
+it("should include downloads when npm is `true`", async () => {
+  register(
+    new Map([
+      [
+        "luxass/projectrc",
+        {
+          data: REPOSITORY.projectrc,
+          files: {
+            ".github/projectrc.json": {
+              content: {
+                npm: true,
+              },
+            },
+            "package.json": {
+              content: {
+                name: "@luxass/projectrc",
+                private: true,
+              },
+            },
+          },
+        },
+      ],
+    ]),
+  );
+
+  const options = {
+    repository: "projectrc",
+    owner: "luxass",
+    githubToken: "TEST",
+  };
+  const result = await resolveProjectRC(options);
+
+  const project = result?.projects[0];
+
+  expect(project?.npm?.downloads).toBeGreaterThan(0);
+  expect(project?.description).toEqual("⚙️ Customize my projects on luxass.dev");
 });
 
 describe("workspace", () => {

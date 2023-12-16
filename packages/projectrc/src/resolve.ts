@@ -352,13 +352,19 @@ export async function resolveProjectRC(
         }
       }
 
-      const npm = override?.npm || $raw.npm;
+      let npm = override?.npm || $raw.npm;
+      if (typeof npm === "boolean") {
+        npm = {
+          enabled: true,
+          downloads: true,
+        };
+      }
 
       if (npm && npm.enabled && !pkg.private) {
-        if (npm.link) {
+        if (npm.name) {
           project.npm = {
-            name: npm.link,
-            url: `https://www.npmjs.com/package/${npm.link}`,
+            name: npm.name,
+            url: `https://www.npmjs.com/package/${npm.name}`,
           };
         } else {
           const pkgResult = await fetch(
@@ -452,11 +458,19 @@ export async function resolveProjectRC(
       }
     }
 
-    if ($raw.npm && $raw.npm?.enabled) {
-      if ($raw.npm.link) {
+    let npm = $raw.npm;
+    if (typeof npm === "boolean" && npm) {
+      npm = {
+        enabled: true,
+        downloads: true,
+      };
+    }
+
+    if (npm && npm?.enabled) {
+      if (npm.name) {
         project.npm = {
-          name: $raw.npm.link,
-          url: `https://www.npmjs.com/package/${$raw.npm.link}`,
+          name: npm.name,
+          url: `https://www.npmjs.com/package/${npm.name}`,
         };
       } else {
         const pkgResult = await fetch(
@@ -499,7 +513,7 @@ export async function resolveProjectRC(
           url: `https://www.npmjs.com/package/${pkg.name}`,
         };
 
-        if ($raw.npm.downloads && project.npm.name) {
+        if (npm.downloads && project.npm.name) {
           const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then((res) => res.json());
 
           if (!result || typeof result !== "object" || !("downloads" in result) || typeof result.downloads !== "number") {

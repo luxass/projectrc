@@ -15,21 +15,32 @@
       "description": "Ignore this project in the project list."
     },
     "npm": {
-      "type": "object",
-      "properties": {
-        "enabled": {
+      "anyOf": [
+        {
           "type": "boolean",
-          "description": "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository"
+          "description": "If set to true, will infer the npm package name from repository and also include downloads"
         },
-        "link": {
-          "type": "string",
-          "description": "Override the auto inferred npm package name."
-        },
-        "downloads": {
-          "type": "boolean",
-          "description": "Include the npm package downloads."
+        {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository"
+            },
+            "name": {
+              "type": "string",
+              "description": "Override the auto inferred npm package name."
+            },
+            "downloads": {
+              "type": "boolean",
+              "description": "Include the npm package downloads."
+            }
+          },
+          "required": [
+            "enabled"
+          ]
         }
-      }
+      ]
     },
     "readme": {
       "anyOf": [
@@ -60,7 +71,7 @@
     },
     "version": {
       "type": "boolean",
-      "description": "Include latest version of the npm package, will use either the latest tag from github or the latest version from npm."
+      "description": "Include latest version of the npm package, will use either a tag from github or the latest version from npm."
     },
     "deprecated": {
       "type": "object",
@@ -114,21 +125,32 @@
                 "description": "Ignore this project in the project list."
               },
               "npm": {
-                "type": "object",
-                "properties": {
-                  "enabled": {
+                "anyOf": [
+                  {
                     "type": "boolean",
-                    "description": "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository"
+                    "description": "If set to true, will infer the npm package name from repository and also include downloads"
                   },
-                  "link": {
-                    "type": "string",
-                    "description": "Override the auto inferred npm package name."
-                  },
-                  "downloads": {
-                    "type": "boolean",
-                    "description": "Include the npm package downloads."
+                  {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Override the auto inferred npm package name."
+                      },
+                      "downloads": {
+                        "type": "boolean",
+                        "description": "Include the npm package downloads."
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ]
                   }
-                }
+                ]
               },
               "readme": {
                 "anyOf": [
@@ -159,7 +181,7 @@
               },
               "version": {
                 "type": "boolean",
-                "description": "Include latest version of the npm package, will use either the latest tag from github or the latest version from npm."
+                "description": "Include latest version of the npm package, will use either a tag from github or the latest version from npm."
               },
               "deprecated": {
                 "type": "object",
