@@ -19,6 +19,10 @@
     "valibot": "^0.25.0"
   },
   "devDependencies": {
+    "@egoist/tailwindcss-icons": "^1.7.1",
+    "@iconify-json/carbon": "^1.1.26",
+    "@iconify-json/octicon": "^1.1.52",
+    "@iconify-json/twemoji": "^1.1.15",
     "@luxass/eslint-config": "^4.0.1",
     "@next/eslint-plugin-next": "^14.0.4",
     "@types/json-schema": "^7.0.15",

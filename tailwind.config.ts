@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+import { getIconCollections, iconsPlugin } from "@egoist/tailwindcss-icons";
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,8 +10,20 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)"],
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    iconsPlugin({
+      scale: 1.3,
+      collections: getIconCollections([
+        "octicon",
+        "twemoji",
+        "carbon",
+      ]),
+    }),
+  ],
 };
 export default config;
