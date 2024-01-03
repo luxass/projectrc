@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <head>
-        <Script id="theme-toggle">
+        <Script id="theme-toggle" strategy="beforeInteractive">
           {/* js */`
             const button = document.querySelector("#theme-toggle");
             if (button) {
@@ -35,7 +35,7 @@ export default function RootLayout({
             }
           `}
         </Script>
-        <Script id="theme">
+        <Script id="theme" strategy="beforeInteractive">
           {/* js */`
             function run() {
               const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
