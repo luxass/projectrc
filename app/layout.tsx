@@ -35,14 +35,16 @@ export default function RootLayout({
             }
           `}
         </Script>
-        <script dangerouslySetInnerHTML={{
-          __html: /* js */`!function(){const e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("theme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}();`,
-        }}
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: /* js */`alert("Hello");!function(){const e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("theme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0);}();`,
+          }}
         />
       </head>
       <body>
         <Header />
-        <main className="prose mt-8 flex max-w-none flex-col">
+        <main className="prose mt-8 flex h-dvh max-w-none flex-col">
           {children}
         </main>
       </body>

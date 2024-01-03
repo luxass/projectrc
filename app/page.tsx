@@ -1,5 +1,6 @@
 import { codeToHtml } from "shikiji";
 import { toJSONSchema } from "@gcornut/valibot-json-schema";
+import Link from "next/link";
 import { SCHEMA } from "~/lib/schema";
 import { CopyButton } from "~/components/CopyButton";
 
@@ -16,16 +17,34 @@ export default async function Home() {
   });
 
   return (
-    <div className="group relative">
-      <div
-        dangerouslySetInnerHTML={{
-          __html: html,
-        }}
-      />
+    <>
+      <h1>.projectrc</h1>
 
-      <div className="i-carbon-clipboa" />
+      <article>
+        <p>
+          Since you are here, you are probably wondering why and what this `.projectrc` is.
+        </p>
 
-      <CopyButton text={JSON.stringify(jsonSchema, null, 2)} />
-    </div>
+        <p>
+          Well, it&apos;s a file that are used by
+          <Link href="https://luxass.dev">
+            <code>my website</code>
+          </Link>
+          to generate a list of projects thare are being shown here.
+        </p>
+
+        You can see the schema used here.
+      </article>
+
+      <div className="group relative">
+        <div
+          dangerouslySetInnerHTML={{
+            __html: html,
+          }}
+        />
+
+        <CopyButton text={JSON.stringify(jsonSchema, null, 2)} />
+      </div>
+    </>
   );
 }

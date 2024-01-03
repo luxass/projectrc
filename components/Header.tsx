@@ -20,7 +20,7 @@ export function Header() {
             </svg>
           </Link>
 
-          <button id="theme-toggle" className="op-50 hover:op-75 ml-1 flex items-center justify-center text-lg" title="Toggle Theme" aria-label="Toggle Theme">
+          <button id="theme-toggle" className="ml-1 flex items-center justify-center text-lg opacity-50 hover:opacity-75" title="Toggle Theme" aria-label="Toggle Theme">
             <span className="i-carbon-sun block dark:i-carbon-moon"></span>
           </button>
         </div>
