@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <head>
-        <Script id="theme-toggle" strategy="beforeInteractive">
+        <Script id="theme-toggle" strategy="afterInteractive">
           {/* js */`
             const button = document.querySelector("#theme-toggle");
             if (button) {
