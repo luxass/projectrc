@@ -35,18 +35,19 @@ export default function RootLayout({
             }
           `}
         </Script>
-        <Script id="theme" strategy="beforeInteractive">
-          {/* js */`
-            function run() {
-              const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-              const setting = localStorage.getItem("theme") || "auto";
-              if (setting === "dark" || (prefersDark && setting !== "light")) {
-                document.documentElement.classList.toggle("dark", true);
+        <script dangerouslySetInnerHTML={{
+          __html: /* js */`
+              function run() {
+                const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+                const setting = localStorage.getItem("theme") || "auto";
+                if (setting === "dark" || (prefersDark && setting !== "light")) {
+                  document.documentElement.classList.toggle("dark", true);
+                }
               }
-            }
-            run();
-        `}
-        </Script>
+              run();
+          `,
+        }}
+        />
       </head>
       <body>
         <Header />
