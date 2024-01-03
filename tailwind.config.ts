@@ -22,6 +22,7 @@ const config: Config = {
         "octicon",
         "twemoji",
         "carbon",
+        "lucide",
       ]),
     }),
   ],

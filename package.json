@@ -21,6 +21,7 @@
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.7.1",
     "@iconify-json/carbon": "^1.1.26",
+    "@iconify-json/lucide": "^1.1.150",
     "@iconify-json/octicon": "^1.1.52",
     "@iconify-json/twemoji": "^1.1.15",
     "@luxass/eslint-config": "^4.0.1",

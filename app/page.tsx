@@ -1,6 +1,7 @@
 import { codeToHtml } from "shikiji";
 import { toJSONSchema } from "@gcornut/valibot-json-schema";
 import { SCHEMA } from "~/lib/schema";
+import { CopyButton } from "~/components/CopyButton";
 
 export default async function Home() {
   const jsonSchema = toJSONSchema({
@@ -15,11 +16,16 @@ export default async function Home() {
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div dangerouslySetInnerHTML={{
-        __html: html,
-      }}
+    <div className="group relative">
+      <div
+        dangerouslySetInnerHTML={{
+          __html: html,
+        }}
       />
-    </main>
+
+      <div className="i-carbon-clipboa" />
+
+      <CopyButton text={JSON.stringify(jsonSchema, null, 2)} />
+    </div>
   );
 }
