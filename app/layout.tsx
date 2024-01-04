@@ -36,9 +36,19 @@ export default function RootLayout({
           `}
         </Script>
         <script
-          type="text/javascript"
+          type="module"
           dangerouslySetInnerHTML={{
-            __html: /* js */`alert("Hello");!function(){const e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("theme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0);}();`,
+            __html: /* js */`
+
+  function run() {
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("theme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light")) {
+      document.documentElement.classList.toggle("dark", true);
+    }
+  }
+  run();
+  `,
           }}
         />
       </head>
