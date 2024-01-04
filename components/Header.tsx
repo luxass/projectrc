@@ -19,10 +19,6 @@ export function Header() {
               </path>
             </svg>
           </Link>
-
-          <button id="theme-toggle" className="ml-1 flex items-center justify-center text-lg opacity-50 hover:opacity-75" title="Toggle Theme" aria-label="Toggle Theme">
-            <span className="i-carbon-sun block dark:i-carbon-moon"></span>
-          </button>
         </div>
       </nav>
     </header>

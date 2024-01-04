@@ -18,32 +18,45 @@ export default async function Home() {
 
   return (
     <>
-      <h1>.projectrc</h1>
+      <h1 className="mb-8 text-3xl font-semibold">.projectrc</h1>
 
       <article>
         <p>
-          Since you are here, you are probably wondering why and what this `.projectrc` is.
+          Since you are here, you are probably wondering why and what this
+          {" "}
+          <span className="rounded bg-gray-200 p-0.5 dark:bg-gray-400/10">.projectrc</span>
+          {" "}
+          is.
         </p>
-
         <p>
           Well, it&apos;s a file that are used by
-          <Link href="https://luxass.dev">
+          {" "}
+          <Link href="https://luxass.dev" className="rounded bg-gray-200 p-0.5 dark:bg-gray-400/10">
             <code>my website</code>
           </Link>
-          to generate a list of projects thare are being shown here.
+          {" "}
+          to generate a list of projects thare are being shown
+          {" "}
+          <Link className="rounded bg-gray-200 p-0.5 dark:bg-gray-400/10" href="https://luxass.dev/projects">here</Link>
+          .
         </p>
 
-        You can see the schema used here.
       </article>
 
-      <div className="group relative">
-        <div
-          dangerouslySetInnerHTML={{
-            __html: html,
-          }}
-        />
+      <div className="my-4">
 
-        <CopyButton text={JSON.stringify(jsonSchema, null, 2)} />
+        <h2 className="my-2 text-xl font-semibold">
+          You can see the schema used here.
+        </h2>
+
+        <div className="group relative">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: html,
+            }}
+          />
+          <CopyButton text={JSON.stringify(jsonSchema, null, 2)} />
+        </div>
       </div>
     </>
   );
