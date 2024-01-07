@@ -1,4 +1,3 @@
-import type { NextRequest } from "next/server";
 import type { Language, Repository, User } from "github-schema";
 import { gql } from "github-schema";
 import { graphql } from "@octokit/graphql";
@@ -117,7 +116,7 @@ export async function GET() {
   );
 
   await Promise.all(repositories.map(async (repository) => {
-    console.log(`fetching .projectrc for ${repository.nameWithOwner}`);
+    // console.info(`fetching .projectrc for ${repository.nameWithOwner}`);
     const projectRC: ProjectRCResponse = await fetch(
       `http://localhost:3000/resolve/${repository.nameWithOwner}`,
     ).then((res) => res.json());
