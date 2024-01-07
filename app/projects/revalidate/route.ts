@@ -1,5 +1,9 @@
 import { revalidatePath } from "next/cache";
 
 export async function GET() {
-  return revalidatePath("/projects");
+  revalidatePath("/projects");
+
+  return Response.json({
+    message: "revalidated /projects",
+  });
 }
