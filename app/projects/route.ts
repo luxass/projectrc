@@ -8,6 +8,13 @@ export const dynamic = "force-dynamic"
 
 const REPOS_TO_IGNORE: string[] = [".github"];
 
+const URL =
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+    ? 'https://projectrc.luxass.dev'
+    : process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : 'http://localhost:3000'
+
 const PROFILE_QUERY = gql`
   #graphql
   query getProfile {
@@ -117,11 +124,10 @@ export async function GET() {
 
   await Promise.all(repositories.map(async (repository) => {
     // console.info(`fetching .projectrc for ${repository.nameWithOwner}`);
-    const url = env.VERCEL_URL ? `https://${env.VERCEL_URL}/resolve/${repository.nameWithOwner}` : `http://localhost:3000/resolve/${repository.nameWithOwner}`;
-    console.log(url);
+
 
     const projectRC: ProjectRCResponse = await fetch(
-      url,
+      URL + `/resolve/${repository.nameWithOwner}`,
     ).then((res) => res.json());
 
     if (!projectRC || typeof projectRC !== "object" || "error" in projectRC) {
