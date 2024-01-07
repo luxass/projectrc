@@ -14,7 +14,7 @@ dependencies:
     specifier: ^5.3.0
     version: 5.3.0
   next:
-    specifier: ^14.0.4
+    specifier: 14.0.4
     version: 14.0.4(patch_hash=kp4ydipxgfhdvoq6wxy7pagbau)(react-dom@18.2.0)(react@18.2.0)
   react:
     specifier: ^18.2.0
