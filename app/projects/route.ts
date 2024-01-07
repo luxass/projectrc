@@ -4,7 +4,7 @@ import { graphql } from "@octokit/graphql";
 import { env } from "~/env.mjs";
 import type { ProjectRCResponse } from "~/lib/types";
 
-export const dynamic = "force-dynamic"
+export const revalidate = 3600;
 
 const REPOS_TO_IGNORE: string[] = [".github"];
 
