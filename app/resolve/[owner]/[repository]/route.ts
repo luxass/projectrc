@@ -6,6 +6,8 @@ import type { ProjectRCResponse } from "~/lib/types";
 import { base64ToString } from "~/lib/utils";
 import { resolveWorkspaceProjects } from "~/lib/workspace";
 
+export const revalidate = 3600;
+
 interface RouteParams {
   owner: string
   repository: string
