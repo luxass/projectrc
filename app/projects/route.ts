@@ -4,8 +4,6 @@ import { graphql } from "@octokit/graphql";
 import { env } from "~/env.mjs";
 import type { ProjectRCResponse } from "~/lib/types";
 
-export const runtime = "edge";
-
 const REPOS_TO_IGNORE: string[] = [".github"];
 
 const PROFILE_QUERY = gql`
