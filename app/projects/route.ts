@@ -4,6 +4,8 @@ import { graphql } from "@octokit/graphql";
 import { env } from "~/env.mjs";
 import type { ProjectRCResponse } from "~/lib/types";
 
+export const dynamic = "force-dynamic"
+
 const REPOS_TO_IGNORE: string[] = [".github"];
 
 const PROFILE_QUERY = gql`
@@ -116,6 +118,8 @@ export async function GET() {
   await Promise.all(repositories.map(async (repository) => {
     // console.info(`fetching .projectrc for ${repository.nameWithOwner}`);
     const url = env.VERCEL_URL ? `https://${env.VERCEL_URL}/resolve/${repository.nameWithOwner}` : `http://localhost:3000/resolve/${repository.nameWithOwner}`;
+    console.log(url);
+
     const projectRC: ProjectRCResponse = await fetch(
       url,
     ).then((res) => res.json());
