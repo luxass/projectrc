@@ -172,5 +172,7 @@ export async function GET() {
     }
   }));
 
-  return Response.json(projects);
+  return Response.json({
+    projects
+  });
 }
