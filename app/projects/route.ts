@@ -117,8 +117,9 @@ export async function GET() {
 
   await Promise.all(repositories.map(async (repository) => {
     // console.info(`fetching .projectrc for ${repository.nameWithOwner}`);
+    const url = env.VERCEL_URL ? `https://${env.VERCEL_URL}/resolve/${repository.nameWithOwner}` : `http://localhost:3000/resolve/${repository.nameWithOwner}`;
     const projectRC: ProjectRCResponse = await fetch(
-      `http://localhost:3000/resolve/${repository.nameWithOwner}`,
+      url,
     ).then((res) => res.json());
 
     if (!projectRC || typeof projectRC !== "object" || "error" in projectRC) {
