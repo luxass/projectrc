@@ -173,6 +173,7 @@ export async function GET() {
   }));
 
   return Response.json({
+    last: new Date().toISOString(),
     projects,
   });
 }
