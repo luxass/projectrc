@@ -8,7 +8,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --report-unused-disable-directives",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -45,5 +45,10 @@
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3",
     "zod-to-json-schema": "^3.22.3"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "next@14.0.4": "patches/next@14.0.4.patch"
+    }
   }
 }

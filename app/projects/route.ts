@@ -1,3 +1,4 @@
+import process from "process";
 import type { Language, Repository, User } from "github-schema";
 import { gql } from "github-schema";
 import { graphql } from "@octokit/graphql";
@@ -8,12 +9,12 @@ export const revalidate = 3600;
 
 const REPOS_TO_IGNORE: string[] = [".github"];
 
-const URL =
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
-    ? 'https://projectrc.luxass.dev'
+const URL
+  = process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
+    ? "https://projectrc.luxass.dev"
     : process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'http://localhost:3000'
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : "http://localhost:3000";
 
 const PROFILE_QUERY = gql`
   #graphql
@@ -125,9 +126,8 @@ export async function GET() {
   await Promise.all(repositories.map(async (repository) => {
     // console.info(`fetching .projectrc for ${repository.nameWithOwner}`);
 
-
     const projectRC: ProjectRCResponse = await fetch(
-      URL + `/resolve/${repository.nameWithOwner}`,
+      `${URL}/resolve/${repository.nameWithOwner}`,
     ).then((res) => res.json());
 
     if (!projectRC || typeof projectRC !== "object" || "error" in projectRC) {
@@ -173,6 +173,6 @@ export async function GET() {
   }));
 
   return Response.json({
-    projects
+    projects,
   });
 }
