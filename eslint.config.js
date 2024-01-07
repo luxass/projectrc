@@ -3,6 +3,6 @@ import { luxass } from "@luxass/eslint-config";
 
 export default luxass({
   formatters: true,
-  unocss: true,
-  astro: true,
+  nextjs: true,
+  tailwindcss: true,
 });

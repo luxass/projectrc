@@ -1,48 +1,49 @@
 {
-  "name": "@luxass/projectrc-monorepo",
-  "description": "Monorepo for @luxass/projectrc",
+  "name": "projectrc-web",
+  "version": "0.1.0",
   "type": "module",
   "private": true,
-  "author": {
-    "name": "Lucas Nørgård",
-    "email": "lucasnrgaard@gmail.com",
-    "url": "https://luxass.dev"
-  },
-  "packageManager": "pnpm@8.12.1",
-  "license": "MIT",
-  "homepage": "https://github.com/luxass/projectrc",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/luxass/projectrc",
-    "directory": "www"
-  },
-  "bugs": {
-    "url": "https://github.com/luxass/projectrc/issues"
-  },
-  "workspaces": [
-    "www",
-    "packages/*"
-  ],
-  "engines": {
-    "node": ">=18"
-  },
+  "packageManager": "pnpm@8.14.0",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --concurrency=40 --parallel",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint . --report-unused-disable-directives",
-    "test": "turbo run test",
-    "test:watch": "turbo run test",
-    "typecheck": "turbo run typecheck",
-    "bump": "npx bumpp packages/projectrc/package.json"
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ignore": "^5.3.0",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@luxass/eslint-config": "^4.0.0-beta.17",
-    "@types/node": "^18.18.8",
+    "@egoist/tailwindcss-icons": "^1.7.1",
+    "@iconify-json/carbon": "^1.1.27",
+    "@iconify-json/lucide": "^1.1.151",
+    "@iconify-json/octicon": "^1.1.52",
+    "@iconify-json/twemoji": "^1.1.15",
+    "@luxass/eslint-config": "^4.0.1",
+    "@next/eslint-plugin-next": "^14.0.4",
+    "@octokit/graphql": "^7.0.2",
+    "@types/json-schema": "^7.0.15",
+    "@types/node": "^18.19.4",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
-    "tsup": "^8.0.1",
-    "turbo": "^1.11.2",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "eslint-plugin-tailwindcss": "^3.13.1",
+    "github-schema": "^1.4.1",
+    "minimatch": "^9.0.3",
+    "postcss": "^8.4.33",
+    "shikiji": "^0.9.17",
+    "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3",
-    "vitest": "^1.0.4"
+    "zod-to-json-schema": "^3.22.3"
   }
 }
