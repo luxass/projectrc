@@ -1,182 +1,56 @@
-import type { BaseSchema } from "valibot";
-import {
-  array,
-  boolean,
-  merge,
-  object,
-  optional,
-  string,
-  union,
-} from "valibot";
+import { z } from "zod";
 
-import type { JSONSchema7 } from "json-schema";
+const PROJECTRC_META_SCHEMA = z.object({
+  title: z.string().optional().describe("the title tag of the page - if not set, the project name is used"),
+  description: z.string().optional().describe("the description tag of the page - if not set, the project description is used"),
+  keywords: z.array(z.string()).optional().describe("the keywords tag of the page"),
+  // TODO: Add more meta tags, e.g. og image, twitter image
+}).describe("meta tags");
 
-const JSON_SCHEMA_FEATURES_KEY = "__json_schema_features";
+const PROJECTRC_DEPRECATION_SCHEMA = z.object({
+  message: z.string().describe("the deprecation message"),
+  replacement: z.string().optional().describe("the replacement package. if not set, the package is considered deprecated without a replacement"),
+}).describe("deprecation information");
 
-export type JSONSchemaFeatures = Partial<JSONSchema7>;
+const PROJECTRC_NPM_SHCMEA = z.union([
+  z.boolean().describe("if set to true, will infer the npm package name from repository and also include downloads"),
+  z.object({
+    enabled: z.boolean().describe("enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository"),
+    name: z.string().optional().describe("override the auto inferred npm package name"),
+    downloads: z.boolean().optional().describe("include the npm package downloads"),
+  }).describe("npm package information"),
+]).describe("npm package");
 
-export interface WithJSONSchemaFeatures {
-  [JSON_SCHEMA_FEATURES_KEY]: JSONSchemaFeatures
-}
+const PROJECTRC_EXTRAS_SCHEMA = z.object({
+  stars: z.boolean().optional().describe("include repository stars"),
+  version: z.boolean()
+    .optional()
+    .describe("include latest version of the npm package, will use either a tag from github or the latest version from npm"),
+  deprecated: PROJECTRC_DEPRECATION_SCHEMA.optional(),
+  npm: PROJECTRC_NPM_SHCMEA.optional(),
+}).describe("extra information");
 
-/**
- * Function to add JSON schema features to a valibot schema.
- * @param {S} schema - The base schema.
- * @param {JSONSchemaFeatures} features - The JSON schema features to add.
- * @returns {S & WithJSONSchemaFeatures} The base schema with added JSON schema features.
- */
-export function withJSONSchemaFeatures<S extends BaseSchema>(
-  schema: S,
-  features: JSONSchemaFeatures,
-): S & WithJSONSchemaFeatures {
-  return Object.assign(schema, { [JSON_SCHEMA_FEATURES_KEY]: features });
-};
-
-export const NPM_PROJECT_SCHEMA = withJSONSchemaFeatures(
-  optional(
-    union([
-      withJSONSchemaFeatures(boolean(), {
-        description: "If set to true, will infer the npm package name from repository and also include downloads",
-      }),
-      object({
-        enabled: withJSONSchemaFeatures(
-          boolean(),
-          {
-            description: "Enable if project has a npm package, if `link` is not set the package name is auto inferred from the repository",
-          },
-        ),
-        name: withJSONSchemaFeatures(
-          optional(
-            withJSONSchemaFeatures(string(), {
-              description: "The npm package name",
-            }),
-          ),
-          {
-            description:
-              "Override the auto inferred npm package name.",
-          },
-        ),
-        downloads: withJSONSchemaFeatures(
-          optional(
-            boolean(),
-          ),
-          {
-            description:
-              "Include the npm package downloads.",
-          },
-        ),
-      }),
-    ]),
-  ),
-  {},
-);
-
-export const PROJECT_SCHEMA = withJSONSchemaFeatures(
-  object({
-    description: withJSONSchemaFeatures(optional(string()), {
-      description:
-        "The description of the project. Will be used as meta description.",
-    }),
-    title: withJSONSchemaFeatures(optional(string()), {
-      description: "The title of the project. Will be used as title.",
-    }),
-    ignore: withJSONSchemaFeatures(optional(boolean()), {
-      description: "Ignore this project in the project list.",
-    }),
-    npm: NPM_PROJECT_SCHEMA,
-    readme: withJSONSchemaFeatures(optional(union([boolean(), string()])), {
-      description:
-        "The path to the readme file. If set to true the readme file is the root readme file.",
-    }),
-    website: withJSONSchemaFeatures(
-      optional(
-        union([
-          boolean(),
-          withJSONSchemaFeatures(
-            string(),
-            // TODO: MAYBE URL?
-            {
-              format: "uri",
-            },
-          ),
-        ]),
-      ),
-      {
-        description:
-          "The website of the project. If set to `true`, the website is based on repository URL.",
-      },
-    ),
-    stars: withJSONSchemaFeatures(
-      optional(
-        boolean(),
-      ),
-      {
-        description:
-          "Include repository stars",
-      },
-    ),
-    version: withJSONSchemaFeatures(
-      optional(
-        boolean(),
-      ),
-      {
-        description:
-          "Include latest version of the npm package, will use either a tag from github or the latest version from npm.",
-      },
-    ),
-    deprecated: withJSONSchemaFeatures(
-      optional(
-        object({
-          message: withJSONSchemaFeatures(string(), {
-            description: "The deprecation message.",
-          }),
-          replacement: withJSONSchemaFeatures(optional(string()), {
-            description:
-              "The replacement package. If not set, the package is considered deprecated without a replacement.",
-          }),
-        }),
-      ),
-      {
-        description: "Deprecation information.",
-      },
-    ),
-  }),
-  {
-    description: "Project configuration",
-  },
-);
-
-export const WORKSPACE_SCHEMA = object({
-  enabled: withJSONSchemaFeatures(optional(boolean()), {
-    description: "Is monorepo workspaces enabled",
-  }),
-  ignores: withJSONSchemaFeatures(optional(array(string())), {
-    description: "Ignore these projects.",
-  }),
-  overrides: withJSONSchemaFeatures(
-    optional(
-      array(
-        merge([
-          object({
-            name: string(),
-          }),
-          PROJECT_SCHEMA,
-        ]),
-      ),
-    ),
-    {
-      description: "Override project configuration.",
-    },
-  ),
+const PROJECT_SCHEMA = z.object({
+  meta: PROJECTRC_META_SCHEMA.optional(),
+  description: z.string().optional().describe("the description of the project. if not set, the github description is used"),
+  ignore: z.boolean().optional().describe("ignore this project in the project list"),
+  readme: z.union([
+    z.boolean(),
+    z.string(),
+  ]).optional().describe("the path to the readme file. if set to true the readme file is the root readme file"),
+  website: z.union([
+    z.boolean(),
+    z.string(),
+  ]).optional().describe("the website of the project. if set to `true`, the website is inferred from the url set in repository"),
+  extras: PROJECTRC_EXTRAS_SCHEMA.optional(),
 });
 
-export const SCHEMA = merge([
-  PROJECT_SCHEMA,
-  object({
-    workspace: optional(
-      withJSONSchemaFeatures(WORKSPACE_SCHEMA, {
-        description: "Workspace configuration",
-      }),
-    ),
-  }),
-]);
+export const PROJECTRC_SCHEMA = PROJECT_SCHEMA.merge(z.object({
+  workspace: z.object({
+    enabled: z.boolean().optional(),
+    ignores: z.array(z.string()).optional(),
+    overrides: z.array(PROJECT_SCHEMA.merge(z.object({
+      name: z.string(),
+    }))).optional(),
+  }).optional(),
+}));

@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
 import { Header } from "~/components/Header";
 
 const inter = Inter({

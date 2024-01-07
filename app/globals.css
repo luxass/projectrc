@@ -11,8 +11,6 @@ body {
   @apply max-w-4xl lg:!mx-auto !mx-4 py-3 md:px-14 md:py-10 dark:bg-[#111] dark:text-white;
 }
 
-
-
 @media (prefers-color-scheme: dark) {
   .shiki,
   .shiki span {
