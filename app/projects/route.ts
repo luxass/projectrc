@@ -1,93 +1,93 @@
-import process from "process";
-import type { Language, Repository, User } from "github-schema";
-import { gql } from "github-schema";
-import { graphql } from "@octokit/graphql";
-import { env } from "~/env.mjs";
-import type { ProjectRCResponse } from "~/lib/types";
+// import process from "process";
+// import type { Language, Repository, User } from "github-schema";
+// import { gql } from "github-schema";
+// import { graphql } from "@octokit/graphql";
+// import { env } from "~/env.mjs";
+// import type { ProjectRCResponse } from "~/lib/types";
 
 export const revalidate = 3600;
 
-const REPOS_TO_IGNORE: string[] = [".github"];
+// const REPOS_TO_IGNORE: string[] = [".github"];
 
-const URL
-  = process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
-    ? "https://projectrc.luxass.dev"
-    : process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : "http://localhost:3000";
+// const URL
+//   = process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
+//     ? "https://projectrc.luxass.dev"
+//     : process.env.NEXT_PUBLIC_VERCEL_URL
+//       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+//       : "http://localhost:3000";
 
-const PROFILE_QUERY = gql`
-  #graphql
-  query getProfile {
-    viewer {
-      repositories(
-        first: 100
-        isFork: false
-        privacy: PUBLIC
-        orderBy: { field: STARGAZERS, direction: DESC }
-      ) {
-        totalCount
-        nodes {
-          name
-          isFork
-          isPrivate
-          nameWithOwner
-          description
-          pushedAt
-          url
-          defaultBranchRef {
-            name
-          }
-          languages(first: 1, orderBy: { field: SIZE, direction: DESC }) {
-            nodes {
-              name
-              color
-            }
-          }
-          object(expression: "HEAD:.github") {
-            ... on Tree {
-              entries {
-                name
-                type
-                path
-              }
-            }
-          }
-        }
-        pageInfo {
-          endCursor
-          hasNextPage
-        }
-      }
-      contributions: repositoriesContributedTo(
-        privacy: PUBLIC
-        first: 100
-        contributionTypes: [
-          COMMIT
-          ISSUE
-          PULL_REQUEST
-          REPOSITORY
-          PULL_REQUEST_REVIEW
-        ]
-      ) {
-        nodes {
-          nameWithOwner
-        }
-      }
-    }
-  }
-`;
+// const PROFILE_QUERY = gql`
+//   #graphql
+//   query getProfile {
+//     viewer {
+//       repositories(
+//         first: 100
+//         isFork: false
+//         privacy: PUBLIC
+//         orderBy: { field: STARGAZERS, direction: DESC }
+//       ) {
+//         totalCount
+//         nodes {
+//           name
+//           isFork
+//           isPrivate
+//           nameWithOwner
+//           description
+//           pushedAt
+//           url
+//           defaultBranchRef {
+//             name
+//           }
+//           languages(first: 1, orderBy: { field: SIZE, direction: DESC }) {
+//             nodes {
+//               name
+//               color
+//             }
+//           }
+//           object(expression: "HEAD:.github") {
+//             ... on Tree {
+//               entries {
+//                 name
+//                 type
+//                 path
+//               }
+//             }
+//           }
+//         }
+//         pageInfo {
+//           endCursor
+//           hasNextPage
+//         }
+//       }
+//       contributions: repositoriesContributedTo(
+//         privacy: PUBLIC
+//         first: 100
+//         contributionTypes: [
+//           COMMIT
+//           ISSUE
+//           PULL_REQUEST
+//           REPOSITORY
+//           PULL_REQUEST_REVIEW
+//         ]
+//       ) {
+//         nodes {
+//           nameWithOwner
+//         }
+//       }
+//     }
+//   }
+// `;
 
-type Project = Pick<
-  Repository,
-  "name" | "nameWithOwner" | "description" | "pushedAt" | "url"
-> & {
-  $projectrc?: ProjectRCResponse["$projectrc"]
-  $values?: ProjectRCResponse["projects"][number]
-  language?: Pick<Language, "name" | "color">
-  defaultBranch?: string
-  isContributor: boolean
-};
+// type Project = Pick<
+//   Repository,
+//   "name" | "nameWithOwner" | "description" | "pushedAt" | "url"
+// > & {
+//   $projectrc?: ProjectRCResponse["$projectrc"]
+//   $values?: ProjectRCResponse["projects"][number]
+//   language?: Pick<Language, "name" | "color">
+//   defaultBranch?: string
+//   isContributor: boolean
+// };
 
 export async function GET() {
   // const { viewer } = await graphql<{
