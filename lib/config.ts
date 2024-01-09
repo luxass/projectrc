@@ -5,6 +5,7 @@ import { env } from "~/env.mjs";
 
 export interface ResolveConfigResult {
   content: z.infer<typeof PROJECTRC_SCHEMA>
+  external: boolean
   path: string
 }
 
@@ -22,9 +23,28 @@ export async function resolveConfig(
   }
 
   try {
-    const url = new URL(
+    let external = false;
+
+    let url = new URL(
         `https://api.github.com/repos/${owner}/${repository}/contents/.github/projectrc.json`,
     );
+
+    if (owner !== "luxass") {
+      external = true;
+
+      // when the owner is not luxass, resolve the repository externally
+      // every external repository that should be resolved, requires
+      // a projectrc file in luxass/luxass repository
+      // the path for these files should be .github/projectrc/<external-owner>/<external-repository>.json
+      // for example: .github/projectrc/vercel/next.js.json
+      if (repository.endsWith(".json")) {
+        repository = repository.slice(0, -5);
+      }
+
+      url = new URL(
+        `https://api.github.com/repos/luxass/luxass/contents/.github/projectrc/${owner}/${repository}.json`,
+      );
+    }
 
     const result = await fetch(url.toString(), {
       headers: {
@@ -49,6 +69,7 @@ export async function resolveConfig(
 
     return {
       content: parsed,
+      external,
       path: url.toString(),
     };
   } catch (err) {

@@ -27,7 +27,7 @@ export async function getREADME(
     `https://api.github.com/repos/${owner}/${repository}`,
   );
 
-  if (typeof readmePath === "string") {
+  if (typeof readmePath === "string" && readmePath !== "") {
     if (readmePath.startsWith("/")) {
       readmePath = readmePath.slice(1);
     }
