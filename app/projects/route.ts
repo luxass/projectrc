@@ -90,90 +90,90 @@ type Project = Pick<
 };
 
 export async function GET() {
-  const { viewer } = await graphql<{
-    viewer: Omit<User, "repositoriesContributedTo"> & {
-      contributions: User["repositoriesContributedTo"]
-    }
-  }>(PROFILE_QUERY, {
-    headers: {
-      "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-  });
+  // const { viewer } = await graphql<{
+  //   viewer: Omit<User, "repositoriesContributedTo"> & {
+  //     contributions: User["repositoriesContributedTo"]
+  //   }
+  // }>(PROFILE_QUERY, {
+  //   headers: {
+  //     "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
+  //     "Content-Type": "application/json",
+  //   },
+  // });
 
-  if (!viewer.repositories.nodes?.length) {
-    return Response.json({
-      error: `no repositories found for ${viewer.login}`,
-    }, {
-      status: 404,
-    });
-  }
+  // if (!viewer.repositories.nodes?.length) {
+  //   return Response.json({
+  //     error: `no repositories found for ${viewer.login}`,
+  //   }, {
+  //     status: 404,
+  //   });
+  // }
 
-  const projects: Project[] = [];
+  // const projects: Project[] = [];
 
-  const repositories = viewer.repositories.nodes.filter(
-    (repo): repo is NonNullable<Repository> => {
-      return (
-        !!repo
-        && !repo.isFork
-        && !repo.isPrivate
-        && !REPOS_TO_IGNORE.includes(repo.nameWithOwner)
-        && !REPOS_TO_IGNORE.includes(repo.nameWithOwner.split("/")[1])
-      );
-    },
-  );
+  // const repositories = viewer.repositories.nodes.filter(
+  //   (repo): repo is NonNullable<Repository> => {
+  //     return (
+  //       !!repo
+  //       && !repo.isFork
+  //       && !repo.isPrivate
+  //       && !REPOS_TO_IGNORE.includes(repo.nameWithOwner)
+  //       && !REPOS_TO_IGNORE.includes(repo.nameWithOwner.split("/")[1])
+  //     );
+  //   },
+  // );
 
-  await Promise.all(repositories.map(async (repository) => {
-    // console.info(`fetching .projectrc for ${repository.nameWithOwner}`);
+  // await Promise.all(repositories.map(async (repository) => {
+  //   // console.info(`fetching .projectrc for ${repository.nameWithOwner}`);
 
-    const projectRC: ProjectRCResponse = await fetch(
-      `${URL}/resolve/${repository.nameWithOwner}`,
-    ).then((res) => res.json());
+  //   const projectRC: ProjectRCResponse = await fetch(
+  //     `${URL}/resolve/${repository.nameWithOwner}`,
+  //   ).then((res) => res.json());
 
-    if (!projectRC || typeof projectRC !== "object" || "error" in projectRC) {
-      return;
-    }
+  //   if (!projectRC || typeof projectRC !== "object" || "error" in projectRC) {
+  //     return;
+  //   }
 
-    let language = {
-      name: "Unknown",
-      color: "#333",
-    };
+  //   let language = {
+  //     name: "Unknown",
+  //     color: "#333",
+  //   };
 
-    const isContributor
-      = viewer.contributions.nodes?.some(
-        (contribution) =>
-          contribution?.nameWithOwner === repository.nameWithOwner,
-      ) ?? false;
+  //   const isContributor
+  //     = viewer.contributions.nodes?.some(
+  //       (contribution) =>
+  //         contribution?.nameWithOwner === repository.nameWithOwner,
+  //     ) ?? false;
 
-    if (repository.languages?.nodes?.length && repository.languages.nodes[0]) {
-      language = {
-        name: repository.languages.nodes[0].name,
-        color: repository.languages.nodes[0].color || "#333",
-      };
-    }
+  //   if (repository.languages?.nodes?.length && repository.languages.nodes[0]) {
+  //     language = {
+  //       name: repository.languages.nodes[0].name,
+  //       color: repository.languages.nodes[0].color || "#333",
+  //     };
+  //   }
 
-    if (!projectRC) {
-      return;
-    }
+  //   if (!projectRC) {
+  //     return;
+  //   }
 
-    for (const project of projectRC.projects) {
-      projects.push({
-        name: project.name,
-        nameWithOwner: repository.nameWithOwner,
-        description: project.description || repository.description,
-        pushedAt: repository.pushedAt,
-        url: repository.url,
-        defaultBranch: repository.defaultBranchRef?.name || undefined,
-        isContributor,
-        language,
-        $projectrc: projectRC.$projectrc,
-        $values: project,
-      });
-    }
-  }));
+  //   for (const project of projectRC.projects) {
+  //     projects.push({
+  //       name: project.name,
+  //       nameWithOwner: repository.nameWithOwner,
+  //       description: project.description || repository.description,
+  //       pushedAt: repository.pushedAt,
+  //       url: repository.url,
+  //       defaultBranch: repository.defaultBranchRef?.name || undefined,
+  //       isContributor,
+  //       language,
+  //       $projectrc: projectRC.$projectrc,
+  //       $values: project,
+  //     });
+  //   }
+  // }));
 
   return Response.json({
     last: new Date().toISOString(),
-    projects,
+    projects: [],
   });
 }
