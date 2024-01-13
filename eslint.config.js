@@ -5,4 +5,5 @@ export default luxass({
   astro: true,
   unocss: true,
   solid: true,
+  formatters: true,
 });
