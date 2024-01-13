@@ -27,7 +27,7 @@ export const GET: APIRoute = async ({ params }) => {
   }, {
     headers: {
       "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "max-age=3600",
+      "Cache-Control": "public, s-maxage=3600, must-revalidate",
     },
   });
 };

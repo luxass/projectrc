@@ -44,7 +44,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
       status: 404,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "max-age=3600",
+        "Cache-Control": "public, s-maxage=3600, must-revalidate",
       },
     });
   }
@@ -58,7 +58,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
       status: 404,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "max-age=3600",
+        "Cache-Control": "public, s-maxage=3600, must-revalidate",
       },
     });
   }
@@ -376,7 +376,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
   }, {
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "max-age=3600",
+      "Cache-Control": "public, s-maxage=3600, must-revalidate",
     },
   });
 };
