@@ -1,8 +1,6 @@
 import type { APIRoute } from "astro";
 import { getREADME } from "~/lib/readme";
 
-export const prerender = false;
-
 export const GET: APIRoute = async ({ params }) => {
   const { owner, repository, path } = params;
 

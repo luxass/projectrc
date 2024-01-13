@@ -8,7 +8,7 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: "https://projectrc.luxass.dev",
-  output: "hybrid",
+  output: "server",
   adapter: vercel(),
   compressHTML: false,
   integrations: [

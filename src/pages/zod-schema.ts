@@ -6,6 +6,7 @@ export const GET: APIRoute = () => {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "max-age=3600",
     },
   });
 };
