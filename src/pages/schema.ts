@@ -9,6 +9,7 @@ export const GET: APIRoute = () => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
       "Cache-Control": "max-age=3600",
+      "Content-Disposition": "inline",
     },
   });
 };

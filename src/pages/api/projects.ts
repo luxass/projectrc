@@ -159,6 +159,7 @@ export const GET: APIRoute = async () => {
   }, {
     headers: {
       "Cache-Control": "max-age=3600",
+      "Content-Disposition": "inline",
     },
   });
 };
