@@ -2,7 +2,7 @@
 import { luxass } from "@luxass/eslint-config";
 
 export default luxass({
-  formatters: true,
-  nextjs: true,
-  tailwindcss: true,
+  astro: true,
+  unocss: true,
+  solid: true,
 });
