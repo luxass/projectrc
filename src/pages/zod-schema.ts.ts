@@ -4,10 +4,7 @@ import ZOD_SCHEMA from "../lib/schema?raw";
 export const GET: APIRoute = () => {
   return new Response(ZOD_SCHEMA, {
     headers: {
-      "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "max-age=3600",
-      "Content-Disposition": "inline",
     },
   });
 };
