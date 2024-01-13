@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { internalResolve } from "~/lib/resolve";
 
+export const prerender = false;
+
 export const GET: APIRoute = ({ params }) => {
   const { owner, repository: repositoryName } = params;
 

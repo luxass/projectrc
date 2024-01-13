@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { resolveConfig } from "~/lib/config";
 
+export const prerender = false;
+
 export const GET: APIRoute = async ({ params }) => {
   const { owner, repository } = params;
 

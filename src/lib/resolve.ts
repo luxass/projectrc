@@ -42,6 +42,10 @@ export async function internalResolve(owner: string, repositoryName: string) {
       error: "repository not found",
     }, {
       status: 404,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "max-age=3600",
+      },
     });
   }
 
@@ -52,6 +56,10 @@ export async function internalResolve(owner: string, repositoryName: string) {
       error: "repository is ignored",
     }, {
       status: 404,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "max-age=3600",
+      },
     });
   }
 
@@ -367,7 +375,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
     projects,
   }, {
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
       "Cache-Control": "max-age=3600",
     },
   });
