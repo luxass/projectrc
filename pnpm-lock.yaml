@@ -38,9 +38,6 @@ dependencies:
   '@octokit/graphql':
     specifier: ^7.0.2
     version: 7.0.2
-  '@types/node':
-    specifier: ^18.19.4
-    version: 18.19.6
   astro:
     specifier: ^4.1.2
     version: 4.1.2(@types/node@18.19.6)(typescript@5.3.3)
@@ -79,6 +76,9 @@ devDependencies:
   '@types/markdown-it':
     specifier: ^13.0.7
     version: 13.0.7
+  '@types/node':
+    specifier: ^18.19.6
+    version: 18.19.6
   '@types/sanitize-html':
     specifier: ^2.9.5
     version: 2.9.5
