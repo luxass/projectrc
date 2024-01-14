@@ -6,43 +6,52 @@ import { internalResolve } from "~/lib/resolve";
 import type { Project } from "~/lib/types";
 import { SITE_URL } from "~/lib/utils";
 
+const REPOSITORY_FRAGMENT = gql`
+  #graphql
+  fragment RepositoryFragment on Repository {
+    name
+    isFork
+    isPrivate
+    nameWithOwner
+    description
+    pushedAt
+    url
+    defaultBranchRef {
+      name
+    }
+    languages(first: 1, orderBy: { field: SIZE, direction: DESC }) {
+      nodes {
+        name
+        color
+      }
+    }
+    object(expression: "HEAD:.github") {
+      ... on Tree {
+        entries {
+          name
+          type
+          path
+        }
+      }
+    }
+  }
+`;
+
 const PROFILE_QUERY = gql`
   #graphql
+  ${REPOSITORY_FRAGMENT}
+
   query getProfile {
     viewer {
       repositories(
-        first: 100
+        first: 1
         isFork: false
         privacy: PUBLIC
         orderBy: { field: STARGAZERS, direction: DESC }
       ) {
         totalCount
         nodes {
-          name
-          isFork
-          isPrivate
-          nameWithOwner
-          description
-          pushedAt
-          url
-          defaultBranchRef {
-            name
-          }
-          languages(first: 1, orderBy: { field: SIZE, direction: DESC }) {
-            nodes {
-              name
-              color
-            }
-          }
-          object(expression: "HEAD:.github") {
-            ... on Tree {
-              entries {
-                name
-                type
-                path
-              }
-            }
-          }
+          ...RepositoryFragment
         }
         pageInfo {
           endCursor
@@ -66,7 +75,40 @@ const PROFILE_QUERY = gql`
       }
     }
   }
+
 `;
+
+const REPOSITORY_QUERY = gql`
+  #graphql
+  ${REPOSITORY_FRAGMENT}
+
+  query getRepository($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+      ...RepositoryFragment
+    }
+  }
+`;
+
+async function* getExternalRepositories(path: string = ".github/projectrc"): AsyncGenerator<string> {
+  try {
+    const data = await fetch(`https://api.github.com/repos/luxass/luxass/contents/${path}`).then((res) => res.json());
+
+    if (Array.isArray(data)) {
+      for (const item of data) {
+        if (item.type === "file") {
+          yield item.path;
+        } else if (item.type === "dir") {
+          yield * getExternalRepositories(item.path);
+        }
+      }
+    } else {
+      throw new TypeError("invalid response from github");
+    }
+  } catch (error: any) {
+    console.error("Error fetching files from GitHub:", error.message);
+    throw error;
+  }
+}
 
 export const GET: APIRoute = async () => {
   const { viewer } = await graphql<{
@@ -105,6 +147,25 @@ export const GET: APIRoute = async () => {
       && !ignore.includes(repo.nameWithOwner.split("/")[1])
     );
   });
+
+  for await (const file of getExternalRepositories()) {
+    if (file.endsWith("README.md") || file.endsWith(".projectignore")) continue;
+
+    const [owner, name] = file.replace(".github/projectrc/", "").split("/");
+
+    const { repository } = await graphql<{
+      repository: Repository
+    }>(REPOSITORY_QUERY, {
+      owner,
+      name: name.replace(".json", ""),
+      headers: {
+        "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    repositories.push(repository);
+  }
 
   await Promise.all(
     repositories.map(async (repository) => {
