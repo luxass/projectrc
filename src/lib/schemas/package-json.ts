@@ -3,18 +3,14 @@ import { z } from "zod";
 export const PACKAGE_JSON_SCHEMA = z.object({
   name: z
     .string()
-    .regex(
-      /^(?:(?:@(?:[a-z0-9-*~][a-z0-9-*._~]*)?\/[a-z0-9-._~])|[a-z0-9-~])[a-z0-9-._~]*$/,
-    )
+    .regex(/^(?:(?:@(?:[a-z0-9-*~][a-z0-9-*._~]*)?\/[a-z0-9-._~])|[a-z0-9-~])[a-z0-9-._~]*$/)
     .min(1)
     .max(214)
     .describe("The name of the package.")
     .optional(),
   version: z
     .string()
-    .describe(
-      "Version must be parseable by node-semver, which is bundled with npm as a dependency.",
-    )
+    .describe("Version must be parseable by node-semver, which is bundled with npm as a dependency.")
     .optional(),
   private: z.boolean().describe("If set to true, then npm will refuse to publish it.").optional(),
   workspaces: z

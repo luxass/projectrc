@@ -18,13 +18,16 @@ export const GET: APIRoute = async ({ params }) => {
     readmePath: path,
   });
 
-  return Response.json({
-    lastModified: new Date().toISOString(),
-    ...readme,
-  }, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "public, s-maxage=3600, must-revalidate",
+  return Response.json(
+    {
+      lastModified: new Date().toISOString(),
+      ...readme,
     },
-  });
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, s-maxage=3600, must-revalidate",
+      },
+    },
+  );
 };

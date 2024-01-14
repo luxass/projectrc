@@ -13,10 +13,7 @@ export interface ResolveConfigOptions {
   name: string
 }
 
-export async function resolveConfig(
-  owner: string,
-  repository: string,
-): Promise<ResolveConfigResult | undefined> {
+export async function resolveConfig(owner: string, repository: string): Promise<ResolveConfigResult | undefined> {
   if (!owner || !repository) {
     return undefined;
   }
@@ -24,9 +21,7 @@ export async function resolveConfig(
   try {
     let external = false;
 
-    let url = new URL(
-        `https://api.github.com/repos/${owner}/${repository}/contents/.github/projectrc.json`,
-    );
+    let url = new URL(`https://api.github.com/repos/${owner}/${repository}/contents/.github/projectrc.json`);
 
     if (owner !== "luxass") {
       external = true;
@@ -53,12 +48,7 @@ export async function resolveConfig(
       },
     }).then((res) => res.json());
 
-    if (
-      !result
-      || typeof result !== "object"
-      || !("content" in result)
-      || typeof result.content !== "string"
-    ) {
+    if (!result || typeof result !== "object" || !("content" in result) || typeof result.content !== "string") {
       return;
     }
 

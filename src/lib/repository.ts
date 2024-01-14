@@ -9,24 +9,18 @@ export interface RepositoryTypeOptions {
   name: string
 }
 
-export async function getRepositoryType(
-  owner: string,
-  repository: string,
-): Promise<RepositoryType | undefined> {
+export async function getRepositoryType(owner: string, repository: string): Promise<RepositoryType | undefined> {
   if (!owner || !repository) {
     return undefined;
   }
 
-  const res = await fetch(
-    `https://api.github.com/repos/${owner}/${repository}`,
-    {
-      headers: {
-        "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
-        "Content-Type": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repository}`, {
+    headers: {
+      "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+      "Content-Type": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
     },
-  );
+  });
 
   if (!res.ok) {
     return;
@@ -81,10 +75,7 @@ const REPOSITORY_QUERY = gql`
   }
 `;
 
-export async function getRepository(
-  owner: string,
-  name: string,
-): Promise<RepositoryNode["repository"] | undefined> {
+export async function getRepository(owner: string, name: string): Promise<RepositoryNode["repository"] | undefined> {
   if (!owner || !name) {
     return undefined;
   }

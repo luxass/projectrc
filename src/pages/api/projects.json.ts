@@ -6,8 +6,6 @@ import { internalResolve } from "~/lib/resolve";
 import type { Project } from "~/lib/types";
 import { SITE_URL } from "~/lib/utils";
 
-const REPOS_TO_IGNORE: string[] = [".github"];
-
 const PROFILE_QUERY = gql`
   #graphql
   query getProfile {
@@ -83,80 +81,83 @@ export const GET: APIRoute = async () => {
   });
 
   if (!viewer.repositories.nodes?.length) {
-    return Response.json({
-      error: `no repositories found for ${viewer.login}`,
-    }, {
-      status: 404,
-    });
+    return Response.json(
+      {
+        error: `no repositories found for ${viewer.login}`,
+      },
+      {
+        status: 404,
+      },
+    );
   }
 
   const projects: Project[] = [];
 
-  const repositories = viewer.repositories.nodes.filter(
-    (repo): repo is NonNullable<Repository> => {
-      return (
-        !!repo
-        && !repo.isFork
-        && !repo.isPrivate
-        && !REPOS_TO_IGNORE.includes(repo.nameWithOwner)
-        && !REPOS_TO_IGNORE.includes(repo.nameWithOwner.split("/")[1])
-      );
-    },
+  const ignoreFile = await fetch("https://raw.githubusercontent.com/luxass/luxass/main/.github/projectrc/.projectignore").then((res) => res.text());
+  const ignore = ignoreFile.split("\n").map((line) => line.trim()).filter((line) => line && !line.startsWith("#"));
+
+  const repositories = viewer.repositories.nodes.filter((repo): repo is NonNullable<Repository> => {
+    return (
+      !!repo
+      && !repo.isFork
+      && !repo.isPrivate
+      && !ignore.includes(repo.nameWithOwner)
+      && !ignore.includes(repo.nameWithOwner.split("/")[1])
+    );
+  });
+
+  await Promise.all(
+    repositories.map(async (repository) => {
+      const [owner, name] = repository.nameWithOwner.split("/");
+      const resolved: unknown = await internalResolve(owner, name).then((res) => res.json());
+
+      if (!resolved || typeof resolved !== "object" || !("projects" in resolved) || !Array.isArray(resolved.projects)) {
+        console.warn("invalid response from resolve api", `${SITE_URL}/api/resolve/${repository.nameWithOwner}`);
+        return;
+      }
+
+      let language = {
+        name: "Unknown",
+        color: "#333",
+      };
+
+      const isContributor
+        = viewer.contributions.nodes?.some((contribution) => contribution?.nameWithOwner === repository.nameWithOwner)
+        ?? false;
+
+      if (repository.languages?.nodes?.length && repository.languages.nodes[0]) {
+        language = {
+          name: repository.languages.nodes[0].name,
+          color: repository.languages.nodes[0].color || "#333",
+        };
+      }
+
+      for (const project of resolved.projects) {
+        projects.push({
+          ...project,
+
+          // extra fields
+          nameWithOwner: repository.nameWithOwner,
+          pushedAt: repository.pushedAt,
+          url: repository.url,
+          defaultBranch: repository.defaultBranchRef?.name || undefined,
+          isContributor,
+          language,
+        });
+      }
+    }),
   );
 
-  await Promise.all(repositories.map(async (repository) => {
-    const [owner, name] = repository.nameWithOwner.split("/");
-    const resolved: unknown = await internalResolve(owner, name).then((res) => res.json());
-    // const resolved: unknown = await fetch(
-    //   `${SITE_URL}/api/resolve/${repository.nameWithOwner}`,
-    // ).then((res) => res.json());
-
-    if (!resolved || typeof resolved !== "object" || !("projects" in resolved) || !Array.isArray(resolved.projects)) {
-      console.warn("invalid response from resolve api", `${SITE_URL}/api/resolve/${repository.nameWithOwner}`);
-      return;
-    }
-
-    let language = {
-      name: "Unknown",
-      color: "#333",
-    };
-
-    const isContributor
-      = viewer.contributions.nodes?.some(
-        (contribution) =>
-          contribution?.nameWithOwner === repository.nameWithOwner,
-      ) ?? false;
-
-    if (repository.languages?.nodes?.length && repository.languages.nodes[0]) {
-      language = {
-        name: repository.languages.nodes[0].name,
-        color: repository.languages.nodes[0].color || "#333",
-      };
-    }
-
-    for (const project of resolved.projects) {
-      projects.push({
-        ...project,
-
-        // extra fields
-        nameWithOwner: repository.nameWithOwner,
-        pushedAt: repository.pushedAt,
-        url: repository.url,
-        defaultBranch: repository.defaultBranchRef?.name || undefined,
-        isContributor,
-        language,
-
-      });
-    }
-  }));
-
-  return Response.json({
-    modified: new Date().toISOString(),
-    projects,
-  }, {
-    headers: {
-      "Cache-Control": "max-age=3600",
-      "Content-Disposition": "inline",
+  return Response.json(
+    {
+      modified: new Date().toISOString(),
+      projects,
     },
-  });
+    {
+      headers: {
+        "Cache-Control": "max-age=3600",
+        "Content-Disposition": "inline",
+      },
+    },
+  );
 };

@@ -7,60 +7,65 @@ import { getRepository } from "~/lib/repository";
 import type { ResolvedProject } from "~/lib/types";
 import { SITE_URL } from "~/lib/utils";
 
-const GITHUB_TREE_SCHEMA = z
-  .array(
-    z.object({
-      // according to the GitHub API docs, this is optional..
-      // https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#get-a-tree
-      path: z.string(),
-      mode: z.string().optional(),
-      type: z.string().optional(),
-      sha: z.string().optional(),
-      size: z
-        .number()
-        .int()
-        .optional(),
-      url: z.string().optional(),
-    }),
-  );
+const GITHUB_TREE_SCHEMA = z.array(
+  z.object({
+    // according to the GitHub API docs, this is optional..
+    // https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#get-a-tree
+    path: z.string(),
+    mode: z.string().optional(),
+    type: z.string().optional(),
+    sha: z.string().optional(),
+    size: z.number().int().optional(),
+    url: z.string().optional(),
+  }),
+);
 
 export async function internalResolve(owner: string, repositoryName: string) {
   const resolvedConfig = await resolveConfig(owner, repositoryName);
 
   if (!resolvedConfig) {
-    return Response.json({
-      error: "repository has no config",
-    }, {
-      status: 404,
-    });
+    return Response.json(
+      {
+        error: "repository has no config",
+      },
+      {
+        status: 404,
+      },
+    );
   }
 
   const repository = await getRepository(owner, repositoryName);
 
   if (!repository) {
-    return Response.json({
-      error: "repository not found",
-    }, {
-      status: 404,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, s-maxage=3600, must-revalidate",
+    return Response.json(
+      {
+        error: "repository not found",
       },
-    });
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, s-maxage=3600, must-revalidate",
+        },
+      },
+    );
   }
 
   const config = resolvedConfig.content;
 
   if (config.ignore) {
-    return Response.json({
-      error: "repository is ignored",
-    }, {
-      status: 404,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, s-maxage=3600, must-revalidate",
+    return Response.json(
+      {
+        error: "repository is ignored",
       },
-    });
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, s-maxage=3600, must-revalidate",
+        },
+      },
+    );
   }
 
   const projects: ResolvedProject[] = [];
@@ -101,11 +106,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
       );
     }
 
-    if (
-      !("tree" in filesResult)
-      || !Array.isArray(filesResult.tree)
-      || !filesResult.tree.length
-    ) {
+    if (!("tree" in filesResult) || !Array.isArray(filesResult.tree) || !filesResult.tree.length) {
       throw new Error(
         "projectrc: workspace is enabled, but no files were found.\nPlease add files to your repository.",
       );
@@ -117,28 +118,28 @@ export async function internalResolve(owner: string, repositoryName: string) {
     const _ignore = ignore().add(config.workspace?.ignores || []);
 
     const matchedFilePaths = filePaths.filter(
-      (filePath) =>
-        workspaces.some((pattern) => minimatch(filePath, pattern))
-        && !_ignore.ignores(filePath),
+      (filePath) => workspaces.some((pattern) => minimatch(filePath, pattern)) && !_ignore.ignores(filePath),
     );
 
-    const results = await Promise.all(matchedFilePaths.map(async (filePath) => {
-      const pkg = await getPackage(owner, repositoryName, filePath);
+    const results = await Promise.all(
+      matchedFilePaths.map(async (filePath) => {
+        const pkg = await getPackage(owner, repositoryName, filePath);
 
-      if (!pkg) {
-        throw new Error(`no package.json found in ${filePath}`);
-      }
+        if (!pkg) {
+          throw new Error(`no package.json found in ${filePath}`);
+        }
 
-      if (!pkg.name) {
-        throw new Error(`no name found in package.json in ${filePath}`);
-      }
+        if (!pkg.name) {
+          throw new Error(`no name found in package.json in ${filePath}`);
+        }
 
-      return {
-        name: pkg.name,
-        path: filePath,
-        private: pkg.private || false,
-      };
-    }));
+        return {
+          name: pkg.name,
+          path: filePath,
+          private: pkg.private || false,
+        };
+      }),
+    );
 
     const overrides = config.workspace?.overrides || [];
     // const projects: ProjectRCProject[] = [];
@@ -215,9 +216,16 @@ export async function internalResolve(owner: string, repositoryName: string) {
             };
 
             if (npm.downloads && project.npm.name) {
-              const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then((res) => res.json());
+              const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then(
+                (res) => res.json(),
+              );
 
-              if (!result || typeof result !== "object" || !("downloads" in result) || typeof result.downloads !== "number") {
+              if (
+                !result
+                || typeof result !== "object"
+                || !("downloads" in result)
+                || typeof result.downloads !== "number"
+              ) {
                 throw new Error(
                   "npm downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.",
                 );
@@ -230,7 +238,9 @@ export async function internalResolve(owner: string, repositoryName: string) {
       }
 
       if (override?.version || config.version) {
-        const latestReleaseResponse = await fetch(`https://api.github.com/repos/${owner}/${repositoryName}/releases/latest`);
+        const latestReleaseResponse = await fetch(
+          `https://api.github.com/repos/${owner}/${repositoryName}/releases/latest`,
+        );
         const pkgObj = await getPackage(owner, repositoryName, pkg.path);
 
         if (!latestReleaseResponse.ok && !pkgObj.version) {
@@ -242,9 +252,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
           const npmResult = await fetch(`https://registry.npmjs.org/${pkgObj.name}`).then((res) => res.json());
 
           if (!npmResult || typeof npmResult !== "object") {
-            throw new Error(
-              "version is enabled, but no npm API response was found.\nPlease try again later.",
-            );
+            throw new Error("version is enabled, but no npm API response was found.\nPlease try again later.");
           }
 
           const test = z.object({
@@ -279,7 +287,11 @@ export async function internalResolve(owner: string, repositoryName: string) {
       keywords: config.keywords || undefined,
       image: config.image || undefined,
       ignore: config.ignore || false,
-      readme: config.readme ? `${SITE_URL}/api/resolve/${owner}/${repositoryName}/readme${typeof config.readme === "string" ? `/${config.readme}` : ""}` : undefined,
+      readme: config.readme
+        ? `${SITE_URL}/api/resolve/${owner}/${repositoryName}/readme${
+            typeof config.readme === "string" ? `/${config.readme}` : ""
+          }`
+        : undefined,
       website: typeof config.website === "boolean" ? repository.homepageUrl : config.website,
       deprecated: config.deprecated,
       stars: repository.stargazerCount || undefined,
@@ -313,9 +325,16 @@ export async function internalResolve(owner: string, repositoryName: string) {
           };
 
           if (npm.downloads && project.npm.name) {
-            const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then((res) => res.json());
+            const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then(
+              (res) => res.json(),
+            );
 
-            if (!result || typeof result !== "object" || !("downloads" in result) || typeof result.downloads !== "number") {
+            if (
+              !result
+              || typeof result !== "object"
+              || !("downloads" in result)
+              || typeof result.downloads !== "number"
+            ) {
               throw new Error(
                 "npm downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.",
               );
@@ -328,7 +347,9 @@ export async function internalResolve(owner: string, repositoryName: string) {
     }
 
     if (config.version) {
-      const latestReleaseResponse = await fetch(`https://api.github.com/repos/${owner}/${repositoryName}/releases/latest`);
+      const latestReleaseResponse = await fetch(
+        `https://api.github.com/repos/${owner}/${repositoryName}/releases/latest`,
+      );
       const pkg = await getPackage(owner, repositoryName);
 
       if (!latestReleaseResponse.ok && !pkg.version) {
@@ -340,9 +361,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
         const npmResult = await fetch(`https://registry.npmjs.org/${pkg.name}`).then((res) => res.json());
 
         if (!npmResult || typeof npmResult !== "object") {
-          throw new Error(
-            "version is enabled, but no npm API response was found.\nPlease try again later.",
-          );
+          throw new Error("version is enabled, but no npm API response was found.\nPlease try again later.");
         }
 
         const test = z.object({
@@ -370,13 +389,16 @@ export async function internalResolve(owner: string, repositoryName: string) {
     projects.push(project);
   }
 
-  return Response.json({
-    lastModified: new Date().toISOString(),
-    projects,
-  }, {
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "public, s-maxage=3600, must-revalidate",
+  return Response.json(
+    {
+      lastModified: new Date().toISOString(),
+      projects,
     },
-  });
-};
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, s-maxage=3600, must-revalidate",
+      },
+    },
+  );
+}

@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "fast:build": "astro check && astro build",
     "build": "astro check && eslint . --report-unused-disable-directives && tsc --noEmit && astro build",
     "preview": "astro preview",
     "astro": "astro",

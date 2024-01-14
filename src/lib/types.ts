@@ -4,7 +4,10 @@ import type { PROJECTRC_SCHEMA } from "./schema";
 
 type SafeOmit<T, K extends keyof T> = Omit<T, K>;
 
-export type ResolvedProject = SafeOmit<z.infer<typeof PROJECTRC_SCHEMA>, "readme" | "workspace" | "stars" | "npm" | "version"> & {
+export type ResolvedProject = SafeOmit<
+  z.infer<typeof PROJECTRC_SCHEMA>,
+  "readme" | "workspace" | "stars" | "npm" | "version"
+> & {
   /**
    * The name of the project
    */
@@ -37,8 +40,9 @@ export type ResolvedProject = SafeOmit<z.infer<typeof PROJECTRC_SCHEMA>, "readme
   version?: string
 };
 
-export type Project = ResolvedProject & Pick<Repository, "nameWithOwner" | "pushedAt" | "url"> & {
-  defaultBranch?: string
-  isContributor: boolean
-  language?: Pick<Language, "name" | "color">
-};
+export type Project = ResolvedProject &
+  Pick<Repository, "nameWithOwner" | "pushedAt" | "url"> & {
+    defaultBranch?: string
+    isContributor: boolean
+    language?: Pick<Language, "name" | "color">
+  };

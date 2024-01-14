@@ -10,8 +10,8 @@ export function base64ToString(str: string): string {
 }
 
 export const SITE_URL
-= import.meta.env.VERCEL_ENV === "production"
-  ? "https://projectrc.luxass.dev"
-  : import.meta.env.VERCEL_ENV
-    ? `https://${import.meta.env.VERCEL_ENV}`
-    : "http://localhost:4321";
+  = import.meta.env.VERCEL_ENV === "production"
+    ? "https://projectrc.luxass.dev"
+    : import.meta.env.VERCEL_ENV
+      ? `https://${import.meta.env.VERCEL_ENV}`
+      : "http://localhost:4321";

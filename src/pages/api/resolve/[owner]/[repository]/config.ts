@@ -15,19 +15,25 @@ export const GET: APIRoute = async ({ params }) => {
   const config = await resolveConfig(owner, repository);
 
   if (!config) {
-    return Response.json({
-      error: "repository has no config",
-    }, {
-      status: 404,
-    });
+    return Response.json(
+      {
+        error: "repository has no config",
+      },
+      {
+        status: 404,
+      },
+    );
   }
-  return Response.json({
-    lastModified: new Date().toISOString(),
-    ...config,
-  }, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "public, s-maxage=3600, must-revalidate",
+  return Response.json(
+    {
+      lastModified: new Date().toISOString(),
+      ...config,
     },
-  });
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, s-maxage=3600, must-revalidate",
+      },
+    },
+  );
 };

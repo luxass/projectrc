@@ -11,9 +11,7 @@ export interface READMEResult {
   path: string
 }
 
-export async function getREADME(
-  options: READMEOptions,
-): Promise<READMEResult | undefined> {
+export async function getREADME(options: READMEOptions): Promise<READMEResult | undefined> {
   if (!options.owner || !options.repository) {
     return undefined;
   }
@@ -22,9 +20,7 @@ export async function getREADME(
 
   let { readmePath } = options;
 
-  const readmeUrl = new URL(
-    `https://api.github.com/repos/${owner}/${repository}`,
-  );
+  const readmeUrl = new URL(`https://api.github.com/repos/${owner}/${repository}`);
 
   if (typeof readmePath === "string" && readmePath !== "") {
     if (readmePath.startsWith("/")) {
@@ -49,12 +45,7 @@ export async function getREADME(
       },
     }).then((res) => res.json());
 
-    if (
-      !result
-      || typeof result !== "object"
-      || !("content" in result)
-      || typeof result.content !== "string"
-    ) {
+    if (!result || typeof result !== "object" || !("content" in result) || typeof result.content !== "string") {
       return undefined;
     }
 
