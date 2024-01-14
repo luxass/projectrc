@@ -162,6 +162,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
         ignore: override?.ignore || config.ignore || false,
         deprecated: override?.deprecated || config.deprecated,
         stars: repository.stargazerCount || undefined,
+        priority: override?.priority || config.priority || 0,
       };
 
       if (override?.website ?? config.website) {
@@ -295,6 +296,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
       website: typeof config.website === "boolean" ? repository.homepageUrl : config.website,
       deprecated: config.deprecated,
       stars: repository.stargazerCount || undefined,
+      priority: config.priority || 0,
     };
 
     if (config.npm) {
