@@ -4,7 +4,7 @@ import { minimatch } from "minimatch";
 import { resolveConfig } from "~/lib/config";
 import { getPackage } from "~/lib/pkg";
 import { getRepository } from "~/lib/repository";
-import type { Project } from "~/lib/types";
+import type { ResolvedProject } from "~/lib/types";
 import { SITE_URL } from "~/lib/utils";
 
 const GITHUB_TREE_SCHEMA = z
@@ -63,7 +63,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
     });
   }
 
-  const projects: Project[] = [];
+  const projects: ResolvedProject[] = [];
 
   if (config.workspace && config.workspace.enabled) {
     const rootPkg = await getPackage(owner, repositoryName);
@@ -152,7 +152,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
         continue;
       }
 
-      const project: Project = {
+      const project: ResolvedProject = {
         name: pkg.name,
         title: config.title || repository.name,
         description: override?.description || config.description || repository.description || undefined,
@@ -272,7 +272,7 @@ export async function internalResolve(owner: string, repositoryName: string) {
       projects.push(project);
     }
   } else {
-    const project: Project = {
+    const project: ResolvedProject = {
       name: repository.name,
       title: config.title || repository.name,
       description: config.description || repository.description || undefined,

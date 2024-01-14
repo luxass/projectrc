@@ -1,6 +1,7 @@
 import { graphql } from "@octokit/graphql";
 import type { APIRoute } from "astro";
-import { type Language, type Repository, type User, gql } from "github-schema";
+import type { Repository, User } from "github-schema";
+import { gql } from "github-schema";
 import { internalResolve } from "~/lib/resolve";
 import type { Project } from "~/lib/types";
 import { SITE_URL } from "~/lib/utils";
@@ -89,11 +90,7 @@ export const GET: APIRoute = async () => {
     });
   }
 
-  const projects: (Project & Pick<Repository, "nameWithOwner" | "pushedAt" | "url"> & {
-    defaultBranch?: string
-    isContributor: boolean
-    language?: Pick<Language, "name" | "color">
-  }) [] = [];
+  const projects: Project[] = [];
 
   const repositories = viewer.repositories.nodes.filter(
     (repo): repo is NonNullable<Repository> => {
