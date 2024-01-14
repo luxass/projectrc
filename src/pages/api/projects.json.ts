@@ -44,7 +44,7 @@ const PROFILE_QUERY = gql`
   query getProfile {
     viewer {
       repositories(
-        first: 1
+        first: 100
         isFork: false
         privacy: PUBLIC
         orderBy: { field: STARGAZERS, direction: DESC }
