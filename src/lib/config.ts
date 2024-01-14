@@ -36,7 +36,7 @@ export async function resolveConfig(owner: string, repository: string): Promise<
       }
 
       url = new URL(
-        `https://api.github.com/repos/luxass/luxass/contents/.github/projectrc/${owner}/${repository}.json`,
+        `https://api.github.com/repos/luxass/luxass/contents/.github/projectrc/${owner.toLowerCase()}/${repository.toLowerCase()}.json`,
       );
     }
 
