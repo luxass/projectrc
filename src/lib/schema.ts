@@ -73,6 +73,7 @@ const PROJECT_SCHEMA = z.object({
   priority: z
     .number()
     .optional()
+    .default(0)
     .describe("the priority of the project, projects with higher priority are listed first"),
   website: z
     .union([z.boolean(), z.string()])
