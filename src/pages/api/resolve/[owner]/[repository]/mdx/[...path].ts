@@ -32,7 +32,7 @@ export const GET: APIRoute = async ({ params }) => {
     .use(rewriteUrls({
       repoUrl: `https://github.com/${owner}/${repository}`,
     }))
-    // .use(removeBadges())
+    .use(removeBadges())
     .use(removeComments())
     .process(readme.content || "No README was found.");
 
