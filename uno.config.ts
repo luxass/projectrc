@@ -5,7 +5,7 @@ import {
   presetUno,
   transformerDirectives,
   transformerVariantGroup,
-} from "unocss";
+} from "unocss"
 
 export default defineConfig({
   presets: [
@@ -16,4 +16,4 @@ export default defineConfig({
     presetTypography(),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
-});
+})

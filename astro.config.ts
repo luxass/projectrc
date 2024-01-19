@@ -1,9 +1,9 @@
-import { defineConfig } from "astro/config";
-import vercel from "@astrojs/vercel/serverless";
-import solidJs from "@astrojs/solid-js";
-import UnoCSS from "unocss/astro";
+import { defineConfig } from "astro/config"
+import vercel from "@astrojs/vercel/serverless"
+import solidJs from "@astrojs/solid-js"
+import UnoCSS from "unocss/astro"
 
-import sitemap from "@astrojs/sitemap";
+import sitemap from "@astrojs/sitemap"
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,4 +25,4 @@ export default defineConfig({
       },
     },
   },
-});
+})

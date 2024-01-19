@@ -1,10 +1,10 @@
-import { graphql } from "@octokit/graphql";
-import type { APIRoute } from "astro";
-import type { Repository, User } from "github-schema";
-import { gql } from "github-schema";
-import { internalResolve } from "~/lib/resolve";
-import type { Project } from "~/lib/types";
-import { SITE_URL } from "~/lib/utils";
+import { graphql } from "@octokit/graphql"
+import type { APIRoute } from "astro"
+import type { Repository, User } from "github-schema"
+import { gql } from "github-schema"
+import { internalResolve } from "~/lib/resolve"
+import type { Project } from "~/lib/types"
+import { SITE_URL } from "~/lib/utils"
 
 const REPOSITORY_FRAGMENT = gql`
   #graphql
@@ -35,7 +35,7 @@ const REPOSITORY_FRAGMENT = gql`
       }
     }
   }
-`;
+`
 
 const PROFILE_QUERY = gql`
   #graphql
@@ -76,7 +76,7 @@ const PROFILE_QUERY = gql`
     }
   }
 
-`;
+`
 
 const REPOSITORY_QUERY = gql`
   #graphql
@@ -87,26 +87,26 @@ const REPOSITORY_QUERY = gql`
       ...RepositoryFragment
     }
   }
-`;
+`
 
 async function* getExternalRepositories(path: string = ".github/projectrc"): AsyncGenerator<string> {
   try {
-    const data = await fetch(`https://api.github.com/repos/luxass/luxass/contents/${path}`).then((res) => res.json());
+    const data = await fetch(`https://api.github.com/repos/luxass/luxass/contents/${path}`).then((res) => res.json())
 
     if (Array.isArray(data)) {
       for (const item of data) {
         if (item.type === "file") {
-          yield item.path;
+          yield item.path
         } else if (item.type === "dir") {
-          yield * getExternalRepositories(item.path);
+          yield * getExternalRepositories(item.path)
         }
       }
     } else {
-      throw new TypeError("invalid response from github");
+      throw new TypeError("invalid response from github")
     }
   } catch (error: any) {
-    console.error("Error fetching files from GitHub:", error.message);
-    throw error;
+    console.error("Error fetching files from GitHub:", error.message)
+    throw error
   }
 }
 
@@ -120,7 +120,7 @@ export const GET: APIRoute = async () => {
       "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
       "Content-Type": "application/json",
     },
-  });
+  })
 
   if (!viewer.repositories.nodes?.length) {
     return Response.json(
@@ -130,13 +130,13 @@ export const GET: APIRoute = async () => {
       {
         status: 404,
       },
-    );
+    )
   }
 
-  const projects: Project[] = [];
+  const projects: Project[] = []
 
-  const ignoreFile = await fetch("https://raw.githubusercontent.com/luxass/luxass/main/.github/projectrc/.projectignore").then((res) => res.text());
-  const ignore = ignoreFile.split("\n").map((line) => line.trim()).filter((line) => line && !line.startsWith("#"));
+  const ignoreFile = await fetch("https://raw.githubusercontent.com/luxass/luxass/main/.github/projectrc/.projectignore").then((res) => res.text())
+  const ignore = ignoreFile.split("\n").map((line) => line.trim()).filter((line) => line && !line.startsWith("#"))
 
   const repositories = viewer.repositories.nodes.filter((repo): repo is NonNullable<Repository> => {
     return (
@@ -145,13 +145,13 @@ export const GET: APIRoute = async () => {
       && !repo.isPrivate
       && !ignore.includes(repo.nameWithOwner)
       && !ignore.includes(repo.nameWithOwner.split("/")[1])
-    );
-  });
+    )
+  })
 
   for await (const file of getExternalRepositories()) {
-    if (file.endsWith("README.md") || file.endsWith(".projectignore")) continue;
+    if (file.endsWith("README.md") || file.endsWith(".projectignore")) continue
 
-    const [owner, name] = file.replace(".github/projectrc/", "").split("/");
+    const [owner, name] = file.replace(".github/projectrc/", "").split("/")
 
     const { repository } = await graphql<{
       repository: Repository
@@ -162,35 +162,35 @@ export const GET: APIRoute = async () => {
         "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
         "Content-Type": "application/json",
       },
-    });
+    })
 
-    repositories.push(repository);
+    repositories.push(repository)
   }
 
   await Promise.all(
     repositories.map(async (repository) => {
-      const [owner, name] = repository.nameWithOwner.split("/");
-      const resolved: unknown = await internalResolve(owner, name).then((res) => res.json());
+      const [owner, name] = repository.nameWithOwner.split("/")
+      const resolved: unknown = await internalResolve(owner, name).then((res) => res.json())
 
       if (!resolved || typeof resolved !== "object" || !("projects" in resolved) || !Array.isArray(resolved.projects)) {
-        console.warn("invalid response from resolve api", `${SITE_URL}/api/resolve/${repository.nameWithOwner}`);
-        return;
+        console.warn("invalid response from resolve api", `${SITE_URL}/api/resolve/${repository.nameWithOwner}`)
+        return
       }
 
       let language = {
         name: "Unknown",
         color: "#333",
-      };
+      }
 
       const isContributor
         = viewer.contributions.nodes?.some((contribution) => contribution?.nameWithOwner === repository.nameWithOwner)
-        ?? false;
+        ?? false
 
       if (repository.languages?.nodes?.length && repository.languages.nodes[0]) {
         language = {
           name: repository.languages.nodes[0].name,
           color: repository.languages.nodes[0].color || "#333",
-        };
+        }
       }
 
       for (const project of resolved.projects) {
@@ -204,10 +204,10 @@ export const GET: APIRoute = async () => {
           defaultBranch: repository.defaultBranchRef?.name || undefined,
           isContributor,
           language,
-        });
+        })
       }
     }),
-  );
+  )
 
   return Response.json(
     {
@@ -220,5 +220,5 @@ export const GET: APIRoute = async () => {
         "Content-Disposition": "inline",
       },
     },
-  );
-};
+  )
+}

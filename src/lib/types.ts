@@ -1,8 +1,8 @@
-import type { z } from "zod";
-import type { Language, Repository } from "github-schema";
-import type { PROJECTRC_SCHEMA } from "./schema";
+import type { z } from "zod"
+import type { Language, Repository } from "github-schema"
+import type { PROJECTRC_SCHEMA } from "./schema"
 
-type SafeOmit<T, K extends keyof T> = Omit<T, K>;
+type SafeOmit<T, K extends keyof T> = Omit<T, K>
 
 export type ResolvedProject = SafeOmit<
   z.infer<typeof PROJECTRC_SCHEMA>,
@@ -38,11 +38,11 @@ export type ResolvedProject = SafeOmit<
    * The version of the project
    */
   version?: string
-};
+}
 
 export type Project = ResolvedProject &
   Pick<Repository, "nameWithOwner" | "pushedAt" | "url"> & {
     defaultBranch?: string
     isContributor: boolean
     language?: Pick<Language, "name" | "color">
-  };
+  }
