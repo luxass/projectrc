@@ -1,6 +1,6 @@
 import { SKIP, visit } from "unist-util-visit"
 import type { ImageReference, Node, Root } from "mdast"
-import type { Plugin, Transformer } from "unified"
+import type { Plugin } from "unified"
 import { type GetDefinition, definitions } from "mdast-util-definitions"
 
 const BADGE_SRC = ["https://img.shields.io", "https://flat.badgen.net/"]
@@ -26,11 +26,10 @@ function badgeImage(node: Node, define: GetDefinition) {
   return node.type === "image" ? isBadge(node.url) : false
 }
 
-export function removeBadges(): Plugin<any[], Root> {
-  const transformer: Transformer<Root> = (tree) => {
+export const BADGE_REMOVER: Plugin<void[], Root> = () => {
+  return (tree) => {
     const define = definitions(tree)
 
-    // Remove badge images, and links that include a badge image.
     visit(tree, (node, index, parent) => {
       let remove = false
 
@@ -52,6 +51,8 @@ export function removeBadges(): Plugin<any[], Root> {
 
       if (remove === true && parent && typeof index === "number") {
         parent.children.splice(index, 1)
+
+        // remove the definition node
 
         if (index === parent.children.length) {
           let tail = parent.children[index - 1]
@@ -75,9 +76,5 @@ export function removeBadges(): Plugin<any[], Root> {
         return [SKIP, index]
       }
     })
-  }
-
-  return function attacher() {
-    return transformer
   }
 }

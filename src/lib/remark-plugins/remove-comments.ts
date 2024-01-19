@@ -1,16 +1,13 @@
 import { visit } from "unist-util-visit"
 import type { Root } from "mdast"
-import type { Plugin, Transformer } from "unified"
+import type { Plugin } from "unified"
 
-export function removeComments(): Plugin<any[], Root> {
-  const transformer: Transformer<Root> = (tree) => {
+export const COMMENT_REMOVER: Plugin<void[], Root> = () => {
+  return (tree) => {
     visit(tree, "html", (node) => {
       if (node.value.startsWith("<!--")) {
-        node.value = `{/*${node.value.replace("<!--", "").replace("-->", "")}*/}`
+        node.value = ""
       }
     })
-  }
-  return function attacher() {
-    return transformer
   }
 }

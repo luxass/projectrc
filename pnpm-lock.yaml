@@ -80,6 +80,9 @@ dependencies:
   unified:
     specifier: ^11.0.4
     version: 11.0.4
+  unist-util-generated:
+    specifier: ^3.0.0
+    version: 3.0.0
   unist-util-is:
     specifier: ^6.0.0
     version: 6.0.0
@@ -6919,6 +6922,10 @@ packages:
       is-plain-obj: 4.1.0
       trough: 2.1.0
       vfile: 6.0.1
+    dev: false
+
+  /unist-util-generated@3.0.0:
+    resolution: {integrity: sha512-yUjV3LueHK6gH74UKRwZ/Frc43/Mil9oYBHgiQp3z+v0+yS43pJ+Ye8RvZtApW0Xnx1cdWR0z4f3OZhSruF0/Q==}
     dev: false
 
   /unist-util-is@5.2.1:

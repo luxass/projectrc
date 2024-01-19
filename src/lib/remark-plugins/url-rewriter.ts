@@ -1,13 +1,13 @@
 import { visit } from "unist-util-visit"
 import type { Root } from "mdast"
-import type { Plugin, Transformer } from "unified"
+import type { Plugin } from "unified"
 
 interface Options {
   repoUrl: string
 }
 
-export function rewriteUrls(options: Options): Plugin<any[], Root> {
-  const transformer: Transformer<Root> = (tree) => {
+export const URL_REWRITER: Plugin<Options[], Root> = (options: Options) => {
+  return (tree) => {
     visit(tree, "link", (node) => {
       if (!node?.url) {
         throw new Error("missing url")
@@ -19,8 +19,5 @@ export function rewriteUrls(options: Options): Plugin<any[], Root> {
 
       node.url = new URL(node.url, `${options.repoUrl}/blob/main/`).toString()
     })
-  }
-  return function attacher() {
-    return transformer
   }
 }

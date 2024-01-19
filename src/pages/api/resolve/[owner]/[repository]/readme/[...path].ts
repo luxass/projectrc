@@ -1,9 +1,7 @@
 import type { APIRoute } from "astro"
 import { remark } from "remark"
 import { getREADME } from "~/lib/readme"
-import { removeBadges } from "~/lib/remark-plugins/badge-remover"
-import { removeComments } from "~/lib/remark-plugins/remove-comments"
-import { rewriteUrls } from "~/lib/remark-plugins/url-rewriter"
+import { BADGE_REMOVER, COMMENT_REMOVER, UNUSED_DEFINITION_REMOVER, URL_REWRITER } from "~/lib/remark-plugins"
 
 export const prerender = false
 
@@ -31,11 +29,12 @@ export const GET: APIRoute = async ({ params, request }) => {
 
   if (xMDX) {
     const file = await remark()
-      .use(rewriteUrls({
+      .use(URL_REWRITER, {
         repoUrl: `https://github.com/${owner}/${repository}`,
-      }))
-      .use(removeBadges())
-      .use(removeComments())
+      })
+      .use(BADGE_REMOVER)
+      .use(UNUSED_DEFINITION_REMOVER)
+      .use(COMMENT_REMOVER)
       .process(readme.content || "No README was found.")
 
     const mdx = file.toString()

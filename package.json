@@ -39,6 +39,7 @@
     "shikiji": "^0.9.19",
     "solid-js": "^1.8.11",
     "unified": "^11.0.4",
+    "unist-util-generated": "^3.0.0",
     "unist-util-is": "^6.0.0",
     "unist-util-remove": "^4.0.0",
     "unist-util-visit": "^5.0.0",
