@@ -28,7 +28,7 @@
     "astro": "^4.2.1",
     "eslint": "^8.56.0",
     "github-schema": "^1.6.2",
-    "hastscript": "^8.0.0",
+    "hastscript": "^9.0.0",
     "ignore": "^5.3.0",
     "markdown-it": "^14.0.0",
     "mdast-util-definitions": "^6.0.0",
