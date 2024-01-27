@@ -8,20 +8,10 @@ import sitemap from "@astrojs/sitemap";
 
 const {
   GITHUB_TOKEN,
-  COMMIT_TOKEN,
-  AUTHORIZATION_TOKEN,
 } = loadEnv(process.env.NODE_ENV!, process.cwd(), "");
 
 if (!GITHUB_TOKEN) {
   throw new Error("No GITHUB_TOKEN found");
-}
-
-if (!COMMIT_TOKEN) {
-  throw new Error("No COMMIT_TOKEN found");
-}
-
-if (!AUTHORIZATION_TOKEN) {
-  throw new Error("No AUTHORIZATION_TOKEN found");
 }
 
 // https://astro.build/config
