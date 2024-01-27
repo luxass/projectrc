@@ -59,6 +59,7 @@
     "eslint-plugin-format": "^0.1.0",
     "eslint-plugin-solid": "^0.13.1",
     "typescript": "^5.3.3",
-    "unocss": "^0.58.4"
+    "unocss": "^0.58.4",
+    "vite": "^5.0.12"
   }
 }
