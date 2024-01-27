@@ -1,15 +1,15 @@
 ---
-import { ViewTransitions, fade } from "astro:transitions"
-import Header from "../components/Header.astro"
-import "../styles/globals.css"
+import { ViewTransitions, fade } from "astro:transitions";
+import Header from "../components/Header.astro";
+import "../styles/globals.css";
 
 interface Props {
-  title: string
-  description: string
-  class?: string
+  title: string;
+  description: string;
+  class?: string;
 }
 
-const { title, description, class: clazz } = Astro.props
+const { title, description, class: clazz } = Astro.props;
 
 const image = new URL(
     `https://image.luxass.dev/api/image/text?input=${encodeURIComponent(

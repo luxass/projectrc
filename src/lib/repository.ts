@@ -1,17 +1,17 @@
-import { graphql } from "@octokit/graphql"
-import type { RepositoryNode } from "github-schema"
-import { gql } from "github-schema"
+import { graphql } from "@octokit/graphql";
+import type { RepositoryNode } from "github-schema";
+import { gql } from "github-schema";
 
-export type RepositoryType = "fork" | "private" | "archived" | "public"
+export type RepositoryType = "fork" | "private" | "archived" | "public";
 
 export interface RepositoryTypeOptions {
-  owner: string
-  name: string
+  owner: string;
+  name: string;
 }
 
 export async function getRepositoryType(owner: string, repository: string): Promise<RepositoryType | undefined> {
   if (!owner || !repository) {
-    return undefined
+    return undefined;
   }
 
   const res = await fetch(`https://api.github.com/repos/${owner}/${repository}`, {
@@ -20,33 +20,33 @@ export async function getRepositoryType(owner: string, repository: string): Prom
       "Content-Type": "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
     },
-  })
+  });
 
   if (!res.ok) {
-    return
+    return;
   }
 
-  const data = await res.json()
+  const data = await res.json();
 
   if (!data || typeof data !== "object") {
-    console.error("Invalid response from GitHub API")
-    return
+    console.error("Invalid response from GitHub API");
+    return;
   }
 
   if ("fork" in data && data.fork === true) {
-    return "fork"
+    return "fork";
   }
 
   if ("archived" in data && data.archived === true) {
-    return "archived"
+    return "archived";
   }
 
   if ("private" in data && data.private === false) {
-    return "public"
+    return "public";
   }
 
   // always return private, if we can't determine the type
-  return "private"
+  return "private";
 }
 
 const REPOSITORY_QUERY = gql`
@@ -73,11 +73,11 @@ const REPOSITORY_QUERY = gql`
       }
     }
   }
-`
+`;
 
 export async function getRepository(owner: string, name: string): Promise<RepositoryNode["repository"] | undefined> {
   if (!owner || !name) {
-    return undefined
+    return undefined;
   }
 
   const { repository } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
@@ -88,12 +88,38 @@ export async function getRepository(owner: string, name: string): Promise<Reposi
     },
     name,
     owner,
-  })
+  });
 
   // to prevent returning null from the query
   if (!repository) {
-    return undefined
+    return undefined;
   }
 
-  return repository
+  return repository;
+}
+
+export async function* getExternalRepositories(path: string = ".github/projectrc"): AsyncGenerator<string> {
+  try {
+    const data = await fetch(`https://api.github.com/repos/luxass/luxass/contents/${path}`, {
+      headers: {
+        "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+        "Content-Type": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }).then((res) => res.json());
+    if (Array.isArray(data)) {
+      for (const item of data) {
+        if (item.type === "file") {
+          yield item.path;
+        } else if (item.type === "dir") {
+          yield * getExternalRepositories(item.path);
+        }
+      }
+    } else {
+      throw new TypeError("invalid response from github");
+    }
+  } catch (error: any) {
+    console.error("Error fetching files from GitHub:", error.message);
+    throw error;
+  }
 }

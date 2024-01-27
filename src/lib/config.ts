@@ -1,6 +1,6 @@
 import type { z } from "zod"
 import { base64ToString } from "./utils"
-import { PROJECTRC_SCHEMA } from "./schema"
+import { PROJECTRC_SCHEMA } from "./json-schema"
 
 export interface ResolveConfigResult {
   content: z.infer<typeof PROJECTRC_SCHEMA>

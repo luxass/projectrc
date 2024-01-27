@@ -1,23 +1,29 @@
-import rss from "@astrojs/rss"
-import type { APIContext } from "astro"
-import sanitizeHtml from "sanitize-html"
-import MarkdownIt from "markdown-it"
-
-const parser = new MarkdownIt()
+import rss from "@astrojs/rss";
+import type { APIContext } from "astro";
+import { getProjects } from "~/lib/projects";
 
 export async function GET({ site }: APIContext) {
-  const posts: any[] = []
+  const projects = await getProjects();
+
+  if (!projects) {
+    return Response.json({
+      error: `no repositories found`,
+    }, {
+      status: 404,
+    });
+  }
+
   return rss({
     title: "luxass's projects",
     description: "projects for luxass",
     site: site?.toString() || "https://projectrc.luxass.dev",
-    items: posts.map(({ body, slug, data: { title, description, date: pubDate } }) => ({
-      title,
-      description,
-      pubDate,
-      link: `/posts/${slug}`,
-      content: sanitizeHtml(parser.render(body)),
-    })),
+    items: projects.filter(({ isContributor }) => !isContributor)
+      .map(({ name, url, pushedAt, description }) => ({
+        title: name,
+        description,
+        link: url,
+        pubDate: pushedAt,
+      })),
     stylesheet: "/rss/styles.xsl",
-  })
+  });
 }

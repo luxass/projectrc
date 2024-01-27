@@ -1,12 +1,12 @@
 ---
 /* eslint astro/no-set-html-directive: "off" */
-import zodToJsonSchema from "zod-to-json-schema"
-import { codeToHtml } from "shikiji"
-import PageLayout from "../layouts/PageLayout.astro"
-import { PROJECTRC_SCHEMA } from "../lib/schema"
-import { CopyButton } from "../components/CopyButton"
+import zodToJsonSchema from "zod-to-json-schema";
+import { codeToHtml } from "shikiji";
+import PageLayout from "../layouts/PageLayout.astro";
+import { PROJECTRC_SCHEMA } from "../lib/json-schema";
+import { CopyButton } from "../components/CopyButton";
 
-const jsonSchema = zodToJsonSchema(PROJECTRC_SCHEMA)
+const jsonSchema = zodToJsonSchema(PROJECTRC_SCHEMA);
 
 const html = await codeToHtml(JSON.stringify(jsonSchema, null, 2), {
   lang: "json",
@@ -48,3 +48,4 @@ const html = await codeToHtml(JSON.stringify(jsonSchema, null, 2), {
     </div>
   </div>
 </PageLayout>
+../lib/json-schema

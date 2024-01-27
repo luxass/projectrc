@@ -1,6 +1,6 @@
 import type { z } from "zod"
 import type { Language, Repository } from "github-schema"
-import type { PROJECTRC_SCHEMA } from "./schema"
+import type { PROJECTRC_SCHEMA } from "./json-schema"
 
 type SafeOmit<T, K extends keyof T> = Omit<T, K>
 
