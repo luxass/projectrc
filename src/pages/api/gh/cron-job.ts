@@ -41,7 +41,7 @@ export const GET: APIRoute = async ({ request }) => {
 
   const token = headers.get("authorization");
 
-  if (token !== import.meta.env.AUTHORIZATION_TOKEN) {
+  if (token !== `Bearer ${import.meta.env.AUTHORIZATION_TOKEN}`) {
     consola.warn(`invalid token: ${token}`);
     return Response.json({ error: "invalid token" }, { status: 403 });
   }
