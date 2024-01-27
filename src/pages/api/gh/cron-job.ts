@@ -5,6 +5,8 @@ import { remark } from "remark";
 import { getProjects } from "~/lib/projects";
 import { METADATA } from "~/lib/remark-plugins";
 
+export const prerender = false;
+
 const ICONS = new Map<string, string>();
 
 interface GitTree {
