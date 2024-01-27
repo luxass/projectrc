@@ -40,14 +40,16 @@ export function CopyButton(props: CopyButtonProps) {
 
   return (
     <button
-      class="copy absolute right-2 top-2 flex items-center justify-center rounded border border-gray-400/20 p-2 opacity-0 group-hover:opacity-100"
+      class="copy absolute right-2 top-2 flex items-center justify-center border border-gray-400/20 rounded p-2 opacity-0 group-hover:opacity-100"
       onClick={handleClick}
     >
-      {isCopied() ? (
-        <span class="i-lucide-clipboard-check" />
-      ) : (
-        <span class="i-lucide-clipboard" />
-      )}
+      {isCopied()
+        ? (
+          <span class="i-lucide-clipboard-check" />
+          )
+        : (
+          <span class="i-lucide-clipboard" />
+          )}
     </button>
   );
 }

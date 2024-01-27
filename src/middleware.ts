@@ -1,10 +1,10 @@
-import { defineMiddleware } from "astro:middleware"
-import { getRepositoryType } from "./lib/repository"
+import { defineMiddleware } from "astro:middleware";
+import { getRepositoryType } from "./lib/repository";
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const url = new URL(context.request.url)
+  const url = new URL(context.request.url);
   if (!url.pathname.startsWith("/api/resolve/")) {
-    return next()
+    return next();
   }
 
   if (!context.params || !context.params.owner || !context.params.repository) {
@@ -15,11 +15,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
       {
         status: 400,
       },
-    )
+    );
   }
 
-  const { owner, repository } = context.params
-  const repositoryType = await getRepositoryType(owner, repository)
+  const { owner, repository } = context.params;
+  const repositoryType = await getRepositoryType(owner, repository);
 
   if (!repositoryType) {
     return Response.json(
@@ -29,7 +29,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       {
         status: 404,
       },
-    )
+    );
   }
 
   if (repositoryType !== "public") {
@@ -40,8 +40,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
       {
         status: 403,
       },
-    )
+    );
   }
 
-  return next()
-})
+  return next();
+});
