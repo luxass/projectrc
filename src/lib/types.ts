@@ -1,17 +1,17 @@
-import type { z } from "zod";
-import type { Language, Repository } from "github-schema";
-import type { PROJECTRC_SCHEMA } from "./json-schema";
+import type { z } from 'zod'
+import type { Language, Repository } from 'github-schema'
+import type { PROJECTRC_SCHEMA } from './json-schema'
 
-type SafeOmit<T, K extends keyof T> = Omit<T, K>;
+type SafeOmit<T, K extends keyof T> = Omit<T, K>
 
 export type ResolvedProject = SafeOmit<
   z.infer<typeof PROJECTRC_SCHEMA>,
-  "readme" | "workspace" | "stars" | "npm" | "version"
+  'readme' | 'workspace' | 'stars' | 'npm' | 'version'
 > & {
   /**
    * The name of the project
    */
-  name: string;
+  name: string
 
   /**
    * URL to the readme file
@@ -20,29 +20,29 @@ export type ResolvedProject = SafeOmit<
    * We are not including the full readme in the response,
    * due to some readme files being very large.
    */
-  readme?: string;
+  readme?: string
 
   /**
    * The number of stars the repository has
    */
-  stars?: number;
+  stars?: number
 
   /**
    * The npm configuration
    */
-  npm?: SafeOmit<Exclude<NonNullable<z.infer<typeof PROJECTRC_SCHEMA>["npm"]>, boolean>, "enabled"> & {
-    url?: string;
-  };
+  npm?: SafeOmit<Exclude<NonNullable<z.infer<typeof PROJECTRC_SCHEMA>['npm']>, boolean>, 'enabled'> & {
+    url?: string
+  }
 
   /**
    * The version of the project
    */
-  version?: string;
-};
+  version?: string
+}
 
 export type Project = ResolvedProject &
-  Pick<Repository, "nameWithOwner" | "pushedAt" | "url"> & {
-    defaultBranch?: string;
-    isContributor: boolean;
-    language?: Pick<Language, "name" | "color">;
-  };
+  Pick<Repository, 'nameWithOwner' | 'pushedAt' | 'url'> & {
+    defaultBranch?: string
+    isContributor: boolean
+    language?: Pick<Language, 'name' | 'color'>
+  }

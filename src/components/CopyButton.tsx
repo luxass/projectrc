@@ -1,42 +1,42 @@
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup } from 'solid-js'
 
 export interface CopyButtonProps {
-  text: string;
+  text: string
 }
-type CopyFn = (text: string) => Promise<boolean>;
+type CopyFn = (text: string) => Promise<boolean>
 
 export function CopyButton(props: CopyButtonProps) {
   const copy: CopyFn = async (text) => {
     if (!navigator?.clipboard) {
-      console.warn("Clipboard not supported");
-      return false;
+      console.warn('Clipboard not supported')
+      return false
     }
 
     try {
-      await navigator.clipboard.writeText(text);
-      return true;
+      await navigator.clipboard.writeText(text)
+      return true
     } catch (error) {
-      console.warn("Copy failed", error);
-      return false;
+      console.warn('Copy failed', error)
+      return false
     }
-  };
+  }
 
-  const [isCopied, setIsCopied] = createSignal(false);
+  const [isCopied, setIsCopied] = createSignal(false)
 
-  let timeout: NodeJS.Timeout;
+  let timeout: NodeJS.Timeout
   onCleanup(() => {
-    if (timeout) clearTimeout(timeout);
-  });
+    if (timeout) clearTimeout(timeout)
+  })
 
   const handleClick = async () => {
-    const isCopiedValue = await copy(props.text);
-    setIsCopied(isCopiedValue);
+    const isCopiedValue = await copy(props.text)
+    setIsCopied(isCopiedValue)
     if (isCopiedValue) {
       timeout = setTimeout(() => {
-        setIsCopied(false);
-      }, 2000);
+        setIsCopied(false)
+      }, 2000)
     }
-  };
+  }
 
   return (
     <button
@@ -51,5 +51,5 @@ export function CopyButton(props: CopyButtonProps) {
           <span class="i-lucide-clipboard" />
           )}
     </button>
-  );
+  )
 }
