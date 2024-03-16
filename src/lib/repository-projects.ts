@@ -131,7 +131,6 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
     )
 
     const overrides = config.workspace?.overrides || []
-    // const projects: ProjectRCProject[] = [];
 
     for (const pkg of results) {
       const override = overrides.find((override) => override.name === pkg.name)
