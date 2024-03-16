@@ -216,8 +216,8 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
                 || !('downloads' in result)
                 || typeof result.downloads !== 'number'
               ) {
-                throw new Error(
-                  'npm downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.',
+                console.warn(
+                    `npm downloads is enabled, but no \`downloads\` field was found in the npm API response.\nPlease try again later.`,
                 )
               }
 
@@ -326,8 +326,8 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
               || !('downloads' in result)
               || typeof result.downloads !== 'number'
             ) {
-              throw new Error(
-                'npm downloads is enabled, but no `downloads` field was found in the npm API response.\nPlease try again later.',
+              console.warn(
+                `npm downloads is enabled, but no \`downloads\` field was found in the npm API response.\nPlease try again later.`,
               )
             }
 
