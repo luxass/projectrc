@@ -1,4 +1,4 @@
-import { gql } from 'github-schema'
+import { gql } from "github-schema";
 
 export const REPOSITORY_FRAGMENT = gql`
   #graphql
@@ -29,7 +29,7 @@ export const REPOSITORY_FRAGMENT = gql`
       }
     }
   }
-`
+`;
 
 export const PROFILE_QUERY = gql`
   #graphql
@@ -70,7 +70,7 @@ export const PROFILE_QUERY = gql`
     }
   }
 
-`
+`;
 
 export const REPOSITORY_QUERY = gql`
   #graphql
@@ -81,4 +81,4 @@ export const REPOSITORY_QUERY = gql`
       ...RepositoryFragment
     }
   }
-`
+`;

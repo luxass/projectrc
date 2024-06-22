@@ -1,17 +1,17 @@
 ---
 /* eslint astro/no-set-html-directive: "off" */
-import zodToJsonSchema from 'zod-to-json-schema'
-import { codeToHtml } from 'shikiji'
-import PageLayout from '../layouts/PageLayout.astro'
-import { PROJECTRC_SCHEMA } from '../lib/json-schema'
-import { CopyButton } from '../components/CopyButton'
+import zodToJsonSchema from "zod-to-json-schema";
+import { codeToHtml } from "shikiji";
+import PageLayout from "../layouts/PageLayout.astro";
+import { PROJECTRC_SCHEMA } from "../lib/json-schema";
+import { CopyButton } from "../components/CopyButton";
 
-const jsonSchema = zodToJsonSchema(PROJECTRC_SCHEMA)
+const jsonSchema = zodToJsonSchema(PROJECTRC_SCHEMA);
 
 const html = await codeToHtml(JSON.stringify(jsonSchema, null, 2), {
-  lang: 'json',
-  theme: 'vitesse-dark',
-})
+  lang: "json",
+  theme: "vitesse-dark",
+});
 ---
 
 <PageLayout
@@ -23,20 +23,20 @@ const html = await codeToHtml(JSON.stringify(jsonSchema, null, 2), {
   <article>
     <p>
       Since you are here, you are probably wondering why and what this
-      {' '}
+      {" "}
       <span class="rounded p-0.5 bg-gray-400/10">.projectrc</span>
-      {' '}
+      {" "}
       is.
     </p>
     <p>
       It&apos;s just a little file that I use on
-      {' '}
+      {" "}
       <a href="https://luxass.dev" class="rounded p-0.5 bg-gray-400/10">
         <span>my website</span>
       </a>
-      {' '}
+      {" "}
       to generate a list of projects that are being showcased
-      {' '}
+      {" "}
       <a
         class="rounded p-0.5 bg-gray-400/10"
         href="https://luxass.dev/projects"

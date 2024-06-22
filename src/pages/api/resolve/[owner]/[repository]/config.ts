@@ -1,28 +1,28 @@
-import type { APIRoute } from 'astro'
-import { resolveConfig } from '~/lib/config'
+import type { APIRoute } from "astro";
+import { resolveConfig } from "~/lib/config";
 
-export const prerender = false
+export const prerender = false;
 
 export const GET: APIRoute = async ({ params }) => {
-  const { owner, repository } = params
+  const { owner, repository } = params;
 
   if (!owner || !repository) {
-    return new Response('missing params', {
+    return new Response("missing params", {
       status: 400,
-    })
+    });
   }
 
-  const config = await resolveConfig(owner, repository)
+  const config = await resolveConfig(owner, repository);
 
   if (!config) {
     return Response.json(
       {
-        error: 'repository has no config',
+        error: "repository has no config",
       },
       {
         status: 404,
       },
-    )
+    );
   }
   return Response.json(
     {
@@ -31,9 +31,9 @@ export const GET: APIRoute = async ({ params }) => {
     },
     {
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'public, s-maxage=3600, must-revalidate',
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, s-maxage=3600, must-revalidate",
       },
     },
-  )
-}
+  );
+};
