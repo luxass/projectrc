@@ -55,7 +55,7 @@ importers:
         version: 9.5.0
       github-schema:
         specifier: ^1.8.1
-        version: 1.8.1
+        version: 1.9.0
       hastscript:
         specifier: ^9.0.0
         version: 9.0.0
@@ -2146,8 +2146,8 @@ packages:
   get-tsconfig@4.7.3:
     resolution: {integrity: sha512-ZvkrzoUA0PQZM6fy6+/Hce561s+faD1rsNwhnO5FelNjyy7EMGJ3Rz1AQ8GYDWjhRs/7dBLOEJvhK8MiEJOAFg==}
 
-  github-schema@1.8.1:
-    resolution: {integrity: sha512-ue3+MncQogrFAtY15c81+4665QAnvBWddRHEasMehvIGhQd0JRpujzdmnEM4GZgkrveHr9afRToI+O3zrBxm3w==}
+  github-schema@1.9.0:
+    resolution: {integrity: sha512-Pwrwrvs6pgyScbLnN1TfTicas/zH+zY4HaQyigM5DpZ0mR0/bVvLw9IA2a9zhdKLAMX9Ird+DEWB47OCI+yHCA==}
     engines: {node: '>=18'}
 
   github-slugger@2.0.0:
@@ -6294,7 +6294,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  github-schema@1.8.1:
+  github-schema@1.9.0:
     dependencies:
       graphql: 16.9.0
       graphql-tag: 2.12.6(graphql@16.9.0)
@@ -6346,7 +6346,7 @@ snapshots:
   graphql-tag@2.12.6(graphql@16.9.0):
     dependencies:
       graphql: 16.9.0
-      tslib: 2.6.2
+      tslib: 2.6.3
 
   graphql@16.9.0: {}
 
@@ -7954,8 +7954,7 @@ snapshots:
 
   tslib@2.6.2: {}
 
-  tslib@2.6.3:
-    optional: true
+  tslib@2.6.3: {}
 
   type-check@0.4.0:
     dependencies:
