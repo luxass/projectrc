@@ -45,10 +45,10 @@ export function CopyButton(props: CopyButtonProps) {
     >
       {isCopied()
         ? (
-          <span class="i-lucide-clipboard-check" />
+            <span class="i-lucide-clipboard-check" />
           )
         : (
-          <span class="i-lucide-clipboard" />
+            <span class="i-lucide-clipboard" />
           )}
     </button>
   );
