@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@9.5.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -23,7 +23,7 @@
     "@iconify-json/lucide": "^1.1.198",
     "@iconify-json/octicon": "^1.1.55",
     "@iconify-json/twemoji": "^1.1.15",
-    "@luxass/eslint-config": "^4.8.2",
+    "@luxass/eslint-config": "^4.8.3",
     "@octokit/graphql": "^8.1.1",
     "@octokit/rest": "^21.0.0",
     "astro": "^4.11.5",
