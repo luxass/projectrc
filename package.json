@@ -34,7 +34,7 @@
     "ignore": "^5.3.1",
     "markdown-it": "^14.1.0",
     "mdast-util-definitions": "^6.0.0",
-    "minimatch": "^9.0.5",
+    "minimatch": "^10.0.0",
     "remark": "^15.0.1",
     "remark-directive": "^3.0.0",
     "sanitize-html": "^2.13.0",
