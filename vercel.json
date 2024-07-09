@@ -48,5 +48,11 @@
       "source": "/view-source",
       "destination": "https://github.com/luxass/projectrc"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/v1/tasks/refresh-projects",
+      "schedule": "0 0 * * *"
+    }
   ]
 }
