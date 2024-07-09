@@ -5,6 +5,8 @@ import { remark } from "remark";
 import type { GitTree, Project } from "../../../../lib/types";
 import { ICON } from "../../../../lib/remark-plugins/icon";
 
+export const prerender = false;
+
 export const POST: APIRoute = async ({ request }) => {
   const authorization = request.headers.get("Authorization");
 
