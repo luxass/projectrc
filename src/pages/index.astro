@@ -4,7 +4,6 @@ import zodToJsonSchema from "zod-to-json-schema";
 import { codeToHtml } from "shikiji";
 import PageLayout from "../layouts/PageLayout.astro";
 import { PROJECTRC_SCHEMA } from "../lib/json-schema";
-import { CopyButton } from "../components/CopyButton";
 
 const jsonSchema = zodToJsonSchema(PROJECTRC_SCHEMA);
 
@@ -51,7 +50,6 @@ const html = await codeToHtml(JSON.stringify(jsonSchema, null, 2), {
 
     <div class="group relative">
       <div set:html={html} />
-      <CopyButton client:load text={JSON.stringify(jsonSchema, null, 2)} />
     </div>
   </div>
 </PageLayout>
