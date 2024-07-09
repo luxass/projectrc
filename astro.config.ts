@@ -19,7 +19,7 @@ export default defineConfig({
   site: "https://projectrc.luxass.dev",
   output: "hybrid",
   adapter: vercel(),
-  compressHTML: false,
+  compressHTML: true,
   integrations: [
     UnoCSS({
       injectReset: true,
@@ -27,6 +27,17 @@ export default defineConfig({
     solidJs(),
     sitemap(),
   ],
+  experimental: {
+    env: {
+      schema: {
+        GITHUB_TOKEN: {
+          type: "string",
+          access: "secret",
+          context: "server",
+        },
+      },
+    },
+  },
   vite: {
     resolve: {
       alias: {
