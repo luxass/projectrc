@@ -22,7 +22,7 @@ importers:
         version: 1.1.36
       '@iconify-json/lucide':
         specifier: ^1.1.198
-        version: 1.1.198
+        version: 1.1.199
       '@iconify-json/octicon':
         specifier: ^1.1.55
         version: 1.1.55
@@ -587,8 +587,8 @@ packages:
   '@iconify-json/carbon@1.1.36':
     resolution: {integrity: sha512-NC3VcqLtwLZpi7+LeXj+99/byv+asrnCQxiDNCZV6hKr9WcNh6C25kJguJYfN+dV54kOkw78e+6PitQi2Bppnw==}
 
-  '@iconify-json/lucide@1.1.198':
-    resolution: {integrity: sha512-XFALR7z8cNMpoY6SGbw12GgqAdxhouAGE4KPYNUdwovcup6miwPZRrghyi2nSz15/E2xpwfZBpmwnUJUmdt6mQ==}
+  '@iconify-json/lucide@1.1.199':
+    resolution: {integrity: sha512-v/LEtxQ1mjncAm9Na8ZVyVH0ET3oYBj8hNRk3FYiDDfh6Ta0koUy/S+tQ0pdmlITbQKJstK4Q32qGFE2nOU5eQ==}
 
   '@iconify-json/octicon@1.1.55':
     resolution: {integrity: sha512-TWVO7olfquviijdmdrEbvpjPTxBmVvU0ZoR9BBx9pIhvEsG7emefrLg7eZm1CYGYM+9StkksDbqha8HCy/6kzQ==}
@@ -4189,7 +4189,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/lucide@1.1.198':
+  '@iconify-json/lucide@1.1.199':
     dependencies:
       '@iconify/types': 2.0.0
 
