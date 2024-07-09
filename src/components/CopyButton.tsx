@@ -3,6 +3,7 @@ import { createSignal, onCleanup } from "solid-js";
 export interface CopyButtonProps {
   text: string;
 }
+
 type CopyFn = (text: string) => Promise<boolean>;
 
 export function CopyButton(props: CopyButtonProps) {

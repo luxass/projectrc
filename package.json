@@ -7,11 +7,11 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && eslint . --report-unused-disable-directives && tsc --noEmit && astro build",
+    "build": "astro check && pnpm lint && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint . --report-unused-disable-directives",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint .",
+    "typecheck": "astro-check"
   },
   "dependencies": {
     "@astrojs/check": "^0.8.0",
