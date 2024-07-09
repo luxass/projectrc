@@ -9,7 +9,7 @@ export const GET: APIRoute = () => {
       description: "Ignored. Can be set to get completions, validations and documentation in some editors.",
     }).default("https://projectrc.luxass.dev/schema.json"),
   })));
-  return new Response(JSON.stringify(jsonSchema), {
+  return new Response(JSON.stringify(jsonSchema, null, 2), {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
