@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/check": "^0.7.0",
+    "@astrojs/check": "^0.8.0",
     "@astrojs/rss": "^4.0.7",
     "@astrojs/sitemap": "^3.1.6",
     "@astrojs/solid-js": "^4.4.0",
@@ -34,7 +34,7 @@
     "ignore": "^5.3.1",
     "markdown-it": "^14.1.0",
     "mdast-util-definitions": "^6.0.0",
-    "minimatch": "^9.0.5",
+    "minimatch": "^10.0.1",
     "remark": "^15.0.1",
     "remark-directive": "^3.0.0",
     "sanitize-html": "^2.13.0",
@@ -57,7 +57,7 @@
     "@unocss/eslint-plugin": "^0.61.3",
     "@unocss/reset": "^0.61.3",
     "astro-eslint-parser": "^1.0.2",
-    "eslint-plugin-astro": "^1.2.2",
+    "eslint-plugin-astro": "^1.2.3",
     "eslint-plugin-format": "^0.1.2",
     "eslint-plugin-solid": "^0.14.1",
     "prettier-plugin-astro": "^0.14.0",
