@@ -11,6 +11,7 @@ export const GET: APIRoute = () => {
   })));
   return new Response(JSON.stringify(jsonSchema), {
     headers: {
+      "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     },
   });
