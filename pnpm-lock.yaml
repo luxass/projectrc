@@ -144,6 +144,9 @@ importers:
       prettier-plugin-astro:
         specifier: ^0.14.0
         version: 0.14.0
+      tslib:
+        specifier: ^2.6.3
+        version: 2.6.3
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
