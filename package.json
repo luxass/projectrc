@@ -40,7 +40,6 @@
     "sanitize-html": "^2.13.0",
     "shikiji": "^0.10.2",
     "solid-js": "^1.8.18",
-    "tslib": "^2.6.3",
     "unified": "^11.0.5",
     "unist-util-generated": "^3.0.0",
     "unist-util-is": "^6.0.0",
