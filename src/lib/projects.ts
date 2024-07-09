@@ -32,6 +32,7 @@ export async function getProjects(): Promise<Project[] | undefined> {
       !!repo
       && !repo.isFork
       && !repo.isPrivate
+      && !repo.isArchived
       && !ignore.includes(repo.nameWithOwner)
       && !ignore.includes(repo.nameWithOwner.split("/")[1])
     );
