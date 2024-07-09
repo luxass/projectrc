@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import { GITHUB_TOKEN } from "astro:env/server";
 import { base64ToString } from "./utils";
 import { PROJECTRC_SCHEMA } from "./json-schema";
 
@@ -42,7 +43,7 @@ export async function resolveConfig(owner: string, repository: string): Promise<
 
     const result = await fetch(url, {
       headers: {
-        "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+        "Authorization": `Bearer ${GITHUB_TOKEN}`,
         "Content-Type": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
       },

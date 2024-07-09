@@ -1,10 +1,11 @@
 import { graphql } from "@octokit/graphql";
 import type { Repository, User } from "github-schema";
+import { GITHUB_TOKEN } from "astro:env/server";
 import type { Project } from "./types";
 import { PROFILE_QUERY, REPOSITORY_QUERY } from "./graphql";
 import { SITE_URL } from "./utils";
-import { getRepositoryProjects } from "~/lib/repository-projects";
-import { getExternalRepositories } from "~/lib/repository";
+import { getRepositoryProjects } from "./repository-projects";
+import { getExternalRepositories } from "./repository";
 
 export async function getProjects(): Promise<Project[] | undefined> {
   const { viewer } = await graphql<{
@@ -13,7 +14,7 @@ export async function getProjects(): Promise<Project[] | undefined> {
     };
   }>(PROFILE_QUERY, {
     headers: {
-      "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+      "Authorization": `Bearer ${GITHUB_TOKEN}`,
       "Content-Type": "application/json",
     },
   });
@@ -49,7 +50,7 @@ export async function getProjects(): Promise<Project[] | undefined> {
       owner,
       name: name.replace(".json", ""),
       headers: {
-        "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+        "Authorization": `Bearer ${GITHUB_TOKEN}`,
         "Content-Type": "application/json",
       },
     });

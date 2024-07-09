@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getProjects } from "~/lib/projects";
+import { getProjects } from "../../lib/projects";
 
 const HEADERS = {
   "Content-Type": "application/json",

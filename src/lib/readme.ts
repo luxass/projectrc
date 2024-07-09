@@ -1,3 +1,4 @@
+import { GITHUB_TOKEN } from "astro:env/server";
 import { base64ToString } from "./utils";
 
 export interface READMEOptions {
@@ -39,7 +40,7 @@ export async function getREADME(options: READMEOptions): Promise<READMEResult | 
   try {
     const result = await fetch(readmeUrl.toString(), {
       headers: {
-        "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+        "Authorization": `Bearer ${GITHUB_TOKEN}`,
         "Content-Type": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
       },

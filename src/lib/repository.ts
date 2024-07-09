@@ -1,4 +1,5 @@
 import { graphql } from "@octokit/graphql";
+import { GITHUB_TOKEN } from "astro:env/server";
 import type { RepositoryNode } from "github-schema";
 import { gql } from "github-schema";
 
@@ -16,7 +17,7 @@ export async function getRepositoryType(owner: string, repository: string): Prom
 
   const res = await fetch(`https://api.github.com/repos/${owner}/${repository}`, {
     headers: {
-      "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+      "Authorization": `Bearer ${GITHUB_TOKEN}`,
       "Content-Type": "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
     },
@@ -82,7 +83,7 @@ export async function getRepository(owner: string, name: string): Promise<Reposi
 
   const { repository } = await graphql<RepositoryNode>(REPOSITORY_QUERY, {
     headers: {
-      "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+      "Authorization": `Bearer ${GITHUB_TOKEN}`,
       "Content-Type": "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
     },
@@ -102,7 +103,7 @@ export async function* getExternalRepositories(path: string = ".github/projectrc
   try {
     const data = await fetch(`https://api.github.com/repos/luxass/luxass/contents/${path}`, {
       headers: {
-        "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+        "Authorization": `Bearer ${GITHUB_TOKEN}`,
         "Content-Type": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
       },

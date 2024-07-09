@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import { GITHUB_TOKEN } from "astro:env/server";
 import { PACKAGE_JSON_SCHEMA } from "./schemas/package-json";
 import { base64ToString } from "./utils";
 
@@ -20,7 +21,7 @@ export async function getPackage(
 
   const pkgResult = await fetch(`https://api.github.com/repos/${owner}/${repository}/contents/${path}`, {
     headers: {
-      "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+      "Authorization": `Bearer ${GITHUB_TOKEN}`,
       "Content-Type": "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
     },

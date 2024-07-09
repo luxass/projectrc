@@ -2,9 +2,7 @@ import process from "node:process";
 import { loadEnv } from "vite";
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
-import solidJs from "@astrojs/solid-js";
 import UnoCSS from "unocss/astro";
-import sitemap from "@astrojs/sitemap";
 
 const {
   GITHUB_TOKEN,
@@ -24,13 +22,16 @@ export default defineConfig({
     UnoCSS({
       injectReset: true,
     }),
-    solidJs(),
-    sitemap(),
   ],
   experimental: {
     env: {
       schema: {
         GITHUB_TOKEN: {
+          type: "string",
+          access: "secret",
+          context: "server",
+        },
+        CRON_SECRET: {
           type: "string",
           access: "secret",
           context: "server",

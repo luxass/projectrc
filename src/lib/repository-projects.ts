@@ -1,6 +1,7 @@
 import { z } from "zod";
 import ignore from "ignore";
 import { minimatch } from "minimatch";
+import { GITHUB_TOKEN } from "astro:env/server";
 import { SITE_URL } from "./utils";
 import { resolveConfig } from "./config";
 import { getPackage } from "./pkg";
@@ -76,7 +77,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
       `https://api.github.com/repos/${owner}/${repositoryName}/git/trees/main?recursive=1`,
       {
         headers: {
-          "Authorization": `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+          "Authorization": `Bearer ${GITHUB_TOKEN}`,
           "Content-Type": "application/vnd.github+json",
           "X-GitHub-Api-Version": "2022-11-28",
         },
