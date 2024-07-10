@@ -1,10 +1,5 @@
 import { z } from "zod";
-import ignore from "ignore";
-import { minimatch } from "minimatch";
-import { GITHUB_TOKEN } from "astro:env/server";
-import { SITE_URL } from "./utils";
 import { resolveConfig } from "./config";
-import { getPackage } from "./pkg";
 import { getRepository } from "./repository";
 import type { ResolvedProject } from "./types";
 
