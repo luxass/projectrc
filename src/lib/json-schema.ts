@@ -56,9 +56,17 @@ const WEBSITE_SCHEMA = z.object({
   keywords: z.array(z.string()).optional(),
 });
 
+const WORKSPACE_SCHEMA = z.object({
+  enabled: z.boolean({
+    description: "include the workspace information.",
+  }),
+});
+
 export const MOSAIC_SCHEMA = z.object({
   project: PROJECT_SCHEMA,
   npm: NPM_SCHEMA.optional(),
   readme: README_SCHEMA.optional(),
   website: WEBSITE_SCHEMA.optional(),
+
+  workspace: WORKSPACE_SCHEMA.optional(),
 });
