@@ -14,242 +14,250 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(null, { status: 401 });
   }
 
-  try {
-    const ICONS = new Map<string, string>();
+  return Response.json({
+    message: "Not implemented",
+    status: 501,
+    timestamp: new Date().toISOString(),
+  }, {
+    status: 501,
+  });
 
-    const octokit = new Octokit({ auth: GITHUB_TOKEN });
+  // try {
+  //   const ICONS = new Map<string, string>();
 
-    const branchName = "main";
+  //   const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-    const { data: commits } = await octokit.repos.listCommits({
-      owner: "luxass",
-      repo: "luxass.dev",
-      per_page: 1, // get only the latest commit
-      sha: "main", // always read from main,
-    });
+  //   const branchName = "main";
 
-    const latestCommitSHA = commits[0].sha;
+  //   const { data: commits } = await octokit.repos.listCommits({
+  //     owner: "luxass",
+  //     repo: "luxass.dev",
+  //     per_page: 1, // get only the latest commit
+  //     sha: "main", // always read from main,
+  //   });
 
-    const contentPath = "src/content/projects";
+  //   const latestCommitSHA = commits[0].sha;
 
-    const { data: { tree: projectsTree } } = await octokit.git.getTree({
-      owner: "luxass",
-      repo: "luxass.dev",
-      tree_sha: `main:${contentPath}`,
-      recursive: "1",
-    });
+  //   const contentPath = "src/content/projects";
 
-    const existingFiles = new Map<string, GitTree>();
-    for (const project of projectsTree) {
-      if (project.type === "blob" && !project.path?.endsWith(".gitkeep")) {
-        existingFiles.set(project.path!, {
-          path: `${contentPath}/${project.path}`,
-          sha: project.sha!,
-          mode: project.mode as GitTree["mode"],
-          type: project.type as GitTree["type"],
-        });
-      }
-    }
+  //   const { data: { tree: projectsTree } } = await octokit.git.getTree({
+  //     owner: "luxass",
+  //     repo: "luxass.dev",
+  //     tree_sha: `main:${contentPath}`,
+  //     recursive: "1",
+  //   });
 
-    const { projects } = await fetch(
-      "https://projectrc.luxass.dev/api/projects.json",
-    ).then((res) => res.json() as Promise<{ projects: Project[] }>);
+  //   const existingFiles = new Map<string, GitTree>();
+  //   for (const project of projectsTree) {
+  //     if (project.type === "blob" && !project.path?.endsWith(".gitkeep")) {
+  //       existingFiles.set(project.path!, {
+  //         path: `${contentPath}/${project.path}`,
+  //         sha: project.sha!,
+  //         mode: project.mode as GitTree["mode"],
+  //         type: project.type as GitTree["type"],
+  //       });
+  //     }
+  //   }
 
-    if (!projects) {
-      console.error("no projects found");
-      return Response.json({
-        message: "No projects found",
-        status: 404,
-        timestamp: new Date().toISOString(),
-      });
-    }
+  //   const { projects } = await fetch(
+  //     "https://projectrc.luxass.dev/api/projects.json",
+  //   ).then((res) => res.json() as Promise<{ projects: Project[] }>);
 
-    const updatedTree: GitTree[] = [];
+  //   if (!projects) {
+  //     console.error("no projects found");
+  //     return Response.json({
+  //       message: "No projects found",
+  //       status: 404,
+  //       timestamp: new Date().toISOString(),
+  //     });
+  //   }
 
-    for (const project of projects.filter((project) => project.readme)) {
-      const fileName = project.name.replace(/^\./, "").replace(/\./g, "-");
-      if (!project.readme) {
-        console.warn(`no README found for ${project.name}`);
-        continue;
-      }
+  //   const updatedTree: GitTree[] = [];
 
-      const readmeContent: unknown = await fetch(project.readme, {
-        headers: {
-          "X-MDX": "true",
-        },
-      }).then((res) => res.json());
+  //   for (const project of projects.filter((project) => project.readme)) {
+  //     const fileName = project.name.replace(/^\./, "").replace(/\./g, "-");
+  //     if (!project.readme) {
+  //       console.warn(`no README found for ${project.name}`);
+  //       continue;
+  //     }
 
-      if (!readmeContent || typeof readmeContent !== "object" || !("content" in readmeContent) || typeof readmeContent.content !== "string") {
-        console.error(`No README found for ${project.name}`);
-        continue;
-      }
-      const file = await remark()
-        .use(ICON, {
-          name: project.name,
-          icons: ICONS,
-        })
-        .process(readmeContent.content || "No README was found.");
+  //     const readmeContent: unknown = await fetch(project.readme, {
+  //       headers: {
+  //         "X-MDX": "true",
+  //       },
+  //     }).then((res) => res.json());
 
-      if (project.description) {
-        const emoji = project.description.match(/\p{Emoji}/u);
-        if (emoji) {
-          if (!ICONS.has(project.name)) {
-            ICONS.set(project.name, emoji[0]);
-          }
-          project.description = project.description.replace(emoji[0], "").trim();
-        }
-      }
+  //     if (!readmeContent || typeof readmeContent !== "object" || !("content" in readmeContent) || typeof readmeContent.content !== "string") {
+  //       console.error(`No README found for ${project.name}`);
+  //       continue;
+  //     }
+  //     const file = await remark()
+  //       .use(ICON, {
+  //         name: project.name,
+  //         icons: ICONS,
+  //       })
+  //       .process(readmeContent.content || "No README was found.");
 
-      const frontmatter = `---
-                handle: ${project.name}
-                name: ${project.name}
-                owner: ${project.nameWithOwner.split("/")[0]}
-                ${project.description ? `description: ${project.description}` : ""}
-                githubUrl: ${project.url}
-                ${project.npm ? `npm: "${project.npm.name}"` : ""}
-                ${ICONS.has(project.name) ? `icon: ${ICONS.get(project.name)}` : ""}
-                ---`
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .join("\n");
+  //     if (project.description) {
+  //       const emoji = project.description.match(/\p{Emoji}/u);
+  //       if (emoji) {
+  //         if (!ICONS.has(project.name)) {
+  //           ICONS.set(project.name, emoji[0]);
+  //         }
+  //         project.description = project.description.replace(emoji[0], "").trim();
+  //       }
+  //     }
 
-      const newContent = `${frontmatter}\n\n${file.toString()}`;
-      const filePath = `${contentPath}/${fileName}.mdx`;
+  //     const frontmatter = `---
+  //               handle: ${project.name}
+  //               name: ${project.name}
+  //               owner: ${project.nameWithOwner.split("/")[0]}
+  //               ${project.description ? `description: ${project.description}` : ""}
+  //               githubUrl: ${project.url}
+  //               ${project.npm ? `npm: "${project.npm.name}"` : ""}
+  //               ${ICONS.has(project.name) ? `icon: ${ICONS.get(project.name)}` : ""}
+  //               ---`
+  //       .split("\n")
+  //       .map((line) => line.trim())
+  //       .filter(Boolean)
+  //       .join("\n");
 
-      const existingFile = existingFiles.get(`${fileName}.mdx`);
-      if (existingFile) {
-        // File exists, update if content has changed
-        const { data: { content: existingContent } } = await octokit.git.getBlob({
-          owner: "luxass",
-          repo: "luxass.dev",
-          file_sha: existingFile.sha!,
-        });
+  //     const newContent = `${frontmatter}\n\n${file.toString()}`;
+  //     const filePath = `${contentPath}/${fileName}.mdx`;
 
-        const decodedExistingContent = decodeURIComponent(escape(atob(existingContent)));
+  //     const existingFile = existingFiles.get(`${fileName}.mdx`);
+  //     if (existingFile) {
+  //       // File exists, update if content has changed
+  //       const { data: { content: existingContent } } = await octokit.git.getBlob({
+  //         owner: "luxass",
+  //         repo: "luxass.dev",
+  //         file_sha: existingFile.sha!,
+  //       });
 
-        if (decodedExistingContent !== newContent) {
-          updatedTree.push({
-            path: filePath,
-            mode: "100644",
-            type: "blob",
-            content: newContent,
-          });
-          // eslint-disable-next-line no-console
-          console.info(`updated ${fileName}`);
-        } else {
-          // eslint-disable-next-line no-console
-          console.info(`no changes detected for ${fileName}`);
-        }
+  //       const decodedExistingContent = decodeURIComponent(escape(atob(existingContent)));
 
-        // Remove from existingFiles map to track deletions
-        existingFiles.delete(`${fileName}.mdx`);
-      } else {
-        // New file
-        updatedTree.push({
-          path: filePath,
-          mode: "100644",
-          type: "blob",
-          content: newContent,
-        });
-        // eslint-disable-next-line no-console
-        console.info(`added ${fileName}`);
-      }
-    }
+  //       if (decodedExistingContent !== newContent) {
+  //         updatedTree.push({
+  //           path: filePath,
+  //           mode: "100644",
+  //           type: "blob",
+  //           content: newContent,
+  //         });
+  //         // eslint-disable-next-line no-console
+  //         console.info(`updated ${fileName}`);
+  //       } else {
+  //         // eslint-disable-next-line no-console
+  //         console.info(`no changes detected for ${fileName}`);
+  //       }
 
-    for (const [fileName, file] of existingFiles) {
-      updatedTree.push({
-        path: file.path,
-        mode: file.mode,
-        type: file.type,
-        sha: null, // This signals GitHub to delete the file
-      });
-      // eslint-disable-next-line no-console
-      console.info(`deleted ${fileName}`);
-    }
+  //       // Remove from existingFiles map to track deletions
+  //       existingFiles.delete(`${fileName}.mdx`);
+  //     } else {
+  //       // New file
+  //       updatedTree.push({
+  //         path: filePath,
+  //         mode: "100644",
+  //         type: "blob",
+  //         content: newContent,
+  //       });
+  //       // eslint-disable-next-line no-console
+  //       console.info(`added ${fileName}`);
+  //     }
+  //   }
 
-    const projectsTreePaths = projectsTree.map((file) => file.path);
+  //   for (const [fileName, file] of existingFiles) {
+  //     updatedTree.push({
+  //       path: file.path,
+  //       mode: file.mode,
+  //       type: file.type,
+  //       sha: null, // This signals GitHub to delete the file
+  //     });
+  //     // eslint-disable-next-line no-console
+  //     console.info(`deleted ${fileName}`);
+  //   }
 
-    const changes = updatedTree.filter((file) => {
-      if (file.sha == null && projectsTreePaths.includes(file.path?.replace(`${contentPath}/`, ""))) {
-        return true;
-      }
+  //   const projectsTreePaths = projectsTree.map((file) => file.path);
 
-      if (file.content && !projectsTreePaths.includes(file.path?.replace(`${contentPath}/`, ""))) {
-        return true;
-      }
+  //   const changes = updatedTree.filter((file) => {
+  //     if (file.sha == null && projectsTreePaths.includes(file.path?.replace(`${contentPath}/`, ""))) {
+  //       return true;
+  //     }
 
-      if (file.content && projectsTreePaths.includes(file.path?.replace(`${contentPath}/`, ""))) {
-        return true;
-      }
+  //     if (file.content && !projectsTreePaths.includes(file.path?.replace(`${contentPath}/`, ""))) {
+  //       return true;
+  //     }
 
-      return false;
-    });
+  //     if (file.content && projectsTreePaths.includes(file.path?.replace(`${contentPath}/`, ""))) {
+  //       return true;
+  //     }
 
-    if (changes.length === 0) {
-      // eslint-disable-next-line no-console
-      console.info("no changes detected");
-      return Response.json({
-        message: "No changes detected",
-        status: 200,
-        timestamp: new Date().toISOString(),
-      });
-    }
+  //     return false;
+  //   });
 
-    const newTree = await octokit.git.createTree({
-      owner: "luxass",
-      repo: "luxass.dev",
-      base_tree: latestCommitSHA,
-      tree: updatedTree,
-    });
+  //   if (changes.length === 0) {
+  //     // eslint-disable-next-line no-console
+  //     console.info("no changes detected");
+  //     return Response.json({
+  //       message: "No changes detected",
+  //       status: 200,
+  //       timestamp: new Date().toISOString(),
+  //     });
+  //   }
 
-    const newCommit = await octokit.git.createCommit({
-      owner: "luxass",
-      repo: "luxass.dev",
-      message: "chore: update list of projects",
-      tree: newTree.data.sha,
-      parents: [latestCommitSHA],
-    });
+  //   const newTree = await octokit.git.createTree({
+  //     owner: "luxass",
+  //     repo: "luxass.dev",
+  //     base_tree: latestCommitSHA,
+  //     tree: updatedTree,
+  //   });
 
-    // check if branch exists
-    try {
-      await octokit.git.getRef({
-        owner: "luxass",
-        repo: "luxass.dev",
-        ref: `heads/${branchName}`,
-      });
-    } catch (error) {
-      if (typeof error === "object" && error && "status" in error && error.status === 404) {
-        await octokit.git.createRef({
-          owner: "luxass",
-          repo: "luxass.dev",
-          ref: `refs/heads/${branchName}`,
-          sha: newCommit.data.sha,
-        });
-        // eslint-disable-next-line no-console
-        console.log(`created branch ${branchName}`);
-      } else {
-        throw error;
-      }
-    }
+  //   const newCommit = await octokit.git.createCommit({
+  //     owner: "luxass",
+  //     repo: "luxass.dev",
+  //     message: "chore: update list of projects",
+  //     tree: newTree.data.sha,
+  //     parents: [latestCommitSHA],
+  //   });
 
-    await octokit.git.updateRef({
-      owner: "luxass",
-      repo: "luxass.dev",
-      ref: `heads/${branchName}`,
-      sha: newCommit.data.sha,
-    });
+  //   // check if branch exists
+  //   try {
+  //     await octokit.git.getRef({
+  //       owner: "luxass",
+  //       repo: "luxass.dev",
+  //       ref: `heads/${branchName}`,
+  //     });
+  //   } catch (error) {
+  //     if (typeof error === "object" && error && "status" in error && error.status === 404) {
+  //       await octokit.git.createRef({
+  //         owner: "luxass",
+  //         repo: "luxass.dev",
+  //         ref: `refs/heads/${branchName}`,
+  //         sha: newCommit.data.sha,
+  //       });
+  //       // eslint-disable-next-line no-console
+  //       console.log(`created branch ${branchName}`);
+  //     } else {
+  //       throw error;
+  //     }
+  //   }
 
-    return Response.json({
-      message: "Projects updated",
-      status: 200,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (err) {
-    return Response.json({
-      message: "An error occurred",
-      status: 500,
-      timestamp: new Date().toISOString(),
-    });
-  }
+  //   await octokit.git.updateRef({
+  //     owner: "luxass",
+  //     repo: "luxass.dev",
+  //     ref: `heads/${branchName}`,
+  //     sha: newCommit.data.sha,
+  //   });
+
+  //   return Response.json({
+  //     message: "Projects updated",
+  //     status: 200,
+  //     timestamp: new Date().toISOString(),
+  //   });
+  // } catch (err) {
+  //   return Response.json({
+  //     message: "An error occurred",
+  //     status: 500,
+  //     timestamp: new Date().toISOString(),
+  //   });
+  // }
 };
