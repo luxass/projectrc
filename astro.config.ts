@@ -46,6 +46,7 @@ export default defineConfig({
       ],
       expiration: 3600,
     },
+    maxDuration: 30,
   }),
   vite: {
     resolve: {
