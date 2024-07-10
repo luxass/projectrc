@@ -15,9 +15,12 @@ if (!GITHUB_TOKEN) {
 // https://astro.build/config
 export default defineConfig({
   site: "https://mosaic.luxass.dev",
-  integrations: [UnoCSS({
-    injectReset: true,
-  }), icon()],
+  integrations: [
+    UnoCSS({
+      injectReset: true,
+    }),
+    icon(),
+  ],
   experimental: {
     env: {
       schema: {
