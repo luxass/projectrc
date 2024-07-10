@@ -41,6 +41,8 @@ export default defineConfig({
   adapter: vercel({
     isr: {
       exclude: [
+        "/json-schema",
+        "/json-schema2.json",
         "/api/**",
         "!/api/v1/projects",
       ],
