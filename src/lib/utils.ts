@@ -11,7 +11,7 @@ export function base64ToString(str: string): string {
 
 export const SITE_URL
   = import.meta.env.VERCEL_ENV === "production"
-    ? "https://projectrc.luxass.dev"
-    : import.meta.env.VERCEL_ENV
-      ? `https://${import.meta.env.VERCEL_ENV}`
+    ? "https://mosaic.luxass.dev"
+    : import.meta.env.VERCEL_ENV === "preview"
+      ? `https://${import.meta.env.VERCEL_URL}`
       : `http://localhost:${import.meta.env.PORT || 4321}`;

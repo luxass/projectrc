@@ -1,23 +1,28 @@
 import { z } from "zod";
 
-const PROJECT_SCHEMA = z.object({
+export const PROJECT_SCHEMA = z.object({
   name: z.string({
     description: "the name of the project.",
   }),
+
   priority: z.number({
     description: "the priority of the project. the higher the number, the higher position the project will have on `luxass.dev`.",
   }).default(10),
 
+  stars: z.boolean({
+    description: "include the stars of the repository.",
+  }).default(false),
+
   version: z.boolean({
     description: "infer the version of the project from the repository.",
-  }).default(false),
+  }).optional().default(false),
 
   ignore: z.boolean({
     description: "ignore the project from being displayed on `luxass.dev`.",
-  }).default(false),
+  }).optional().default(false),
 });
 
-const NPM_SCHEMA = z.object({
+export const NPM_SCHEMA = z.object({
   enabled: z.boolean({
     description: "npm package information.",
   }),
@@ -31,7 +36,7 @@ const NPM_SCHEMA = z.object({
   }).default(false),
 });
 
-const README_SCHEMA = z.object({
+export const README_SCHEMA = z.object({
   enabled: z.boolean({
     description: "include the readme file of the repository.",
   }),
@@ -40,7 +45,7 @@ const README_SCHEMA = z.object({
   }).optional(),
 });
 
-const WEBSITE_SCHEMA = z.object({
+export const WEBSITE_SCHEMA = z.object({
   enabled: z.boolean({
     description: "include the website information.",
   }),
@@ -56,10 +61,20 @@ const WEBSITE_SCHEMA = z.object({
   keywords: z.array(z.string()).optional(),
 });
 
-const WORKSPACE_SCHEMA = z.object({
+export const WORKSPACE_SCHEMA = z.object({
   enabled: z.boolean({
     description: "include the workspace information.",
   }),
+});
+
+export const DEPRECATED_SCHEMA = z.object({
+  message: z.string({
+    description: "the deprecation message.",
+  }),
+
+  replacement: z.string({
+    description: "the replacement message.",
+  }).optional(),
 });
 
 export const MOSAIC_SCHEMA = z.object({
@@ -67,6 +82,6 @@ export const MOSAIC_SCHEMA = z.object({
   npm: NPM_SCHEMA.optional(),
   readme: README_SCHEMA.optional(),
   website: WEBSITE_SCHEMA.optional(),
-
   workspace: WORKSPACE_SCHEMA.optional(),
+  deprecated: DEPRECATED_SCHEMA.optional(),
 });
