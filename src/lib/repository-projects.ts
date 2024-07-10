@@ -25,12 +25,13 @@ export type ProjectResult = ResolvedProject[] | {
   error: ErrorKey;
 };
 
-export type ErrorKey = "NO_CONFIG_FOUND" | "REPOSITORY_NOT_FOUND" | "REPOSITORY_IGNORED";
+export type ErrorKey = "NO_CONFIG_FOUND" | "REPOSITORY_NOT_FOUND" | "REPOSITORY_IGNORED" | "CONFIG_VALIDATION_ERROR";
 
 export const ERROR_MAP: Record<ErrorKey, string> = {
   NO_CONFIG_FOUND: "repository has no config",
   REPOSITORY_NOT_FOUND: "repository not found",
   REPOSITORY_IGNORED: "repository is ignored",
+  CONFIG_VALIDATION_ERROR: "config validation error",
 };
 
 export async function getRepositoryProjects(owner: string, repositoryName: string): Promise<ProjectResult> {
@@ -39,6 +40,12 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
   if (!resolvedConfig) {
     return {
       error: "NO_CONFIG_FOUND",
+    };
+  }
+
+  if (resolvedConfig.type === "error") {
+    return {
+      error: "CONFIG_VALIDATION_ERROR",
     };
   }
 
@@ -59,8 +66,6 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
   }
 
   const projects: ResolvedProject[] = [];
-
-  console.log(JSON.stringify(config, null, 2));
 
   if (config.workspace && config.workspace.enabled) {
     const rootPkg = await getPackage(owner, repositoryName);
@@ -133,143 +138,131 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
       }),
     );
 
-    // const overrides = config.workspace?.overrides || [];
+    const overrides = config.workspace?.overrides || {};
 
     for (const pkg of results) {
-    //   const override = overrides.find((override) => override.name === pkg.name);
+      const override = overrides[pkg.name];
 
-      //   // if package is inside a folder that you want to include everytime (like `packages/*`),
-      //   // but still want to ignore a specific package.
-      //   if (override && override.ignore) {
-      //     continue;
-      //   }
+      // if package is inside a folder that you want to include everytime (like `packages/*`),
+      // but still want to ignore a specific package.
+      if (override && override.project?.ignore) {
+        continue;
+      }
 
-      //   const project: ResolvedProject = {
-      //     name: pkg.name,
-      //     title: config.title || repository.name,
-      //     description: override?.description || config.description || repository.description || undefined,
-      //     keywords: override?.keywords || config.keywords || undefined,
-      //     image: override?.image || config.image || undefined,
-      //     ignore: override?.ignore || config.ignore || false,
-      //     deprecated: override?.deprecated || config.deprecated,
-      //     stars: repository.stargazerCount || undefined,
-      //     priority: override?.priority || config.priority || 0,
-      //   };
+      const project: ResolvedProject = {
+        name: pkg.name,
+        ignore: override?.project.ignore || config.project.ignore || false,
+        deprecated: override?.deprecated || config.deprecated,
+        stars: (override?.project.stars || config.project.stars) ? repository.stargazerCount : undefined,
+        priority: override?.project.priority || config.project.priority || 0,
+      };
 
-      //   if (override?.website ?? config.website) {
-      //     let website;
+      if (config.website?.enabled) {
+        let website;
 
-      //     if (override?.website && typeof override.website === "string") {
-      //       website = override.website;
-      //     } else if (config.website && typeof config.website === "string") {
-      //       website = config.website;
-      //     } else {
-      //       website = repository.homepageUrl || null;
-      //     }
+        if (typeof config.website.url === "string") {
+          website = config.website.url;
+        } else {
+          website = repository.homepageUrl || null;
+        }
 
-      //     project.website = website;
-      //   }
+        project.website = {
+          url: website,
+          title: config.website.title || repository.name,
+          description: config.website.description || repository.description || undefined,
+          keywords: config.website.keywords || undefined,
+        };
+      }
 
-      //   let readme = override?.readme || config.readme;
+      const readme = override?.readme || config.readme;
 
-      //   if (readme) {
-      //     if (typeof readme === "boolean") {
-      //       readme = `/${pkg.path}/README.md`;
-      //     }
+      if (readme?.enabled) {
+        project.readme = `${SITE_URL}/api/v1/resolve/${owner}/${repositoryName}/readme${readme.path ? `/${readme.path}` : `/${pkg.path}`}`;
+      }
 
-      //     project.readme = `${SITE_URL}/api/resolve/${owner}/${repositoryName}/readme${readme}`;
-      //   }
+      if (override?.npm?.enabled || config.npm?.enabled) {
+        const npm = override?.npm || config.npm;
+        if (npm?.name) {
+          project.npm = {
+            name: npm.name,
+            url: `https://www.npmjs.com/package/${npm.name}`,
+          };
+        } else {
+          const pkgObj = await getPackage(owner, repositoryName, pkg.path);
 
-      //   if (config.npm) {
-      //     let npm = config.npm;
-      //     if (typeof npm === "boolean") {
-      //       npm = {
-      //         enabled: true,
-      //         downloads: true,
-      //       };
-      //     }
+          if (!pkgObj.name) {
+            throw new Error("no name found in package.json");
+          }
 
-      //     if (npm.enabled) {
-      //       if (npm.name) {
-      //         project.npm = {
-      //           name: npm.name,
-      //           url: `https://www.npmjs.com/package/${npm.name}`,
-      //         };
-      //       } else {
-      //         const pkgObj = await getPackage(owner, repositoryName, pkg.path);
+          project.npm = {
+            name: pkgObj.name,
+            url: `https://www.npmjs.com/package/${pkgObj.name}`,
+          };
 
-      //         if (!pkgObj.name) {
-      //           throw new Error("no name found in package.json");
-      //         }
+          if (npm?.downloads && project.npm.name) {
+            const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then(
+              (res) => res.json(),
+            );
 
-      //         project.npm = {
-      //           name: pkgObj.name,
-      //           url: `https://www.npmjs.com/package/${pkgObj.name}`,
-      //         };
+            if (
+              !result
+              || typeof result !== "object"
+              || !("downloads" in result)
+              || typeof result.downloads !== "number"
+            ) {
+              console.warn(
+                      `npm downloads is enabled, but no \`downloads\` field was found in the npm API response.\nPlease try again later.`,
+              );
+            }
 
-      //         if (npm.downloads && project.npm.name) {
-      //           const result = await fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.name}`).then(
-      //             (res) => res.json(),
-      //           );
+            project.npm.downloads = result.downloads;
+          }
+        }
+      }
 
-      //           if (
-      //             !result
-      //             || typeof result !== "object"
-      //             || !("downloads" in result)
-      //             || typeof result.downloads !== "number"
-      //           ) {
-      //             console.warn(
-      //                 `npm downloads is enabled, but no \`downloads\` field was found in the npm API response.\nPlease try again later.`,
-      //             );
-      //           }
+      if (override?.project.version || config.project.version) {
+        const latestReleaseResponse = await fetch(
+            `https://api.github.com/repos/${owner}/${repositoryName}/releases/latest`,
+        );
+        const pkgObj = await getPackage(owner, repositoryName, pkg.path);
 
-      //           project.npm.downloads = result.downloads;
-      //         }
-      //       }
-      //     }
-      //   }
+        if (!latestReleaseResponse.ok && !pkgObj.version) {
+          throw new Error("could not find latest release on github and no version was found in package.json");
+        }
 
-      //   if (override?.version || config.version) {
-      //     const latestReleaseResponse = await fetch(
-      //       `https://api.github.com/repos/${owner}/${repositoryName}/releases/latest`,
-      //     );
-      //     const pkgObj = await getPackage(owner, repositoryName, pkg.path);
+        if (!latestReleaseResponse.ok && pkgObj.version) {
+          console.warn("no latest release found on github");
+          const npmResult = await fetch(`https://registry.npmjs.org/${pkgObj.name}`).then((res) => res.json());
 
-      //     if (!latestReleaseResponse.ok && !pkgObj.version) {
-      //       throw new Error("could not find latest release on github and no version was found in package.json");
-      //     }
+          if (!npmResult || typeof npmResult !== "object") {
+            throw new Error("version is enabled, but no npm API response was found.\nPlease try again later.");
+          }
 
-      //     if (!latestReleaseResponse.ok && pkgObj.version) {
-      //       console.warn("no latest release found on github");
-      //       const npmResult = await fetch(`https://registry.npmjs.org/${pkgObj.name}`).then((res) => res.json());
+          const test = z.object({
+            "dist-tags": z.object({
+              latest: z.string(),
+            }),
+          });
 
-      //       if (!npmResult || typeof npmResult !== "object") {
-      //         throw new Error("version is enabled, but no npm API response was found.\nPlease try again later.");
-      //       }
+          const npm = await test.parseAsync(npmResult);
 
-      //       const test = z.object({
-      //         "dist-tags": z.object({
-      //           latest: z.string(),
-      //         }),
-      //       });
+          const latestVersion = npm["dist-tags"].latest;
 
-      //       const npm = await test.parseAsync(npmResult);
+          project.version = latestVersion || pkgObj.version;
+        } else {
+          const result = await latestReleaseResponse.json();
 
-      //       const latestVersion = npm["dist-tags"].latest;
+          if (!result || typeof result !== "object" || !("tag_name" in result) || typeof result.tag_name !== "string") {
+            throw new Error(
+              "version is enabled, but no `tag_name` field was found in the GitHub API response.\nPlease try again later.",
+            );
+          }
 
-      //       project.version = latestVersion || pkgObj.version;
-      //     } else {
-      //       const result = await latestReleaseResponse.json();
+          project.version = result.tag_name;
+        }
+      }
 
-      //       if (!result || typeof result !== "object" || !("tag_name" in result) || typeof result.tag_name !== "string") {
-      //         throw new Error(
-      //           "version is enabled, but no `tag_name` field was found in the GitHub API response.\nPlease try again later.",
-      //         );
-      //       }
-      //     }
-      //   }
-
-    //   projects.push(project);
+      projects.push(project);
     }
   } else {
     const project: ResolvedProject = {
@@ -277,9 +270,8 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
       ignore: config.project.ignore || false,
       priority: config.project.priority || 0,
       readme: config.readme
-        ? `${SITE_URL}/api/resolve/${owner}/${repositoryName}/readme${
-            typeof config.readme === "string" ? `/${config.readme}` : ""
-          }`
+        ? `${SITE_URL}/api/v1/resolve/${owner}/${repositoryName}/readme${typeof config.readme === "string" ? `/${config.readme}` : ""
+        }`
         : undefined,
       deprecated: config.deprecated,
       stars: config.project.stars ? repository.stargazerCount : undefined,
@@ -332,7 +324,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
             || typeof result.downloads !== "number"
           ) {
             console.warn(
-                `npm downloads is enabled, but no \`downloads\` field was found in the npm API response.\nPlease try again later.`,
+              `npm downloads is enabled, but no \`downloads\` field was found in the npm API response.\nPlease try again later.`,
             );
           }
 
