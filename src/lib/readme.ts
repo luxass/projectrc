@@ -54,7 +54,7 @@ export async function getREADME(options: READMEOptions): Promise<READMEResult | 
       content: base64ToString(result.content),
       path: readmeUrl.toString(),
     };
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
