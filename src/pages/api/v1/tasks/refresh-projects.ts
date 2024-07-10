@@ -1,9 +1,5 @@
 import type { APIRoute } from "astro";
-import { Octokit } from "@octokit/rest";
-import { API_KEY, GITHUB_TOKEN } from "astro:env/server";
-import { remark } from "remark";
-import type { GitTree, Project } from "../../../../lib/types";
-import { ICON } from "../../../../lib/remark-plugins/icon";
+import { API_KEY } from "astro:env/server";
 
 export const prerender = false;
 
