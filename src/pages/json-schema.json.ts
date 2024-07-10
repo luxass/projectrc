@@ -15,7 +15,6 @@ export const GET: APIRoute = () => {
       "Access-Control-Allow-Origin": "*",
       "Cache-Control": "public, s-maxage=3600, must-revalidate",
       "Content-Disposition": "inline",
-      "X-Content-Type-Options": "nosniff",
     },
   });
 };
