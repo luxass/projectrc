@@ -13,6 +13,8 @@ export const GET: APIRoute = () => {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "public, s-maxage=3600, must-revalidate",
+      "Content-Disposition": "inline; filename=\"mosaic-json-schema.json\"",
     },
   });
 };
