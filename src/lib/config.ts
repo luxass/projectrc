@@ -1,13 +1,22 @@
-import type { z } from "zod";
+import type { ZodIssue, z } from "zod";
 import { GITHUB_TOKEN } from "astro:env/server";
 import { parse as parseToml } from "smol-toml";
+import {
+  zodErrorMap,
+} from "zod-error-utils";
 import { base64ToString } from "./utils";
 import { MOSAIC_SCHEMA } from "./json-schema";
 
-export interface ResolveConfigResult {
+export interface ResolvedConfigResult {
+  type: "resolved";
   content: z.infer<typeof MOSAIC_SCHEMA>;
   external: boolean;
   path: string;
+}
+
+export interface ResolvedConfigError {
+  type: "error";
+  issues: ZodIssue[];
 }
 
 export interface ResolveConfigOptions {
@@ -15,7 +24,7 @@ export interface ResolveConfigOptions {
   name: string;
 }
 
-export async function resolveConfig(owner: string, repository: string): Promise<ResolveConfigResult | undefined> {
+export async function resolveConfig(owner: string, repository: string): Promise<ResolvedConfigError | ResolvedConfigResult | undefined> {
   if (!owner || !repository) {
     return undefined;
   }
@@ -56,10 +65,33 @@ export async function resolveConfig(owner: string, repository: string): Promise<
 
     const content = parseToml(base64ToString(result.content));
 
-    const parsed = await MOSAIC_SCHEMA.parseAsync(content);
+    const parsed = await MOSAIC_SCHEMA.safeParseAsync(content, {
+      errorMap: zodErrorMap,
+    });
+
+    if (!parsed.success) {
+      console.error(parsed.error);
+      return {
+        type: "error",
+        issues: parsed.error.errors,
+      };
+    }
+
+    const config = parsed.data;
+    if (config.workspace?.enabled && config.workspace.overrides != null) {
+      for (const [key] of Object.entries(config.workspace.overrides)) {
+        const projectOverride = config.workspace.overrides[key];
+        if (projectOverride == null) {
+          throw new Error("project not found, how did this happen?");
+        }
+
+        projectOverride.project.name = key;
+      }
+    }
 
     return {
-      content: parsed,
+      type: "resolved",
+      content: config,
       external,
       path: `https://github.com/${owner}/${repository}/blob/main/.github/mosaic.toml`,
     };

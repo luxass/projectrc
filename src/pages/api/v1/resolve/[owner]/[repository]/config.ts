@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { resolveConfig } from "~/lib/config";
+import { createError } from "~/lib/response-utils";
 
 export const prerender = false;
 
@@ -7,27 +8,35 @@ export const GET: APIRoute = async ({ params }) => {
   const { owner, repository } = params;
 
   if (!owner || !repository) {
-    return new Response("missing params", {
+    return createError({
       status: 400,
+      message: "missing params",
     });
   }
 
   const config = await resolveConfig(owner, repository);
 
   if (!config) {
-    return Response.json(
-      {
-        error: "repository has no config",
-      },
-      {
-        status: 404,
-      },
-    );
+    return createError({
+      message: "repository has no config defined",
+      status: 404,
+    });
   }
+
+  if (config.type === "error") {
+    return createError({
+      message: "error resolving config due to config not being valid",
+      status: 500,
+      data: config.issues,
+    });
+  }
+
   return Response.json(
     {
       lastModified: new Date().toISOString(),
-      ...config,
+      content: config.content,
+      external: config.external,
+      path: config.path,
     },
     {
       headers: {
