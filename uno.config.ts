@@ -9,7 +9,9 @@ import {
 
 export default defineConfig({
   presets: [
-    presetUno(),
+    presetUno({
+      dark: "media",
+    }),
     presetIcons({
       scale: 1.3,
     }),
