@@ -1,10 +1,6 @@
 import { z } from "zod";
 
 export const PROJECT_SCHEMA = z.object({
-  name: z.string({
-    description: "the name of the project.",
-  }),
-
   priority: z.number({
     description: "the priority of the project. the higher the number, the higher position the project will have on `luxass.dev`.",
   }).default(10),
@@ -61,12 +57,6 @@ export const WEBSITE_SCHEMA = z.object({
   keywords: z.array(z.string()).optional(),
 });
 
-export const WORKSPACE_SCHEMA = z.object({
-  enabled: z.boolean({
-    description: "include the workspace information.",
-  }),
-});
-
 export const DEPRECATED_SCHEMA = z.object({
   message: z.string({
     description: "the deprecation message.",
@@ -77,11 +67,37 @@ export const DEPRECATED_SCHEMA = z.object({
   }).optional(),
 });
 
-export const MOSAIC_SCHEMA = z.object({
+const BASE_MOSAIC_SCHEMA = z.object({
   project: PROJECT_SCHEMA,
   npm: NPM_SCHEMA.optional(),
   readme: README_SCHEMA.optional(),
   website: WEBSITE_SCHEMA.optional(),
-  workspace: WORKSPACE_SCHEMA.optional(),
   deprecated: DEPRECATED_SCHEMA.optional(),
 });
+
+export const WORKSPACE_SCHEMA = z.object({
+  enabled: z.boolean({
+    description: "include the workspace information.",
+  }),
+
+  ignores: z.array(z.string({
+    description: "the ignored projects in the workspace.",
+  })).optional(),
+
+  overrides: z.record(BASE_MOSAIC_SCHEMA.omit({ project: true }).merge(z.object({
+    project: PROJECT_SCHEMA.merge(z.object({
+      name: z.string({
+        description: "the name of the project.",
+      }),
+    })).partial(),
+  }))).optional(),
+});
+
+export const MOSAIC_SCHEMA = BASE_MOSAIC_SCHEMA.merge(z.object({
+  project: PROJECT_SCHEMA.merge(z.object({
+    name: z.string({
+      description: "the name of the project.",
+    }),
+  })),
+  workspace: WORKSPACE_SCHEMA.optional(),
+}));
