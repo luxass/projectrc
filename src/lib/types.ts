@@ -10,6 +10,7 @@ import type {
 type SafeOmit<T, K extends keyof T> = Omit<T, K>;
 
 export type ResolvedProject = {
+  name: string;
   website?: SafeOmit<z.infer<typeof WEBSITE_SCHEMA>, "enabled">;
   npm?: SafeOmit<z.infer<typeof NPM_SCHEMA>, "enabled" | "downloads"> & {
     url?: string;
