@@ -2,7 +2,6 @@ import type { z } from "zod";
 import type { Language, Repository } from "github-schema";
 import type {
   DEPRECATED_SCHEMA,
-  MOSAIC_SCHEMA,
   NPM_SCHEMA,
   PROJECT_SCHEMA,
   WEBSITE_SCHEMA,
