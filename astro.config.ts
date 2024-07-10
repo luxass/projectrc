@@ -3,11 +3,11 @@ import { loadEnv } from "vite";
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
 import UnoCSS from "unocss/astro";
+import icon from "astro-icon";
 
 const {
   GITHUB_TOKEN,
 } = loadEnv(process.env.NODE_ENV!, process.cwd(), "");
-
 if (!GITHUB_TOKEN) {
   throw new Error("No GITHUB_TOKEN found");
 }
@@ -15,11 +15,9 @@ if (!GITHUB_TOKEN) {
 // https://astro.build/config
 export default defineConfig({
   site: "https://mosaic.luxass.dev",
-  integrations: [
-    UnoCSS({
-      injectReset: true,
-    }),
-  ],
+  integrations: [UnoCSS({
+    injectReset: true,
+  }), icon()],
   experimental: {
     env: {
       schema: {
@@ -40,10 +38,7 @@ export default defineConfig({
   output: "hybrid",
   adapter: vercel({
     isr: {
-      exclude: [
-        "/api/**",
-        "!/api/v1/projects",
-      ],
+      exclude: ["/api/**", "!/api/v1/projects"],
       expiration: 3600,
     },
     maxDuration: 30,
