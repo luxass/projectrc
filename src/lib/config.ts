@@ -1,10 +1,11 @@
 import type { z } from "zod";
 import { GITHUB_TOKEN } from "astro:env/server";
+import { parse as parseToml } from "smol-toml";
 import { base64ToString } from "./utils";
-import { PROJECTRC_SCHEMA } from "./json-schema";
+import { MOSAIC_SCHEMA } from "./json-schema";
 
 export interface ResolveConfigResult {
-  content: z.infer<typeof PROJECTRC_SCHEMA>;
+  content: z.infer<typeof MOSAIC_SCHEMA>;
   external: boolean;
   path: string;
 }
@@ -22,22 +23,22 @@ export async function resolveConfig(owner: string, repository: string): Promise<
   try {
     let external = false;
 
-    let url = new URL(`https://api.github.com/repos/${owner}/${repository}/contents/.github/projectrc.json`);
+    let url = new URL(`https://api.github.com/repos/${owner}/${repository}/contents/.github/mosaic.toml`);
 
     if (owner !== "luxass") {
       external = true;
 
       // when the owner is not luxass, resolve the repository externally
       // every external repository that should be resolved, requires
-      // a projectrc file in luxass/luxass repository
-      // the path for these files should be .github/projectrc/<external-owner>/<external-repository>.json
-      // for example: .github/projectrc/vercel/next.js.json
-      if (repository.endsWith(".json")) {
+      // a `mosaic.toml` file in luxass/luxass repository
+      // the path for these files should be .github/mosaic/<external-owner>/<external-repository>.toml
+      // for example: .github/mosaic/vercel/next.js.toml
+      if (repository.endsWith(".toml")) {
         repository = repository.slice(0, -5);
       }
 
       url = new URL(
-        `https://api.github.com/repos/luxass/luxass/contents/.github/projectrc/${owner.toLowerCase()}/${repository.toLowerCase()}.json`,
+        `https://api.github.com/repos/luxass/luxass/contents/.github/mosaic/${owner.toLowerCase()}/${repository.toLowerCase()}.toml`,
       );
     }
 
@@ -53,14 +54,14 @@ export async function resolveConfig(owner: string, repository: string): Promise<
       return;
     }
 
-    const content = JSON.parse(base64ToString(result.content));
+    const content = parseToml(base64ToString(result.content));
 
-    const parsed = await PROJECTRC_SCHEMA.parseAsync(content);
+    const parsed = await MOSAIC_SCHEMA.parseAsync(content);
 
     return {
       content: parsed,
       external,
-      path: `https://github.com/${owner}/${repository}/blob/main/.github/projectrc.json`,
+      path: `https://github.com/${owner}/${repository}/blob/main/.github/mosaic.toml`,
     };
   } catch (err) {
     console.error(err);

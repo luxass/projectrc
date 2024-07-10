@@ -25,7 +25,7 @@ export async function getProjects(): Promise<Project[] | undefined> {
 
   const projects: Project[] = [];
 
-  const ignoreFile = await fetch("https://raw.githubusercontent.com/luxass/luxass/main/.github/projectrc/.projectignore").then((res) => res.text());
+  const ignoreFile = await fetch("https://raw.githubusercontent.com/luxass/luxass/main/.github/mosaic/.mosaicignore").then((res) => res.text());
   const ignore = ignoreFile.split("\n").map((line) => line.trim()).filter((line) => line && !line.startsWith("#"));
 
   const repositories = viewer.repositories.nodes.filter((repo): repo is NonNullable<Repository> => {
@@ -40,15 +40,15 @@ export async function getProjects(): Promise<Project[] | undefined> {
   });
 
   for await (const file of getExternalRepositories()) {
-    if (file.endsWith("README.md") || file.endsWith(".projectignore")) continue;
+    if (file.endsWith("README.md") || file.endsWith(".mosaicignore")) continue;
 
-    const [owner, name] = file.replace(".github/projectrc/", "").split("/");
+    const [owner, name] = file.replace(".github/mosaic/", "").split("/");
 
     const { repository } = await graphql<{
       repository: Repository;
     }>(REPOSITORY_QUERY, {
       owner,
-      name: name.replace(".json", ""),
+      name: name.replace(".toml", ""),
       headers: {
         "Authorization": `Bearer ${GITHUB_TOKEN}`,
         "Content-Type": "application/json",

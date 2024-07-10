@@ -37,6 +37,7 @@
     "remark-directive": "^3.0.0",
     "sanitize-html": "^2.13.0",
     "shikiji": "^0.10.2",
+    "smol-toml": "^1.2.2",
     "unified": "^11.0.5",
     "unist-util-generated": "^3.0.0",
     "unist-util-is": "^6.0.0",

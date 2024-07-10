@@ -1,13 +1,13 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { PROJECTRC_SCHEMA } from "../lib/json-schema";
+import { MOSAIC_SCHEMA } from "../lib/json-schema";
 
 export const GET: APIRoute = () => {
-  const jsonSchema = zodToJsonSchema(PROJECTRC_SCHEMA.merge(z.object({
+  const jsonSchema = zodToJsonSchema(MOSAIC_SCHEMA.merge(z.object({
     $schema: z.string({
       description: "Ignored. Can be set to get completions, validations and documentation in some editors.",
-    }).default("https://projectrc.luxass.dev/schema.json"),
+    }).default("https://mosaic.luxass.dev/json-schema"),
   })));
   return new Response(JSON.stringify(jsonSchema, null, 2), {
     headers: {

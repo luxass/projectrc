@@ -14,10 +14,7 @@ if (!GITHUB_TOKEN) {
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://projectrc.luxass.dev",
-  output: "hybrid",
-  adapter: vercel(),
-  compressHTML: true,
+  site: "https://mosaic.luxass.dev",
   integrations: [
     UnoCSS({
       injectReset: true,
@@ -31,7 +28,7 @@ export default defineConfig({
           access: "secret",
           context: "server",
         },
-        CRON_SECRET: {
+        API_KEY: {
           type: "string",
           access: "secret",
           context: "server",
@@ -39,6 +36,17 @@ export default defineConfig({
       },
     },
   },
+  compressHTML: true,
+  output: "hybrid",
+  adapter: vercel({
+    isr: {
+      exclude: [
+        "/api/**",
+        "!/api/v1/projects",
+      ],
+      expiration: 3600,
+    },
+  }),
   vite: {
     resolve: {
       alias: {
