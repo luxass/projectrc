@@ -12,16 +12,7 @@
       ]
     },
     {
-      "source": "/schema.json",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, s-maxage=3600, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/zod-schema.ts",
+      "source": "/json-schema",
       "headers": [
         {
           "key": "Cache-Control",
@@ -29,12 +20,12 @@
         },
         {
           "key": "Content-Disposition",
-          "value": "inline; filename=\"zod-schema.ts\""
+          "value": "inline; filename=\"mosaic-json-schema.json\""
         }
       ]
     },
     {
-      "source": "/api/projects.json",
+      "source": "/api/v1/projects.json",
       "headers": [
         {
           "key": "Cache-Control",
