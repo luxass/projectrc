@@ -12,27 +12,6 @@
       ]
     },
     {
-      "source": "/json-schema",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/json"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, s-maxage=3600, must-revalidate"
-        },
-        {
-          "key": "Content-Disposition",
-          "value": "inline"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
       "source": "/api/v1/projects.json",
       "headers": [
         {
