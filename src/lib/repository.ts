@@ -99,7 +99,7 @@ export async function getRepository(owner: string, name: string): Promise<Reposi
   return repository;
 }
 
-export async function* getExternalRepositories(path: string = ".github/projectrc"): AsyncGenerator<string> {
+export async function* getExternalRepositories(path: string = ".github/mosaic"): AsyncGenerator<string> {
   try {
     const data = await fetch(`https://api.github.com/repos/luxass/luxass/contents/${path}`, {
       headers: {

@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { Octokit } from "@octokit/rest";
-import { CRON_SECRET, GITHUB_TOKEN } from "astro:env/server";
+import { API_KEY, GITHUB_TOKEN } from "astro:env/server";
 import { remark } from "remark";
 import type { GitTree, Project } from "../../../../lib/types";
 import { ICON } from "../../../../lib/remark-plugins/icon";
@@ -8,9 +8,9 @@ import { ICON } from "../../../../lib/remark-plugins/icon";
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
-  const authorization = request.headers.get("Authorization");
+  const authorization = request.headers.get("X-MOSAIC-KEY");
 
-  if (CRON_SECRET == null || authorization !== `Bearer ${CRON_SECRET}`) {
+  if (API_KEY == null || authorization !== API_KEY) {
     return new Response(null, { status: 401 });
   }
 

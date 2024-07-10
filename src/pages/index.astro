@@ -3,21 +3,24 @@
 import zodToJsonSchema from "zod-to-json-schema";
 import { codeToHtml } from "shikiji";
 import PageLayout from "../layouts/PageLayout.astro";
-import { PROJECTRC_SCHEMA } from "../lib/json-schema";
+import { MOSAIC_SCHEMA } from "../lib/json-schema";
 
-const jsonSchema = zodToJsonSchema(PROJECTRC_SCHEMA);
+const jsonSchema = zodToJsonSchema(MOSAIC_SCHEMA);
 
 const html = await codeToHtml(JSON.stringify(jsonSchema, null, 2), {
   lang: "json",
-  theme: "vitesse-dark",
+  themes: {
+    dark: "vitesse-dark",
+    light: "vitesse-light",
+  },
 });
 ---
 
 <PageLayout
-  title="projectrc.luxass.dev"
+  title="mosaic.luxass.dev"
   description="a streamlined API aggregating all my project data in one place."
 >
-  <h1 class="mb-8 text-3xl font-semibold">.projectrc</h1>
+  <h1 class="mb-8 text-3xl font-semibold">mosaic</h1>
 
   <article>
     <p>
