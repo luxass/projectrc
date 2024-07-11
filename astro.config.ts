@@ -41,7 +41,7 @@ export default defineConfig({
   output: "hybrid",
   adapter: vercel({
     isr: {
-      exclude: ["/api/**", "!/api/v1/projects"],
+      exclude: ["/api/**", "!/api/v1/projects.json"],
       expiration: 3600,
     },
     maxDuration: 30,
