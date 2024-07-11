@@ -64,7 +64,7 @@ export async function getProjects(): Promise<Project[] | undefined> {
       const resolved = await getRepositoryProjects(owner, name);
 
       if (!resolved || !Array.isArray(resolved)) {
-        console.warn("invalid response from resolve api", `${SITE_URL}/api/resolve/${repository.nameWithOwner}`);
+        console.warn("invalid response from resolve api", `${SITE_URL}/api/v1/resolve/${repository.nameWithOwner}`);
         return;
       }
 

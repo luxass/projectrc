@@ -155,6 +155,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
         deprecated: override?.deprecated || config.deprecated,
         stars: (override?.project.stars || config.project.stars) ? repository.stargazerCount : undefined,
         priority: override?.project.priority || config.project.priority || 0,
+        description: config.project.description || repository.description || undefined,
       };
 
       if (config.website?.enabled) {
@@ -169,7 +170,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
         project.website = {
           url: website,
           title: config.website.title || repository.name,
-          description: config.website.description || repository.description || undefined,
+          description: config.website.description || project.description || undefined,
           keywords: config.website.keywords || undefined,
         };
       }
@@ -275,6 +276,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
         : undefined,
       deprecated: config.deprecated,
       stars: config.project.stars ? repository.stargazerCount : undefined,
+      description: config.project.description || repository.description || undefined,
     };
 
     if (config.website?.enabled) {
@@ -289,7 +291,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
       project.website = {
         url: website,
         title: config.website.title || repository.name,
-        description: config.website.description || repository.description || undefined,
+        description: config.website.description || project.description || undefined,
         keywords: config.website.keywords || undefined,
       };
     }

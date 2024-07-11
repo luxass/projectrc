@@ -5,6 +5,10 @@ export const PROJECT_SCHEMA = z.object({
     description: "the priority of the project. the higher the number, the higher position the project will have on `luxass.dev`.",
   }).default(10),
 
+  description: z.string({
+    description: "the description of the project.",
+  }).optional(),
+
   stars: z.boolean({
     description: "include the stars of the repository.",
   }).default(false),
@@ -52,7 +56,7 @@ export const WEBSITE_SCHEMA = z.object({
     description: "the title of the website.",
   }).optional(),
   description: z.string({
-    description: "the description of the website.",
+    description: "The description to set in the meta description tag. If not provided, the description will be inferred from `project.description`",
   }).optional(),
   keywords: z.array(z.string()).optional(),
 });
