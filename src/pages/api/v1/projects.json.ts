@@ -1,5 +1,8 @@
 import type { APIRoute } from "astro";
-import { getProjects } from "../../lib/projects";
+import { getProjects } from "~/lib/projects";
+import { createError } from "~/lib/response-utils";
+
+export const prerender = false;
 
 const HEADERS = {
   "Content-Type": "application/json",
@@ -11,10 +14,10 @@ export const GET: APIRoute = async () => {
     const projects = await getProjects();
 
     if (!projects) {
-      return Response.json({
-        error: `no repositories found`,
-      }, {
+      return createError({
+        message: `no repositories found`,
         status: 404,
+        headers: HEADERS,
       });
     }
 
@@ -25,10 +28,9 @@ export const GET: APIRoute = async () => {
       headers: HEADERS,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "unknown error";
-    return Response.json({
-      error: message,
-    }, {
+    console.error(err);
+    return createError({
+      message: "Internal Server Error",
       status: 500,
       headers: HEADERS,
     });
