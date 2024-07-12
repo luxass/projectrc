@@ -1,0 +1,13 @@
+# See https://github.com/actions/labeler
+
+"pkg: mosaic":
+  - any:
+      - packages/mosaic/**
+
+"apps: www":
+  - any:
+      - apps/www
+
+"🚨 ci":
+  - any:
+    - .github/workflows/**
