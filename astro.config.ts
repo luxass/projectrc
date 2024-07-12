@@ -29,11 +29,6 @@ export default defineConfig({
           access: "secret",
           context: "server",
         },
-        API_KEY: {
-          type: "string",
-          access: "secret",
-          context: "server",
-        },
       },
     },
   },
@@ -41,6 +36,7 @@ export default defineConfig({
   output: "hybrid",
   adapter: vercel({
     isr: {
+      bypassToken: process.env.ISR_BYPASS_TOKEN,
       exclude: ["/api/**", "!/api/v1/projects.json"],
       expiration: 3600,
     },
