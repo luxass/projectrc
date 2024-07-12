@@ -7,9 +7,15 @@ import icon from "astro-icon";
 
 const {
   GITHUB_TOKEN,
+  ISR_BYPASS_TOKEN,
 } = loadEnv(process.env.NODE_ENV!, process.cwd(), "");
+
 if (!GITHUB_TOKEN) {
   throw new Error("No GITHUB_TOKEN found");
+}
+
+if (!ISR_BYPASS_TOKEN) {
+  throw new Error("No ISR_BYPASS_TOKEN found");
 }
 
 // https://astro.build/config
