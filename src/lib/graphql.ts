@@ -1,6 +1,6 @@
 import { gql } from "github-schema";
 
-export const REPOSITORY_FRAGMENT = gql`
+const REPOSITORY_FRAGMENT = gql`
   #graphql
   fragment RepositoryFragment on Repository {
     name
