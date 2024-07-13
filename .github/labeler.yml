@@ -8,6 +8,6 @@
   - any:
       - apps/www
 
-"🚨 ci":
+🚨 ci:
   - any:
-    - .github/workflows/**
+      - .github/workflows/**
