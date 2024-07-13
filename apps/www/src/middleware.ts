@@ -1,5 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
-import { getRepositoryType } from "./lib/repository";
+import { getRepositoryType } from "@luxass/mosaic";
+import { GITHUB_TOKEN } from "astro:env/server";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(context.request.url);
@@ -19,7 +20,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   const { owner, repository } = context.params;
-  const repositoryType = await getRepositoryType(owner, repository);
+  const repositoryType = await getRepositoryType({
+    owner,
+    repository,
+    githubToken: GITHUB_TOKEN,
+  });
 
   if (!repositoryType) {
     return Response.json(

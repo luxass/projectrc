@@ -1,7 +1,12 @@
 import type { APIRoute } from "astro";
 import { remark } from "remark";
-import { getREADME } from "~/lib/readme";
-import { BADGE_REMOVER, COMMENT_REMOVER, UNUSED_DEFINITION_REMOVER, URL_REWRITER } from "~/lib/remark-plugins";
+import { getREADME } from "@luxass/mosaic";
+import {
+  BADGE_REMOVER,
+  COMMENT_REMOVER,
+  UNUSED_DEFINITION_REMOVER,
+  URL_REWRITER,
+} from "~/lib/remark-plugins";
 
 export const prerender = false;
 

@@ -50,7 +50,19 @@
     "github-schema": "^1.10.2",
     "ignore": "^5.3.1",
     "minimatch": "^10.0.1",
+    "smol-toml": "^1.2.2",
     "valibot": "^0.36.0",
-    "yaml": "^2.4.5"
+    "yaml": "^2.4.5",
+    "zod": "^3.23.8",
+    "zod-error-utils": "^0.2.0"
+  },
+  "devDependencies": {
+    "@luxass/eslint-config": "^4.9.0",
+    "@types/node": "^20.14.10",
+    "eslint": "^9.6.0",
+    "eslint-plugin-format": "^0.1.2",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.2"
   }
 }
