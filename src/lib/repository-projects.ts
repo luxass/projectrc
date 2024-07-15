@@ -228,7 +228,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
         const pkgObj = await getPackage(owner, repositoryName, pkg.path);
 
         if (!latestReleaseResponse.ok && !pkgObj.version) {
-          throw new Error("could not find latest release on github and no version was found in package.json");
+          throw new Error(`could not find latest release on github and no version was found in package.json in ${pkg.name}`);
         }
 
         if (!latestReleaseResponse.ok && pkgObj.version) {
@@ -342,7 +342,7 @@ export async function getRepositoryProjects(owner: string, repositoryName: strin
       const pkg = await getPackage(owner, repositoryName);
 
       if (!latestReleaseResponse.ok && !pkg.version) {
-        throw new Error("could not find latest release on github and no version was found in package.json");
+        throw new Error(`could not find latest release on github and no version was found in package.json in ${repository.name}`);
       }
 
       if (!latestReleaseResponse.ok && pkg.version) {
