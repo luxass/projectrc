@@ -1,5 +1,4 @@
 import { graphql } from "@octokit/graphql";
-import { GITHUB_TOKEN } from "astro:env/server";
 import type { RepositoryNode } from "github-schema";
 import { gql } from "github-schema";
 
@@ -7,17 +6,49 @@ export type RepositoryType = "fork" | "private" | "archived" | "public";
 
 export interface RepositoryTypeOptions {
   owner: string;
-  name: string;
+  repository: string;
+  githubToken?: string;
 }
 
-export async function getRepositoryType(owner: string, repository: string): Promise<RepositoryType | undefined> {
+/**
+ * Gets the repository type for the given repository
+ * @param {RepositoryTypeOptions} options - The options to use
+ * @returns {Promise<RepositoryType |>} The repository node
+ *
+ * NOTE:
+ * This throws if the GitHub Token is not set or something else goes wrong, so make sure to catch it
+ * This is not the full response from GitHub, as it only contains the fields we need.
+ * To see what we request, you can see the `REPOSITORY_QUERY` export.
+ *
+ * @example
+ * ```ts
+ * import { getRepositoryType } from "@luxass/mosaic";
+ *
+ * const repository = await getRepositoryType({
+ *   owner: "luxass",
+ *   repository: "projectrc",
+ *   githubToken: process.env.GITHUB_TOKEN,
+ * });
+ * // results in:
+ * // {
+ * //   name: "projectrc",
+ * //   GITHUB RESPONSE...
+ * // }
+ * ```
+ */
+export async function getRepositoryType(options: RepositoryTypeOptions): Promise<RepositoryType | undefined> {
+  const { owner, repository, githubToken } = options;
   if (!owner || !repository) {
     return undefined;
   }
 
   const res = await fetch(`https://api.github.com/repos/${owner}/${repository}`, {
     headers: {
-      "Authorization": `Bearer ${GITHUB_TOKEN}`,
+      ...(githubToken != null
+        ? {
+            Authorization: `Bearer ${githubToken}`,
+          }
+        : {}),
       "Content-Type": "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
     },

@@ -1,4 +1,5 @@
 import process from "node:process";
+import { resolve } from "node:path";
 import { loadEnv } from "vite";
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";

@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { MOSAIC_SCHEMA } from "../lib/json-schema";
+import { MOSAIC_SCHEMA } from "@luxass/mosaic";
 
 export const GET: APIRoute = () => {
   const jsonSchema = zodToJsonSchema(MOSAIC_SCHEMA.merge(z.object({

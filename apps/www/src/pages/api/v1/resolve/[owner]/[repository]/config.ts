@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
-import { resolveConfig } from "~/lib/config";
+import { resolveConfig } from "@luxass/mosaic";
+import { GITHUB_TOKEN } from "astro:env/server";
 import { createError } from "~/lib/response-utils";
 
 export const prerender = false;
@@ -14,7 +15,15 @@ export const GET: APIRoute = async ({ params }) => {
     });
   }
 
-  const config = await resolveConfig(owner, repository);
+  const config = await resolveConfig({
+    owner,
+    repository,
+    githubToken: GITHUB_TOKEN,
+    external: {
+      owner: "luxass",
+      repo: "luxass/luxass",
+    },
+  });
 
   if (!config) {
     return createError({

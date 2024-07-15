@@ -1,11 +1,10 @@
 import type { ZodIssue, z } from "zod";
-import { GITHUB_TOKEN } from "astro:env/server";
 import { parse as parseToml } from "smol-toml";
 import {
   zodErrorMap,
 } from "zod-error-utils";
 import { base64ToString } from "./utils";
-import { MOSAIC_SCHEMA } from "./json-schema";
+import { MOSAIC_SCHEMA } from "./schema";
 
 export interface ResolvedConfigResult {
   type: "resolved";
@@ -21,21 +20,61 @@ export interface ResolvedConfigError {
 
 export interface ResolveConfigOptions {
   owner: string;
-  name: string;
+  repository: string;
+  githubToken?: string;
+  external?: ExternalOptions;
 }
 
-export async function resolveConfig(owner: string, repository: string): Promise<ResolvedConfigError | ResolvedConfigResult | undefined> {
+export interface ExternalOptions {
+  owner: string;
+  repo: `${string}/${string}`;
+}
+
+/**
+ * Find the `mosaic.toml` file in the repository.
+ * @param {ResolveConfigOptions} options The options to use.
+ * @returns {Promise<ProjectRCFile | undefined>} The `mosaic.toml` file if any file was found otherwise `undefined`.
+ *
+ * @example
+ * ```ts
+ * import { resolveConfig } from "@luxass/mosaic";
+ *
+ * const projectRCFile = await resolveConfig({
+ *  owner: "luxass",
+ *  repository: "mosaic",
+ * });
+ * // results in:
+ * // {
+ * //   path: "https://api.github.com/repos/luxass/mosaic/contents/.github/mosaic.toml",
+ * //   content: {
+ * //     website: true,
+ * //     handles: [
+ * //       "/projectrc"
+ * //     ],
+ * //   }
+ * // }
+ * ```
+ */
+export async function resolveConfig(options: ResolveConfigOptions): Promise<ResolvedConfigError | ResolvedConfigResult | undefined> {
+  let {
+    owner,
+    repository,
+    githubToken,
+    external: externalOptions,
+  } = options;
   if (!owner || !repository) {
     return undefined;
   }
 
   try {
     let external = false;
+    let externalPath = `https://github.com/${owner}/${repository}/blob/main/.github/mosaic.toml`;
 
     let url = new URL(`https://api.github.com/repos/${owner}/${repository}/contents/.github/mosaic.toml`);
 
-    if (owner !== "luxass") {
+    if ((externalOptions != null && typeof externalOptions === "object") && owner !== externalOptions.owner) {
       external = true;
+      externalPath = `https://github.com/${externalOptions.repo}/blob/main/.github/mosaic/${owner.toLowerCase()}/${repository.toLowerCase()}.toml`;
 
       // when the owner is not luxass, resolve the repository externally
       // every external repository that should be resolved, requires
@@ -47,13 +86,17 @@ export async function resolveConfig(owner: string, repository: string): Promise<
       }
 
       url = new URL(
-        `https://api.github.com/repos/luxass/luxass/contents/.github/mosaic/${owner.toLowerCase()}/${repository.toLowerCase()}.toml`,
+        `https://api.github.com/repos/${externalOptions.repo}/contents/.github/mosaic/${owner.toLowerCase()}/${repository.toLowerCase()}.toml`,
       );
     }
 
     const result = await fetch(url, {
       headers: {
-        "Authorization": `Bearer ${GITHUB_TOKEN}`,
+        ...(githubToken != null
+          ? {
+              Authorization: `Bearer ${githubToken}`,
+            }
+          : {}),
         "Content-Type": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
       },
@@ -93,7 +136,7 @@ export async function resolveConfig(owner: string, repository: string): Promise<
       type: "resolved",
       content: config,
       external,
-      path: `https://github.com/${owner}/${repository}/blob/main/.github/mosaic.toml`,
+      path: externalPath,
     };
   } catch (err) {
     console.error(err);

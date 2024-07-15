@@ -1,0 +1,68 @@
+{
+  "name": "@luxass/mosaic",
+  "version": "0.0.0",
+  "description": "A collection of functions used by mosaic.luxass.dev",
+  "type": "module",
+  "author": {
+    "name": "Lucas Nørgård",
+    "email": "lucasnrgaard@gmail.com",
+    "url": "https://luxass.dev"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/luxass/mosaic",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luxass/mosaic",
+    "directory": "packages/mosaic"
+  },
+  "bugs": {
+    "url": "https://github.com/luxass/mosaic/issues"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gcornut/valibot-json-schema": "^0.31.0",
+    "@octokit/graphql": "^8.1.1",
+    "github-schema": "^1.10.2",
+    "ignore": "^5.3.1",
+    "minimatch": "^10.0.1",
+    "smol-toml": "^1.2.2",
+    "valibot": "^0.36.0",
+    "yaml": "^2.4.5",
+    "zod": "^3.23.8",
+    "zod-error-utils": "^0.2.0"
+  },
+  "devDependencies": {
+    "@luxass/eslint-config": "^4.9.0",
+    "@types/node": "^20.14.10",
+    "eslint": "^9.6.0",
+    "eslint-plugin-format": "^0.1.2",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.2"
+  }
+}
