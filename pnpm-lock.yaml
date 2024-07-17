@@ -22,7 +22,7 @@ importers:
         version: 1.1.200
       '@iconify-json/octicon':
         specifier: ^1.1.55
-        version: 1.1.55
+        version: 1.1.56
       '@iconify-json/twemoji':
         specifier: ^1.1.15
         version: 1.1.15
@@ -575,8 +575,8 @@ packages:
   '@iconify-json/lucide@1.1.200':
     resolution: {integrity: sha512-imZeWdgMcJ6xZ15U0h35kehDcrVShvrTui3RvuY/ZUxFGC23wxPt1OQXiu+KQ/GEiujGEeOtQ1BL3Jf+7dQiqw==}
 
-  '@iconify-json/octicon@1.1.55':
-    resolution: {integrity: sha512-TWVO7olfquviijdmdrEbvpjPTxBmVvU0ZoR9BBx9pIhvEsG7emefrLg7eZm1CYGYM+9StkksDbqha8HCy/6kzQ==}
+  '@iconify-json/octicon@1.1.56':
+    resolution: {integrity: sha512-fCSFHruJQwTuD7E95Tgm1cr/PQJgMt6wgS01z0VvwFmxbaqdC56f6UkZ16JUQ0tYGHpgkd8shsB+c+nYo0NVPg==}
 
   '@iconify-json/twemoji@1.1.15':
     resolution: {integrity: sha512-ze2CAOwIWBKIP6ih6qMDItasVjRicktl2Qr3/ohZSMToAHm9z3Q6HCwE48eT0+D+uFpGBlNRQ22HHyE5izyhDg==}
@@ -4244,7 +4244,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/octicon@1.1.55':
+  '@iconify-json/octicon@1.1.56':
     dependencies:
       '@iconify/types': 2.0.0
 
