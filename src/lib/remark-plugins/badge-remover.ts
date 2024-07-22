@@ -3,7 +3,7 @@ import type { ImageReference, Node, Root } from "mdast";
 import type { Plugin } from "unified";
 import { type GetDefinition, definitions } from "mdast-util-definitions";
 
-const BADGE_SRC = ["https://img.shields.io", "https://flat.badgen.net/"];
+const BADGE_SRC = ["https://img.shields.io", "https://flat.badgen.net/", "https://jsr.io/badges/"];
 
 function isBadge(url: string): boolean {
   for (const src of BADGE_SRC) {
